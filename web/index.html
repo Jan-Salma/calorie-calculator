@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalorická Kalkulačka</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f172a; color: #e2e8f0; font-family: 'DM Sans', 'Segoe UI', sans-serif; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 0 6px rgba(0,0,0,0.4); }
+  input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; cursor: pointer; border: none; }
+  input[type="number"] { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 12px; border-radius: 8px; font-size: 15px; width: 80px; text-align: center; font-family: inherit; outline: none; transition: border-color 0.2s; }
+  input[type="number"]:focus { border-color: #f59e0b; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .card { background: #1e293b; border-radius: 16px; padding: 24px; border: 1px solid #1e293b; transition: border-color 0.3s; animation: fadeIn 0.4s ease; }
+  .card:hover { border-color: #334155; }
+  .section-title { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useMemo } = React;
+
+const PAL_ACTIVITIES = [
+  { id: "sleep", label: "Spánok", palMin: 0.95, palMax: 0.95, hasRange: false, icon: "\ud83c\udf19" },
+  { id: "sedentary", label: "Sedavá činnosť (kancelária)", palMin: 1.4, palMax: 1.5, hasRange: true, icon: "\ud83d\udcbb" },
+  { id: "light", label: "Sedavá s občasným státím/chôdzou", palMin: 1.6, palMax: 1.7, hasRange: true, icon: "\ud83d\udeb6" },
+  { id: "standing", label: "Prevažne stojaca/chodiaca práca", palMin: 1.8, palMax: 1.9, hasRange: true, icon: "\ud83e\uddd1\u200d\ud83c\udf73" },
+  { id: "heavy", label: "Ťažká fyzická práca", palMin: 2.0, palMax: 2.4, hasRange: true, icon: "\ud83c\udfd7\ufe0f" },
+  { id: "sport", label: "Šport / tréning", palMin: 2.0, palMax: 2.0, hasRange: false, icon: "\ud83c\udfcb\ufe0f" },
+  { id: "leisure", label: "Voľný čas (ľahká aktivita)", palMin: 1.2, palMax: 1.4, hasRange: true, icon: "\ud83d\udecb\ufe0f" },
+];
+
+const GOALS = [
+  { id: "muscle", label: "Budovanie svalov", icon: "\ud83d\udcaa", color: "#22c55e", desc: "Kalorický prebytok" },
+  { id: "fat_loss", label: "Spaľovanie tuku", icon: "\ud83d\udd25", color: "#ef4444", desc: "Kalorický deficit" },
+  { id: "recomp", label: "Body Recompozícia", icon: "\ud83d\udd04", color: "#3b82f6", desc: "Udržiavací príjem" },
+];
+
+const MACRO_RANGES = {
+  muscle: { proteinMin: 1.8, proteinMax: 2.0, fatPctMin: 25, fatPctMax: 30 },
+  fat_loss: { proteinMin: 2.2, proteinMax: 2.4, fatPctMin: 15, fatPctMax: 20 },
+  recomp: { proteinMin: 1.8, proteinMax: 2.2, fatPctMin: 20, fatPctMax: 25 },
+};
+
+function PieChart({ protein, fat, carbs, size = 180 }) {
+  const total = protein + fat + carbs;
+  if (total === 0) return null;
+  const pPct = protein / total;
+  const fPct = fat / total;
+  const cPct = carbs / total;
+  const r = size / 2 - 8;
+  const cx = size / 2;
+  const cy = size / 2;
+
+  function arc(startAngle, endAngle) {
+    const s = (startAngle - 90) * (Math.PI / 180);
+    const e = (endAngle - 90) * (Math.PI / 180);
+    const x1 = cx + r * Math.cos(s);
+    const y1 = cy + r * Math.sin(s);
+    const x2 = cx + r * Math.cos(e);
+    const y2 = cy + r * Math.sin(e);
+    const large = endAngle - startAngle > 180 ? 1 : 0;
+    return `M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z`;
+  }
+
+  function labelPos(startAngle, endAngle) {
+    const mid = ((startAngle + endAngle) / 2 - 90) * (Math.PI / 180);
+    return { x: cx + r * 0.6 * Math.cos(mid), y: cy + r * 0.6 * Math.sin(mid) };
+  }
+
+  const a1 = 0, a2 = pPct * 360, a3 = a2 + fPct * 360, a4 = 360;
+  const slices = [
+    { d: arc(a1, a2), fill: "#f59e0b", pct: pPct },
+    { d: arc(a2, a3), fill: "#ef4444", pct: fPct },
+    { d: arc(a3, a4), fill: "#22c55e", pct: cPct },
+  ];
+
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {slices.map((s, i) => s.pct > 0.01 && (
+        <g key={i}>
+          <path d={s.d} fill={s.fill} stroke="#1a1a2e" strokeWidth="2" />
+          {s.pct > 0.06 && (() => {
+            const startA = i === 0 ? a1 : i === 1 ? a2 : a3;
+            const endA = i === 0 ? a2 : i === 1 ? a3 : a4;
+            const p = labelPos(startA, endA);
+            return (
+              <text x={p.x} y={p.y} textAnchor="middle" dominantBaseline="central"
+                fill="#fff" fontSize="12" fontWeight="700" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                {Math.round(s.pct * 100)}%
+              </text>
+            );
+          })()}
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function Slider({ min, max, step, value, onChange, label, unit, color = "#f59e0b" }) {
+  const pct = ((value - min) / (max - min)) * 100;
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4, color: "#94a3b8" }}>
+        <span>{label}</span>
+        <span style={{ color, fontWeight: 700 }}>{typeof value === "number" ? (Number.isInteger(step) ? value : value.toFixed(1)) : value} {unit}</span>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={value}
+        onChange={e => onChange(parseFloat(e.target.value))}
+        style={{
+          width: "100%", height: 6, WebkitAppearance: "none", appearance: "none",
+          background: `linear-gradient(to right, ${color} ${pct}%, #334155 ${pct}%)`,
+          borderRadius: 3, outline: "none", cursor: "pointer",
+        }}
+      />
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#475569", marginTop: 2 }}>
+        <span>{min} {unit}</span><span>{max} {unit}</span>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [weight, setWeight] = useState(80);
+  const [gender, setGender] = useState("male");
+  const [activities, setActivities] = useState(
+    PAL_ACTIVITIES.map(a => ({ id: a.id, hours: a.id === "sleep" ? 8 : a.id === "sedentary" ? 8 : a.id === "leisure" ? 6 : a.id === "sport" ? 1 : 0, intensity: 0.5 }))
+  );
+  const [goal, setGoal] = useState("muscle");
+  const [calcMethod, setCalcMethod] = useState("calorie");
+  const [calorieDelta, setCalorieDelta] = useState(300);
+  const [weeklyWeightDelta, setWeeklyWeightDelta] = useState(0.5);
+  const [proteinSlider, setProteinSlider] = useState(0.5);
+  const [fatSlider, setFatSlider] = useState(0.5);
+
+  const bmr = weight * 24;
+  const totalHours = activities.reduce((s, a) => s + a.hours, 0);
+  const hoursValid = totalHours === 24;
+
+  const palValue = useMemo(() => {
+    if (!hoursValid) return 0;
+    let sum = 0;
+    activities.forEach(act => {
+      const def = PAL_ACTIVITIES.find(p => p.id === act.id);
+      const pal = def.hasRange ? def.palMin + (def.palMax - def.palMin) * act.intensity : def.palMin;
+      sum += act.hours * pal;
+    });
+    return sum / 24;
+  }, [activities, hoursValid]);
+
+  const totalKcal = Math.round(bmr * palValue);
+
+  const goalDelta = useMemo(() => {
+    if (goal === "recomp") return 0;
+    if (calcMethod === "calorie") return calorieDelta;
+    return Math.round((weeklyWeightDelta * 7700) / 7);
+  }, [goal, calcMethod, calorieDelta, weeklyWeightDelta]);
+
+  const targetKcal = goal === "muscle" ? totalKcal + goalDelta : goal === "fat_loss" ? totalKcal - goalDelta : totalKcal;
+
+  const macroRange = MACRO_RANGES[goal];
+  const proteinGkg = macroRange.proteinMin + (macroRange.proteinMax - macroRange.proteinMin) * proteinSlider;
+  const fatPct = macroRange.fatPctMin + (macroRange.fatPctMax - macroRange.fatPctMin) * fatSlider;
+
+  const proteinG = Math.round(proteinGkg * weight);
+  const proteinKcal = proteinG * 4;
+  const fatKcal = Math.round(targetKcal * (fatPct / 100));
+  const fatG = Math.round(fatKcal / 9);
+  const carbsKcal = Math.max(0, targetKcal - proteinKcal - fatKcal);
+  const carbsG = Math.round(carbsKcal / 4);
+
+  const minFat = gender === "male" ? 40 : 30;
+  const fatWarning = fatG < minFat;
+  const fiberMin = 30, fiberMax = 60;
+  const waterL = (weight / 20).toFixed(1);
+
+  const updateActivity = (id, field, value) => {
+    setActivities(prev => prev.map(a => a.id === id ? { ...a, [field]: value } : a));
+  };
+
+  const goalColor = GOALS.find(g => g.id === goal).color;
+
+  return (
+    <div style={{ minHeight: "100vh", padding: 0 }}>
+      <div style={{ background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", borderBottom: "1px solid #1e293b", padding: "28px 24px 20px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+            <div style={{ fontSize: 28 }}>{"\u26a1"}</div>
+            <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 28, fontWeight: 900, margin: 0, letterSpacing: -1,
+              background: "linear-gradient(135deg, #f59e0b, #ef4444)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Kalorická Kalkulačka
+            </h1>
+          </div>
+          <p style={{ color: "#64748b", fontSize: 14, margin: 0 }}>Výpočet dennej potreby kalórií a makronutrientov</p>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 800, margin: "0 auto", padding: "24px 16px 60px", display: "flex", flexDirection: "column", gap: 20 }}>
+
+        <div className="card">
+          <div className="section-title" style={{ color: "#f59e0b" }}>{"\u0031\ufe0f\u20e3"} Základný metabolizmus (BMR)</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center" }}>
+            <div>
+              <label style={{ fontSize: 13, color: "#94a3b8", display: "block", marginBottom: 6 }}>Hmotnosť (kg)</label>
+              <input type="number" value={weight} min={30} max={250} onChange={e => setWeight(Math.max(30, parseFloat(e.target.value) || 30))} />
+            </div>
+            <div>
+              <label style={{ fontSize: 13, color: "#94a3b8", display: "block", marginBottom: 6 }}>Pohlavie</label>
+              <div style={{ display: "flex", gap: 6 }}>
+                {[["male", "Muž"], ["female", "Žena"]].map(([v, l]) => (
+                  <button key={v} onClick={() => setGender(v)} style={{
+                    padding: "8px 16px", borderRadius: 8, border: "1px solid", fontSize: 14, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
+                    borderColor: gender === v ? "#f59e0b" : "#334155", background: gender === v ? "rgba(245,158,11,0.15)" : "#0f172a", color: gender === v ? "#f59e0b" : "#94a3b8"
+                  }}>{l}</button>
+                ))}
+              </div>
+            </div>
+            <div style={{ marginLeft: "auto", textAlign: "right" }}>
+              <div style={{ fontSize: 13, color: "#94a3b8" }}>Vzorec: 1.0 × {weight} kg × 24h</div>
+              <div style={{ fontSize: 32, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: "#f59e0b" }}>{bmr.toLocaleString("sk")}</div>
+              <div style={{ fontSize: 12, color: "#64748b" }}>kcal / deň</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="section-title" style={{ color: "#3b82f6" }}>{"\u0032\ufe0f\u20e3"} Denné aktivity (PAL)</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+            <span className="badge" style={{
+              background: hoursValid ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)",
+              color: hoursValid ? "#22c55e" : "#ef4444",
+              border: `1px solid ${hoursValid ? "#22c55e33" : "#ef444433"}`
+            }}>
+              {hoursValid ? "\u2713" : "\u26a0"} {totalHours} / 24 hodín
+            </span>
+            {!hoursValid && <span style={{ fontSize: 12, color: "#ef4444" }}>Súčet hodín musí byť presne 24</span>}
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {PAL_ACTIVITIES.map(def => {
+              const act = activities.find(a => a.id === def.id);
+              const pal = def.hasRange ? def.palMin + (def.palMax - def.palMin) * act.intensity : def.palMin;
+              const kcal = Math.round(bmr / 24 * act.hours * pal);
+              return (
+                <div key={def.id} style={{
+                  background: "#0f172a", borderRadius: 12, padding: "12px 16px",
+                  border: act.hours > 0 ? "1px solid #334155" : "1px solid transparent",
+                  opacity: act.hours > 0 ? 1 : 0.5, transition: "all 0.2s"
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: act.hours > 0 && def.hasRange ? 8 : 0, flexWrap: "wrap" }}>
+                    <span style={{ fontSize: 20, width: 28 }}>{def.icon}</span>
+                    <span style={{ fontSize: 14, fontWeight: 600, flex: 1, minWidth: 140 }}>{def.label}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <button onClick={() => updateActivity(def.id, "hours", Math.max(0, act.hours - 0.5))}
+                        style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #334155", background: "#1e293b", color: "#94a3b8", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{"\u2212"}</button>
+                      <span style={{ width: 36, textAlign: "center", fontWeight: 700, fontSize: 16, fontFamily: "'Outfit', sans-serif" }}>{act.hours}</span>
+                      <button onClick={() => updateActivity(def.id, "hours", Math.min(24, act.hours + 0.5))}
+                        style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #334155", background: "#1e293b", color: "#94a3b8", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                      <span style={{ fontSize: 12, color: "#64748b", width: 16 }}>h</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 100, justifyContent: "flex-end" }}>
+                      <span className="badge" style={{ background: "rgba(59,130,246,0.12)", color: "#60a5fa", fontSize: 11 }}>PAL {pal.toFixed(2)}</span>
+                      {act.hours > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: "#f59e0b", minWidth: 55, textAlign: "right" }}>{kcal} kcal</span>}
+                    </div>
+                  </div>
+                  {act.hours > 0 && def.hasRange && (
+                    <div style={{ marginLeft: 38, marginTop: 4 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontSize: 11, color: "#64748b", whiteSpace: "nowrap" }}>Intenzita:</span>
+                        <input type="range" min={0} max={1} step={0.1} value={act.intensity}
+                          onChange={e => updateActivity(def.id, "intensity", parseFloat(e.target.value))}
+                          style={{
+                            flex: 1, height: 4, WebkitAppearance: "none", appearance: "none", borderRadius: 2, outline: "none", cursor: "pointer",
+                            background: `linear-gradient(to right, #3b82f6 ${act.intensity * 100}%, #334155 ${act.intensity * 100}%)`
+                          }} />
+                        <span style={{ fontSize: 11, color: "#60a5fa", width: 60, textAlign: "right" }}>{def.palMin.toFixed(1)}{"\u2013"}{def.palMax.toFixed(1)}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {hoursValid && (
+          <div className="card" style={{ background: "linear-gradient(135deg, #1e293b, #1a2744)", borderColor: "#334155" }}>
+            <div className="section-title" style={{ color: "#22c55e" }}>{"\u0033\ufe0f\u20e3"} Celkový denný výdaj</div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", flexWrap: "wrap", gap: 20 }}>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 4 }}>Priemerný PAL</div>
+                <div style={{ fontSize: 36, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: "#3b82f6" }}>{palValue.toFixed(4)}</div>
+              </div>
+              <div style={{ fontSize: 28, color: "#334155" }}>{"\u00d7"}</div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 4 }}>BMR</div>
+                <div style={{ fontSize: 28, fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: "#f59e0b" }}>{bmr.toLocaleString("sk")}</div>
+              </div>
+              <div style={{ fontSize: 28, color: "#334155" }}>=</div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 4 }}>Gesamtbedarf</div>
+                <div style={{ fontSize: 42, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: "#22c55e" }}>{totalKcal.toLocaleString("sk")}</div>
+                <div style={{ fontSize: 13, color: "#64748b" }}>kcal / deň</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {hoursValid && (
+          <div className="card">
+            <div className="section-title" style={{ color: goalColor }}>{"\u0034\ufe0f\u20e3"} Cieľ</div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
+              {GOALS.map(g => (
+                <button key={g.id} onClick={() => { setGoal(g.id); setCalorieDelta(g.id === "muscle" ? 300 : g.id === "fat_loss" ? 400 : 0); setWeeklyWeightDelta(0.5); }}
+                  style={{
+                    flex: "1 1 140px", padding: "14px 12px", borderRadius: 12, border: `2px solid ${goal === g.id ? g.color : "#334155"}`,
+                    background: goal === g.id ? `${g.color}18` : "#0f172a", cursor: "pointer", textAlign: "center", transition: "all 0.2s", fontFamily: "inherit"
+                  }}>
+                  <div style={{ fontSize: 24, marginBottom: 4 }}>{g.icon}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: goal === g.id ? g.color : "#e2e8f0" }}>{g.label}</div>
+                  <div style={{ fontSize: 11, color: "#64748b" }}>{g.desc}</div>
+                </button>
+              ))}
+            </div>
+
+            {goal !== "recomp" && (
+              <React.Fragment>
+                <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+                  {[["calorie", "Podľa kalórií (kcal)"], ["weight", "Podľa hmotnosti (kg)"]].map(([v, l]) => (
+                    <button key={v} onClick={() => setCalcMethod(v)} style={{
+                      flex: 1, padding: "10px 12px", borderRadius: 8, border: `1px solid ${calcMethod === v ? goalColor : "#334155"}`,
+                      background: calcMethod === v ? `${goalColor}15` : "transparent", color: calcMethod === v ? goalColor : "#94a3b8",
+                      cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit"
+                    }}>{l}</button>
+                  ))}
+                </div>
+                {calcMethod === "calorie" ? (
+                  <Slider min={100} max={goal === "muscle" ? 700 : 800} step={50} value={calorieDelta} onChange={setCalorieDelta}
+                    label={goal === "muscle" ? "Kalorický prebytok" : "Kalorický deficit"} unit="kcal/deň" color={goalColor} />
+                ) : (
+                  <Slider min={0.1} max={goal === "muscle" ? 1.5 : 1.0} step={0.1} value={weeklyWeightDelta} onChange={setWeeklyWeightDelta}
+                    label={goal === "muscle" ? "Prírastok za týždeň" : "Úbytok za týždeň"} unit="kg/týždeň" color={goalColor} />
+                )}
+                {calcMethod === "weight" && (
+                  <div style={{ fontSize: 12, color: "#64748b", marginTop: -4 }}>
+                    = {goal === "muscle" ? "+" : "\u2212"}{goalDelta} kcal/deň ({goal === "muscle" ? "prebytok" : "deficit"})
+                  </div>
+                )}
+              </React.Fragment>
+            )}
+
+            <div style={{ marginTop: 16, background: "#0f172a", borderRadius: 12, padding: 20, textAlign: "center", border: `1px solid ${goalColor}33` }}>
+              <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 4 }}>
+                {goal === "muscle" ? `${totalKcal.toLocaleString("sk")} + ${goalDelta}` : goal === "fat_loss" ? `${totalKcal.toLocaleString("sk")} \u2212 ${goalDelta}` : "Udržiavací príjem"}
+              </div>
+              <div style={{ fontSize: 48, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: goalColor }}>
+                {targetKcal.toLocaleString("sk")}
+              </div>
+              <div style={{ fontSize: 14, color: "#64748b" }}>kcal / deň — tvoj cieľový príjem</div>
+            </div>
+          </div>
+        )}
+
+        {hoursValid && (
+          <div className="card">
+            <div className="section-title" style={{ color: "#f59e0b" }}>{"\u0035\ufe0f\u20e3"} Makronutrienty</div>
+            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+              <div style={{ flex: "1 1 280px" }}>
+                <Slider
+                  min={macroRange.proteinMin} max={macroRange.proteinMax} step={0.1}
+                  value={parseFloat((macroRange.proteinMin + (macroRange.proteinMax - macroRange.proteinMin) * proteinSlider).toFixed(1))}
+                  onChange={v => setProteinSlider((v - macroRange.proteinMin) / (macroRange.proteinMax - macroRange.proteinMin))}
+                  label="Bielkoviny (g/kg)" unit="g/kg" color="#f59e0b"
+                />
+                <Slider
+                  min={macroRange.fatPctMin} max={macroRange.fatPctMax} step={1}
+                  value={Math.round(macroRange.fatPctMin + (macroRange.fatPctMax - macroRange.fatPctMin) * fatSlider)}
+                  onChange={v => setFatSlider((v - macroRange.fatPctMin) / (macroRange.fatPctMax - macroRange.fatPctMin))}
+                  label="Tuky (% z kalórií)" unit="%" color="#ef4444"
+                />
+                <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>Sacharidy dopĺňajú zvyšok kalórií automaticky.</div>
+              </div>
+              <div style={{ flex: "0 0 200px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <PieChart protein={proteinKcal} fat={fatKcal} carbs={carbsKcal} />
+                <div style={{ display: "flex", gap: 12, marginTop: 8, fontSize: 11 }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: "#f59e0b", display: "inline-block" }} /> Bielkoviny</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: "#ef4444", display: "inline-block" }} /> Tuky</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: "#22c55e", display: "inline-block" }} /> Sacharidy</span>
+                </div>
+              </div>
+            </div>
+
+            {fatWarning && (
+              <div style={{ marginTop: 12, padding: "10px 14px", borderRadius: 8, background: "rgba(239,68,68,0.12)", border: "1px solid #ef444433", fontSize: 13, color: "#f87171" }}>
+                {"\u26a0\ufe0f"} Príjem tukov ({fatG} g) je pod odporúčaným minimom ({minFat} g pre {gender === "male" ? "mužov" : "ženy"}) — hrozí hormonálna nerovnováha.
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: 10, marginTop: 20, flexWrap: "wrap" }}>
+              {[
+                { label: "Bielkoviny", g: proteinG, kcal: proteinKcal, color: "#f59e0b", icon: "\ud83e\udd69" },
+                { label: "Tuky", g: fatG, kcal: fatKcal, color: "#ef4444", icon: "\ud83e\udd51" },
+                { label: "Sacharidy", g: carbsG, kcal: carbsKcal, color: "#22c55e", icon: "\ud83c\udf5a" },
+              ].map(m => (
+                <div key={m.label} style={{
+                  flex: "1 1 120px", background: "#0f172a", borderRadius: 12, padding: "16px 12px", textAlign: "center",
+                  border: `1px solid ${m.color}33`
+                }}>
+                  <div style={{ fontSize: 22, marginBottom: 4 }}>{m.icon}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 4 }}>{m.label}</div>
+                  <div style={{ fontSize: 28, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: m.color }}>{m.g}</div>
+                  <div style={{ fontSize: 12, color: "#64748b" }}>gramov</div>
+                  <div style={{ fontSize: 11, color: "#475569", marginTop: 4 }}>{m.kcal} kcal</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hoursValid && (
+          <div className="card" style={{ background: "#0f172a", border: "1px solid #334155" }}>
+            <div className="section-title" style={{ color: "#94a3b8", fontSize: 16 }}>{"\ud83d\udccb"} Dôležité pravidlá</div>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {[
+                { icon: "\ud83e\udd66", label: "Vláknina", value: `${fiberMin}\u2013${fiberMax} g/deň` },
+                { icon: "\ud83d\udca7", label: "Voda", value: `min. ${waterL} l/deň` },
+                { icon: "\ud83c\udf4e", label: "Pravidlo 80/20", value: "80 % celá strava" },
+              ].map(r => (
+                <div key={r.label} style={{ flex: "1 1 120px", background: "#1e293b", borderRadius: 10, padding: "12px 14px", textAlign: "center" }}>
+                  <div style={{ fontSize: 22 }}>{r.icon}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>{r.label}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", marginTop: 2 }}>{r.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div style={{ textAlign: "center", fontSize: 11, color: "#334155", paddingTop: 8 }}>
+          Výpočty slúžia ako orientačný základ. Individuálne výsledky sa môžu líšiť.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
