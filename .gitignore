@@ -15,13 +15,27 @@ npm-debug.log*
 package-lock.json
 yarn.lock
 
-# Build
+# Build output
 dist/
 build/
+
+# Platform builds
 *.apk
 *.ipa
+*.exe
+*.dmg
 
-# Env
+# Environment
 .env
 .env.local
 .env.*.local
+
+# Books / large assets (do not commit to repository)
+*.pdf
+
+# Gettext compiled binaries (source .po files are sufficient)
+*.mo
+
+# Temporary / session files
+*.tmp
+*.log
