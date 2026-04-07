@@ -3,455 +3,985 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalorická Kalkulačka</title>
+<title>Kalorická Kalkulačka · Fitness Fibel 2.0</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+<!-- Locale files – pridajte ďalší jazyk rovnako: <script src="locales/es_ES.js"></script> -->
+<script src="locales/sk_SK.js"></script>
+<script src="locales/en_EN.js"></script>
+<script src="locales/de_DE.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #0f172a; color: #e2e8f0; font-family: 'DM Sans', 'Segoe UI', sans-serif; }
-  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 0 6px rgba(0,0,0,0.4); }
-  input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; cursor: pointer; border: none; }
-  input[type="number"] { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 12px; border-radius: 8px; font-size: 15px; width: 80px; text-align: center; font-family: inherit; outline: none; transition: border-color 0.2s; }
-  input[type="number"]:focus { border-color: #f59e0b; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .card { background: #1e293b; border-radius: 16px; padding: 24px; border: 1px solid #1e293b; transition: border-color 0.3s; animation: fadeIn 0.4s ease; }
-  .card:hover { border-color: #334155; }
-  .section-title { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0f172a; color:#e2e8f0; font-family:'DM Sans','Segoe UI',sans-serif; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 0 6px rgba(0,0,0,.4); }
+input[type=range]::-moz-range-thumb    { width:18px; height:18px; border-radius:50%; background:#fff; cursor:pointer; border:none; }
+input[type=number],input[type=text] { background:#1e293b; border:1px solid #334155; color:#e2e8f0; padding:8px 12px; border-radius:8px; font-size:14px; font-family:inherit; outline:none; transition:border-color .2s; }
+input[type=number]:focus,input[type=text]:focus { border-color:#f59e0b; }
+input[type=number] { width:80px; text-align:center; }
+input[type=text]   { width:100%; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+.card { background:#1e293b; border-radius:16px; padding:24px; border:1px solid transparent; transition:border-color .3s; animation:fadeIn .35s ease; }
+.card:hover { border-color:#334155; }
+.section-title { font-family:'Outfit',sans-serif; font-size:20px; font-weight:800; margin-bottom:16px; letter-spacing:-.5px; }
+.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600; }
+.tab-btn { padding:12px 20px; border:none; background:transparent; cursor:pointer; font-size:14px; font-weight:600; font-family:inherit; transition:all .2s; white-space:nowrap; }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.78); display:flex; align-items:flex-start; justify-content:center; z-index:300; padding:16px; overflow-y:auto; }
+.modal { background:#1e293b; border-radius:16px; padding:28px; width:100%; border:1px solid #334155; animation:fadeIn .2s ease; margin:auto; }
+.btn { padding:10px 16px; border-radius:8px; border:1px solid transparent; cursor:pointer; font-size:13px; font-weight:600; font-family:inherit; transition:all .2s; }
+.btn-primary  { background:#f59e0b; color:#0f172a; border-color:#f59e0b; }
+.btn-primary:hover { background:#fbbf24; }
+.btn-ghost   { background:transparent; border-color:#334155; color:#94a3b8; }
+.btn-ghost:hover { border-color:#475569; color:#e2e8f0; }
+.btn-danger  { background:transparent; border-color:#334155; color:#ef4444; }
+.btn-danger:hover { border-color:#ef4444; background:rgba(239,68,68,.08); }
+.btn-blue    { background:rgba(59,130,246,.1); border-color:#3b82f6; color:#60a5fa; }
+.btn-green   { background:rgba(34,197,94,.1); border-color:#22c55e; color:#22c55e; }
+.num-input   { background:#0f172a; border:1px solid #334155; color:#e2e8f0; padding:6px 10px; border-radius:8px; font-size:14px; font-family:inherit; outline:none; width:100%; text-align:center; }
+.num-input:focus { border-color:#f59e0b; }
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useMemo } = React;
+const { useState, useMemo, useCallback } = React;
 
-const PAL_ACTIVITIES = [
-  { id: "sleep", label: "Spánok", palMin: 0.95, palMax: 0.95, hasRange: false, icon: "\ud83c\udf19" },
-  { id: "sedentary", label: "Sedavá činnosť (kancelária)", palMin: 1.4, palMax: 1.5, hasRange: true, icon: "\ud83d\udcbb" },
-  { id: "light", label: "Sedavá s občasným státím/chôdzou", palMin: 1.6, palMax: 1.7, hasRange: true, icon: "\ud83d\udeb6" },
-  { id: "standing", label: "Prevažne stojaca/chodiaca práca", palMin: 1.8, palMax: 1.9, hasRange: true, icon: "\ud83e\uddd1\u200d\ud83c\udf73" },
-  { id: "heavy", label: "Ťažká fyzická práca", palMin: 2.0, palMax: 2.4, hasRange: true, icon: "\ud83c\udfd7\ufe0f" },
-  { id: "sport", label: "Šport / tréning", palMin: 2.0, palMax: 2.0, hasRange: false, icon: "\ud83c\udfcb\ufe0f" },
-  { id: "leisure", label: "Voľný čas (ľahká aktivita)", palMin: 1.2, palMax: 1.4, hasRange: true, icon: "\ud83d\udecb\ufe0f" },
-];
-
-const GOALS = [
-  { id: "muscle", label: "Budovanie svalov", icon: "\ud83d\udcaa", color: "#22c55e", desc: "Kalorický prebytok" },
-  { id: "fat_loss", label: "Spaľovanie tuku", icon: "\ud83d\udd25", color: "#ef4444", desc: "Kalorický deficit" },
-  { id: "recomp", label: "Body Recompozícia", icon: "\ud83d\udd04", color: "#3b82f6", desc: "Udržiavací príjem" },
-];
-
-const MACRO_RANGES = {
-  muscle: { proteinMin: 1.8, proteinMax: 2.0, fatPctMin: 25, fatPctMax: 30 },
-  fat_loss: { proteinMin: 2.2, proteinMax: 2.4, fatPctMin: 15, fatPctMax: 20 },
-  recomp: { proteinMin: 1.8, proteinMax: 2.2, fatPctMin: 20, fatPctMax: 25 },
+// ─── Predvolené nastavenia (Fitness Fibel 2.0) ─────────────────────────────
+const DEFAULT_SETTINGS = {
+  language: 'sk_SK',
+  macroRanges: {
+    muscle:   { proteinMin: 1.8, proteinMax: 2.0, fatPctMin: 25, fatPctMax: 30 },
+    fat_loss: { proteinMin: 2.2, proteinMax: 2.4, fatPctMin: 15, fatPctMax: 20 },
+    recomp:   { proteinMin: 1.8, proteinMax: 2.2, fatPctMin: 20, fatPctMax: 25 },
+  },
+  minFat:         { male: 40, female: 30 },
+  defaultSurplus: { male: 300, female: 200 },
+  defaultDeficit: 300,
 };
 
-function PieChart({ protein, fat, carbs, size = 180 }) {
+// ─── PAL aktivity (Fitness Fibel 2.0, str. 129) ────────────────────────────
+const PAL_ACTIVITIES = [
+  { id:'sleep',     palMin:0.95, palMax:0.95, hasRange:false, icon:'🌙' },
+  { id:'lying',     palMin:1.2,  palMax:1.2,  hasRange:false, icon:'🛏️' },
+  { id:'sedentary', palMin:1.4,  palMax:1.5,  hasRange:true,  icon:'💻' },
+  { id:'light',     palMin:1.6,  palMax:1.7,  hasRange:true,  icon:'🚶' },
+  { id:'standing',  palMin:1.8,  palMax:1.9,  hasRange:true,  icon:'🧑‍🍳' },
+  { id:'heavy',     palMin:2.0,  palMax:2.4,  hasRange:true,  icon:'🏗️' },
+  { id:'sport',     palMin:2.0,  palMax:2.0,  hasRange:false, icon:'🏋️' },
+  { id:'leisure',   palMin:1.2,  palMax:1.4,  hasRange:true,  icon:'🛋️' },
+];
+const DEFAULT_HOURS = { sleep:8, lying:0, sedentary:8, light:0, standing:0, heavy:0, sport:1, leisure:7 };
+
+const GOALS = [
+  { id:'muscle',   icon:'💪', color:'#22c55e' },
+  { id:'fat_loss', icon:'🔥', color:'#ef4444' },
+  { id:'recomp',   icon:'🔄', color:'#3b82f6' },
+];
+
+// ─── localStorage ──────────────────────────────────────────────────────────
+const RECORDS_KEY  = 'ff2_records_v2';
+const SETTINGS_KEY = 'ff2_settings_v1';
+
+function loadLS(key, fb) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fb; }
+  catch { return fb; }
+}
+function saveLS(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
+
+function mergeSettings(saved) {
+  const s = saved || {};
+  return {
+    ...DEFAULT_SETTINGS, ...s,
+    macroRanges: {
+      muscle:   { ...DEFAULT_SETTINGS.macroRanges.muscle,   ...(s.macroRanges?.muscle   || {}) },
+      fat_loss: { ...DEFAULT_SETTINGS.macroRanges.fat_loss, ...(s.macroRanges?.fat_loss || {}) },
+      recomp:   { ...DEFAULT_SETTINGS.macroRanges.recomp,   ...(s.macroRanges?.recomp   || {}) },
+    },
+    minFat:         { ...DEFAULT_SETTINGS.minFat,          ...(s.minFat          || {}) },
+    defaultSurplus: { ...DEFAULT_SETTINGS.defaultSurplus,  ...(s.defaultSurplus  || {}) },
+  };
+}
+
+function mkActivities() {
+  return PAL_ACTIVITIES.map(a => ({ id:a.id, hours:DEFAULT_HOURS[a.id]??0, intensity:0.5 }));
+}
+
+// ─── Prekladový systém ─────────────────────────────────────────────────────
+function makeT(lang) {
+  return function t(key, vars) {
+    const loc = window.LOCALES || {};
+    const cur = loc[lang]?.keys || {};
+    const sk  = loc['sk_SK']?.keys || {};
+    let text = cur[key] !== undefined ? cur[key] : (sk[key] !== undefined ? sk[key] : key);
+    if (vars) Object.keys(vars).forEach(k => { text = text.split('{'+k+'}').join(String(vars[k])); });
+    return text;
+  };
+}
+function availLangs() {
+  const l = window.LOCALES || {};
+  return Object.keys(l).map(id => ({ id, name: l[id].nativeName, flag: l[id].flag || '' }));
+}
+function pluralN(n, lang, t) {
+  const rule = (window.LOCALES?.[lang]?.pluralRule) || (x => x===1?'one':'many');
+  const f = rule(n);
+  if (f==='one') return `${n} ${t('records.count.one')}`;
+  if (f==='few') return `${n} ${t('records.count.few')}`;
+  return `${n} ${t('records.count.many')}`;
+}
+
+// ─── Komponenty ────────────────────────────────────────────────────────────
+function PieChart({ protein, fat, carbs, size }) {
+  size = size || 180;
   const total = protein + fat + carbs;
-  if (total === 0) return null;
-  const pPct = protein / total;
-  const fPct = fat / total;
-  const cPct = carbs / total;
-  const r = size / 2 - 8;
-  const cx = size / 2;
-  const cy = size / 2;
-
-  function arc(startAngle, endAngle) {
-    const s = (startAngle - 90) * (Math.PI / 180);
-    const e = (endAngle - 90) * (Math.PI / 180);
-    const x1 = cx + r * Math.cos(s);
-    const y1 = cy + r * Math.sin(s);
-    const x2 = cx + r * Math.cos(e);
-    const y2 = cy + r * Math.sin(e);
-    const large = endAngle - startAngle > 180 ? 1 : 0;
-    return `M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z`;
+  if (!total) return null;
+  const r=size/2-8, cx=size/2, cy=size/2;
+  function arc(s,e) {
+    const sa=(s-90)*Math.PI/180, ea=(e-90)*Math.PI/180;
+    const x1=cx+r*Math.cos(sa),y1=cy+r*Math.sin(sa),x2=cx+r*Math.cos(ea),y2=cy+r*Math.sin(ea);
+    return 'M'+cx+','+cy+' L'+x1+','+y1+' A'+r+','+r+' 0 '+(e-s>180?1:0)+' 1 '+x2+','+y2+' Z';
   }
-
-  function labelPos(startAngle, endAngle) {
-    const mid = ((startAngle + endAngle) / 2 - 90) * (Math.PI / 180);
-    return { x: cx + r * 0.6 * Math.cos(mid), y: cy + r * 0.6 * Math.sin(mid) };
+  function lp(s,e) {
+    const m=((s+e)/2-90)*Math.PI/180;
+    return { x:cx+r*.62*Math.cos(m), y:cy+r*.62*Math.sin(m) };
   }
-
-  const a1 = 0, a2 = pPct * 360, a3 = a2 + fPct * 360, a4 = 360;
-  const slices = [
-    { d: arc(a1, a2), fill: "#f59e0b", pct: pPct },
-    { d: arc(a2, a3), fill: "#ef4444", pct: fPct },
-    { d: arc(a3, a4), fill: "#22c55e", pct: cPct },
-  ];
-
+  const pP=protein/total, fP=fat/total, cP=carbs/total;
+  const a1=0, a2=pP*360, a3=a2+fP*360, a4=360;
+  const sl=[{d:arc(a1,a2),fill:'#f59e0b',pct:pP,s:a1,e:a2},{d:arc(a2,a3),fill:'#ef4444',pct:fP,s:a2,e:a3},{d:arc(a3,a4),fill:'#22c55e',pct:cP,s:a3,e:a4}];
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      {slices.map((s, i) => s.pct > 0.01 && (
+    <svg width={size} height={size} viewBox={'0 0 '+size+' '+size}>
+      {sl.map(function(s,i) { return s.pct>0.01 ? (
         <g key={i}>
-          <path d={s.d} fill={s.fill} stroke="#1a1a2e" strokeWidth="2" />
-          {s.pct > 0.06 && (() => {
-            const startA = i === 0 ? a1 : i === 1 ? a2 : a3;
-            const endA = i === 0 ? a2 : i === 1 ? a3 : a4;
-            const p = labelPos(startA, endA);
-            return (
-              <text x={p.x} y={p.y} textAnchor="middle" dominantBaseline="central"
-                fill="#fff" fontSize="12" fontWeight="700" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                {Math.round(s.pct * 100)}%
-              </text>
-            );
-          })()}
+          <path d={s.d} fill={s.fill} stroke="#1a1a2e" strokeWidth="2"/>
+          {s.pct>0.06 ? (function(){ const p=lp(s.s,s.e); return <text x={p.x} y={p.y} textAnchor="middle" dominantBaseline="central" fill="#fff" fontSize="12" fontWeight="700">{Math.round(s.pct*100)}%</text>; })() : null}
         </g>
-      ))}
+      ) : null; })}
     </svg>
   );
 }
 
-function Slider({ min, max, step, value, onChange, label, unit, color = "#f59e0b" }) {
-  const pct = ((value - min) / (max - min)) * 100;
+function Slider({ min, max, step, value, onChange, label, unit, color, disabled }) {
+  color = color || '#f59e0b';
+  const pct = max===min ? 0 : ((value-min)/(max-min))*100;
   return (
-    <div style={{ marginBottom: 12 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4, color: "#94a3b8" }}>
+    <div style={{marginBottom:12}}>
+      <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:4,color:'#94a3b8'}}>
         <span>{label}</span>
-        <span style={{ color, fontWeight: 700 }}>{typeof value === "number" ? (Number.isInteger(step) ? value : value.toFixed(1)) : value} {unit}</span>
+        <span style={{color:color,fontWeight:700}}>{Number.isInteger(step)?value:value.toFixed(1)} {unit}</span>
       </div>
-      <input type="range" min={min} max={max} step={step} value={value}
-        onChange={e => onChange(parseFloat(e.target.value))}
-        style={{
-          width: "100%", height: 6, WebkitAppearance: "none", appearance: "none",
-          background: `linear-gradient(to right, ${color} ${pct}%, #334155 ${pct}%)`,
-          borderRadius: 3, outline: "none", cursor: "pointer",
-        }}
-      />
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#475569", marginTop: 2 }}>
+      <input type="range" min={min} max={max} step={step} value={value} disabled={!!disabled}
+        onChange={function(e){ onChange(parseFloat(e.target.value)); }}
+        style={{width:'100%',height:6,WebkitAppearance:'none',appearance:'none',
+          background:'linear-gradient(to right,'+color+' '+pct+'%,#334155 '+pct+'%)',
+          borderRadius:3,outline:'none',cursor:disabled?'not-allowed':'pointer',opacity:disabled?.65:1}}/>
+      <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'#475569',marginTop:2}}>
         <span>{min} {unit}</span><span>{max} {unit}</span>
       </div>
     </div>
   );
 }
 
-function App() {
-  const [weight, setWeight] = useState(80);
-  const [gender, setGender] = useState("male");
-  const [activities, setActivities] = useState(
-    PAL_ACTIVITIES.map(a => ({ id: a.id, hours: a.id === "sleep" ? 8 : a.id === "sedentary" ? 8 : a.id === "leisure" ? 6 : a.id === "sport" ? 1 : 0, intensity: 0.5 }))
+// Nápoveda k makrám (vysvetlenia z knihy)
+function GoalInfo({ goalId, t }) {
+  const [open, setOpen] = useState(false);
+  const color = (GOALS.find(function(g){return g.id===goalId;})||{color:'#64748b'}).color;
+  const macros = [{key:'protein',icon:'🥩',color:'#f59e0b'},{key:'fat',icon:'🥑',color:'#ef4444'},{key:'carbs',icon:'🍚',color:'#22c55e'}];
+  return (
+    <div style={{marginTop:12}}>
+      <button onClick={function(){ setOpen(function(o){return !o;}); }} style={{
+        width:'100%',padding:'9px 14px',borderRadius:10,
+        border:'1px solid '+(open?color+'44':'#334155'),
+        background:open?color+'0d':'transparent',color:open?color:'#64748b',
+        cursor:'pointer',fontFamily:'inherit',fontSize:13,fontWeight:600,
+        display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <span>{t('info.why_macros')}</span>
+        <span style={{fontSize:10}}>{open?'▲':'▼'}</span>
+      </button>
+      {open && (
+        <div style={{marginTop:8,background:'#0f172a',borderRadius:10,padding:16,border:'1px solid '+color+'22'}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:15,fontWeight:800,color:color,marginBottom:6}}>{t('info.'+goalId+'.title')}</div>
+          <div style={{fontSize:13,color:'#94a3b8',marginBottom:12,lineHeight:1.65}}>{t('info.'+goalId+'.text')}</div>
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            {macros.map(function(m){ return (
+              <div key={m.key} style={{background:'#1e293b',borderRadius:8,padding:'10px 12px',borderLeft:'3px solid '+m.color,fontSize:13}}>
+                <span style={{fontSize:16,marginRight:8}}>{m.icon}</span>
+                <span style={{color:m.color,fontWeight:700}}>{t('macro.'+m.key)}: </span>
+                <span style={{color:'#94a3b8'}}>{t('info.'+goalId+'.'+m.key)}</span>
+              </div>
+            ); })}
+          </div>
+        </div>
+      )}
+    </div>
   );
-  const [goal, setGoal] = useState("muscle");
-  const [calcMethod, setCalcMethod] = useState("calorie");
-  const [calorieDelta, setCalorieDelta] = useState(300);
-  const [weeklyWeightDelta, setWeeklyWeightDelta] = useState(0.5);
-  const [proteinSlider, setProteinSlider] = useState(0.5);
-  const [fatSlider, setFatSlider] = useState(0.5);
+}
 
-  const bmr = weight * 24;
-  const totalHours = activities.reduce((s, a) => s + a.hours, 0);
-  const hoursValid = totalHours === 24;
+// Sekcia v nastaveniach
+function SettSection({ title, children }) {
+  return (
+    <div style={{marginBottom:20}}>
+      <div style={{fontSize:12,fontWeight:700,color:'#64748b',marginBottom:10,textTransform:'uppercase',letterSpacing:.6}}>{title}</div>
+      {children}
+    </div>
+  );
+}
 
-  const palValue = useMemo(() => {
-    if (!hoursValid) return 0;
-    let sum = 0;
-    activities.forEach(act => {
-      const def = PAL_ACTIVITIES.find(p => p.id === act.id);
-      const pal = def.hasRange ? def.palMin + (def.palMax - def.palMin) * act.intensity : def.palMin;
-      sum += act.hours * pal;
-    });
-    return sum / 24;
-  }, [activities, hoursValid]);
+// Modál nastavení
+function SettingsModal({ settings, onSave, onClose, t, langs }) {
+  const [loc, setLoc] = useState(function(){ return JSON.parse(JSON.stringify(settings)); });
+  const [openGoal, setOpenGoal] = useState(null);
+  const goals = ['muscle','fat_loss','recomp'];
 
-  const totalKcal = Math.round(bmr * palValue);
-
-  const goalDelta = useMemo(() => {
-    if (goal === "recomp") return 0;
-    if (calcMethod === "calorie") return calorieDelta;
-    return Math.round((weeklyWeightDelta * 7700) / 7);
-  }, [goal, calcMethod, calorieDelta, weeklyWeightDelta]);
-
-  const targetKcal = goal === "muscle" ? totalKcal + goalDelta : goal === "fat_loss" ? totalKcal - goalDelta : totalKcal;
-
-  const macroRange = MACRO_RANGES[goal];
-  const proteinGkg = macroRange.proteinMin + (macroRange.proteinMax - macroRange.proteinMin) * proteinSlider;
-  const fatPct = macroRange.fatPctMin + (macroRange.fatPctMax - macroRange.fatPctMin) * fatSlider;
-
-  const proteinG = Math.round(proteinGkg * weight);
-  const proteinKcal = proteinG * 4;
-  const fatKcal = Math.round(targetKcal * (fatPct / 100));
-  const fatG = Math.round(fatKcal / 9);
-  const carbsKcal = Math.max(0, targetKcal - proteinKcal - fatKcal);
-  const carbsG = Math.round(carbsKcal / 4);
-
-  const minFat = gender === "male" ? 40 : 30;
-  const fatWarning = fatG < minFat;
-  const fiberMin = 30, fiberMax = 60;
-  const waterL = (weight / 20).toFixed(1);
-
-  const updateActivity = (id, field, value) => {
-    setActivities(prev => prev.map(a => a.id === id ? { ...a, [field]: value } : a));
-  };
-
-  const goalColor = GOALS.find(g => g.id === goal).color;
+  function setMacro(gid, field, raw) {
+    const n = parseFloat(raw); if (isNaN(n)) return;
+    setLoc(function(s){ return {...s, macroRanges:{...s.macroRanges,[gid]:{...s.macroRanges[gid],[field]:n}}}; });
+  }
+  function setMinFat(g, raw) {
+    const n = parseInt(raw); if (isNaN(n)||n<5) return;
+    setLoc(function(s){ return {...s, minFat:{...s.minFat,[g]:n}}; });
+  }
+  function setSurplus(g, raw) {
+    const n = parseInt(raw); if (isNaN(n)||n<0) return;
+    setLoc(function(s){ return {...s, defaultSurplus:{...s.defaultSurplus,[g]:n}}; });
+  }
 
   return (
-    <div style={{ minHeight: "100vh", padding: 0 }}>
-      <div style={{ background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", borderBottom: "1px solid #1e293b", padding: "28px 24px 20px" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
-            <div style={{ fontSize: 28 }}>{"\u26a1"}</div>
-            <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 28, fontWeight: 900, margin: 0, letterSpacing: -1,
-              background: "linear-gradient(135deg, #f59e0b, #ef4444)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Kalorická Kalkulačka
-            </h1>
-          </div>
-          <p style={{ color: "#64748b", fontSize: 14, margin: 0 }}>Výpočet dennej potreby kalórií a makronutrientov</p>
-        </div>
-      </div>
-
-      <div style={{ maxWidth: 800, margin: "0 auto", padding: "24px 16px 60px", display: "flex", flexDirection: "column", gap: 20 }}>
-
-        <div className="card">
-          <div className="section-title" style={{ color: "#f59e0b" }}>{"\u0031\ufe0f\u20e3"} Základný metabolizmus (BMR)</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center" }}>
-            <div>
-              <label style={{ fontSize: 13, color: "#94a3b8", display: "block", marginBottom: 6 }}>Hmotnosť (kg)</label>
-              <input type="number" value={weight} min={30} max={250} onChange={e => setWeight(Math.max(30, parseFloat(e.target.value) || 30))} />
-            </div>
-            <div>
-              <label style={{ fontSize: 13, color: "#94a3b8", display: "block", marginBottom: 6 }}>Pohlavie</label>
-              <div style={{ display: "flex", gap: 6 }}>
-                {[["male", "Muž"], ["female", "Žena"]].map(([v, l]) => (
-                  <button key={v} onClick={() => setGender(v)} style={{
-                    padding: "8px 16px", borderRadius: 8, border: "1px solid", fontSize: 14, cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
-                    borderColor: gender === v ? "#f59e0b" : "#334155", background: gender === v ? "rgba(245,158,11,0.15)" : "#0f172a", color: gender === v ? "#f59e0b" : "#94a3b8"
-                  }}>{l}</button>
-                ))}
-              </div>
-            </div>
-            <div style={{ marginLeft: "auto", textAlign: "right" }}>
-              <div style={{ fontSize: 13, color: "#94a3b8" }}>Vzorec: 1.0 × {weight} kg × 24h</div>
-              <div style={{ fontSize: 32, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: "#f59e0b" }}>{bmr.toLocaleString("sk")}</div>
-              <div style={{ fontSize: 12, color: "#64748b" }}>kcal / deň</div>
-            </div>
-          </div>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{maxWidth:520}} onClick={function(e){e.stopPropagation();}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:24}}>
+          <div style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:900,color:'#e2e8f0'}}>{t('settings.title')}</div>
+          <button className="btn btn-ghost" onClick={onClose} style={{fontSize:18,padding:'4px 10px'}}>✕</button>
         </div>
 
-        <div className="card">
-          <div className="section-title" style={{ color: "#3b82f6" }}>{"\u0032\ufe0f\u20e3"} Denné aktivity (PAL)</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-            <span className="badge" style={{
-              background: hoursValid ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)",
-              color: hoursValid ? "#22c55e" : "#ef4444",
-              border: `1px solid ${hoursValid ? "#22c55e33" : "#ef444433"}`
-            }}>
-              {hoursValid ? "\u2713" : "\u26a0"} {totalHours} / 24 hodín
-            </span>
-            {!hoursValid && <span style={{ fontSize: 12, color: "#ef4444" }}>Súčet hodín musí byť presne 24</span>}
+        <SettSection title={t('settings.lang.label')}>
+          <div style={{fontSize:12,color:'#64748b',marginBottom:10}}>{t('settings.lang.note')}</div>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+            {langs.map(function(l){ return (
+              <button key={l.id} onClick={function(){ setLoc(function(s){return {...s,language:l.id};}); }} style={{
+                padding:'8px 16px',borderRadius:8,border:'1px solid',fontFamily:'inherit',fontSize:13,fontWeight:700,cursor:'pointer',
+                borderColor:loc.language===l.id?'#f59e0b':'#334155',
+                background:loc.language===l.id?'rgba(245,158,11,.15)':'#0f172a',
+                color:loc.language===l.id?'#f59e0b':'#94a3b8'}}>
+                {l.flag} {l.name}
+              </button>
+            ); })}
           </div>
+        </SettSection>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {PAL_ACTIVITIES.map(def => {
-              const act = activities.find(a => a.id === def.id);
-              const pal = def.hasRange ? def.palMin + (def.palMax - def.palMin) * act.intensity : def.palMin;
-              const kcal = Math.round(bmr / 24 * act.hours * pal);
-              return (
-                <div key={def.id} style={{
-                  background: "#0f172a", borderRadius: 12, padding: "12px 16px",
-                  border: act.hours > 0 ? "1px solid #334155" : "1px solid transparent",
-                  opacity: act.hours > 0 ? 1 : 0.5, transition: "all 0.2s"
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: act.hours > 0 && def.hasRange ? 8 : 0, flexWrap: "wrap" }}>
-                    <span style={{ fontSize: 20, width: 28 }}>{def.icon}</span>
-                    <span style={{ fontSize: 14, fontWeight: 600, flex: 1, minWidth: 140 }}>{def.label}</span>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <button onClick={() => updateActivity(def.id, "hours", Math.max(0, act.hours - 0.5))}
-                        style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #334155", background: "#1e293b", color: "#94a3b8", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>{"\u2212"}</button>
-                      <span style={{ width: 36, textAlign: "center", fontWeight: 700, fontSize: 16, fontFamily: "'Outfit', sans-serif" }}>{act.hours}</span>
-                      <button onClick={() => updateActivity(def.id, "hours", Math.min(24, act.hours + 0.5))}
-                        style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid #334155", background: "#1e293b", color: "#94a3b8", cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
-                      <span style={{ fontSize: 12, color: "#64748b", width: 16 }}>h</span>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 100, justifyContent: "flex-end" }}>
-                      <span className="badge" style={{ background: "rgba(59,130,246,0.12)", color: "#60a5fa", fontSize: 11 }}>PAL {pal.toFixed(2)}</span>
-                      {act.hours > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: "#f59e0b", minWidth: 55, textAlign: "right" }}>{kcal} kcal</span>}
-                    </div>
-                  </div>
-                  {act.hours > 0 && def.hasRange && (
-                    <div style={{ marginLeft: 38, marginTop: 4 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span style={{ fontSize: 11, color: "#64748b", whiteSpace: "nowrap" }}>Intenzita:</span>
-                        <input type="range" min={0} max={1} step={0.1} value={act.intensity}
-                          onChange={e => updateActivity(def.id, "intensity", parseFloat(e.target.value))}
-                          style={{
-                            flex: 1, height: 4, WebkitAppearance: "none", appearance: "none", borderRadius: 2, outline: "none", cursor: "pointer",
-                            background: `linear-gradient(to right, #3b82f6 ${act.intensity * 100}%, #334155 ${act.intensity * 100}%)`
-                          }} />
-                        <span style={{ fontSize: 11, color: "#60a5fa", width: 60, textAlign: "right" }}>{def.palMin.toFixed(1)}{"\u2013"}{def.palMax.toFixed(1)}</span>
+        <SettSection title={t('settings.macros.title')}>
+          <div style={{fontSize:12,color:'#64748b',marginBottom:12}}>{t('settings.macros.note')}</div>
+          {goals.map(function(gid){
+            const g = GOALS.find(function(x){return x.id===gid;}) || {icon:'',color:'#64748b'};
+            const mr = loc.macroRanges[gid];
+            const isOpen = openGoal===gid;
+            return (
+              <div key={gid} style={{marginBottom:8}}>
+                <button onClick={function(){ setOpenGoal(isOpen?null:gid); }} style={{
+                  width:'100%',padding:'10px 14px',borderRadius:isOpen?'10px 10px 0 0':10,
+                  border:'1px solid '+(isOpen?g.color+'55':'#334155'),borderBottom:isOpen?'none':'1px solid '+(isOpen?g.color+'55':'#334155'),
+                  background:isOpen?g.color+'0d':'transparent',cursor:'pointer',fontFamily:'inherit',
+                  display:'flex',alignItems:'center',justifyContent:'space-between',
+                  color:isOpen?g.color:'#e2e8f0',fontSize:14,fontWeight:600}}>
+                  <span>{g.icon} {t('goal.'+gid)}</span>
+                  <span style={{fontSize:10}}>{isOpen?'▲':'▼'}</span>
+                </button>
+                {isOpen && (
+                  <div style={{background:'#0f172a',borderRadius:'0 0 10px 10px',padding:'14px 16px',
+                    border:'1px solid '+g.color+'22',borderTop:'none',
+                    display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+                    {[
+                      {label:t('settings.protein.min'),field:'proteinMin',unit:t('settings.protein.unit'),step:'0.1'},
+                      {label:t('settings.protein.max'),field:'proteinMax',unit:t('settings.protein.unit'),step:'0.1'},
+                      {label:t('settings.fat.min'),    field:'fatPctMin', unit:t('settings.fat.unit'),     step:'1'},
+                      {label:t('settings.fat.max'),    field:'fatPctMax', unit:t('settings.fat.unit'),     step:'1'},
+                    ].map(function(f){ return (
+                      <div key={f.field}>
+                        <div style={{fontSize:11,color:'#64748b',marginBottom:4}}>{f.label} ({f.unit})</div>
+                        <input className="num-input" type="number" step={f.step} value={mr[f.field]}
+                          onChange={function(e){ setMacro(gid,f.field,e.target.value); }}/>
                       </div>
-                    </div>
-                  )}
+                    ); })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </SettSection>
+
+        <SettSection title={t('settings.minfat.title')}>
+          <div style={{fontSize:12,color:'#64748b',marginBottom:10}}>{t('settings.minfat.note')}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+            {[['male',t('settings.minfat.male')],['female',t('settings.minfat.female')]].map(function(arr){
+              const g=arr[0], lbl=arr[1];
+              return (
+                <div key={g}>
+                  <div style={{fontSize:11,color:'#64748b',marginBottom:4}}>{lbl} ({t('settings.minfat.unit')})</div>
+                  <input className="num-input" type="number" min={5} value={loc.minFat[g]}
+                    onChange={function(e){ setMinFat(g,e.target.value); }}/>
                 </div>
               );
             })}
           </div>
-        </div>
+        </SettSection>
 
-        {hoursValid && (
-          <div className="card" style={{ background: "linear-gradient(135deg, #1e293b, #1a2744)", borderColor: "#334155" }}>
-            <div className="section-title" style={{ color: "#22c55e" }}>{"\u0033\ufe0f\u20e3"} Celkový denný výdaj</div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", flexWrap: "wrap", gap: 20 }}>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 4 }}>Priemerný PAL</div>
-                <div style={{ fontSize: 36, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: "#3b82f6" }}>{palValue.toFixed(4)}</div>
-              </div>
-              <div style={{ fontSize: 28, color: "#334155" }}>{"\u00d7"}</div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 4 }}>BMR</div>
-                <div style={{ fontSize: 28, fontFamily: "'Outfit', sans-serif", fontWeight: 700, color: "#f59e0b" }}>{bmr.toLocaleString("sk")}</div>
-              </div>
-              <div style={{ fontSize: 28, color: "#334155" }}>=</div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 4 }}>Gesamtbedarf</div>
-                <div style={{ fontSize: 42, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: "#22c55e" }}>{totalKcal.toLocaleString("sk")}</div>
-                <div style={{ fontSize: 13, color: "#64748b" }}>kcal / deň</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {hoursValid && (
-          <div className="card">
-            <div className="section-title" style={{ color: goalColor }}>{"\u0034\ufe0f\u20e3"} Cieľ</div>
-            <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-              {GOALS.map(g => (
-                <button key={g.id} onClick={() => { setGoal(g.id); setCalorieDelta(g.id === "muscle" ? 300 : g.id === "fat_loss" ? 400 : 0); setWeeklyWeightDelta(0.5); }}
-                  style={{
-                    flex: "1 1 140px", padding: "14px 12px", borderRadius: 12, border: `2px solid ${goal === g.id ? g.color : "#334155"}`,
-                    background: goal === g.id ? `${g.color}18` : "#0f172a", cursor: "pointer", textAlign: "center", transition: "all 0.2s", fontFamily: "inherit"
-                  }}>
-                  <div style={{ fontSize: 24, marginBottom: 4 }}>{g.icon}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: goal === g.id ? g.color : "#e2e8f0" }}>{g.label}</div>
-                  <div style={{ fontSize: 11, color: "#64748b" }}>{g.desc}</div>
-                </button>
-              ))}
-            </div>
-
-            {goal !== "recomp" && (
-              <React.Fragment>
-                <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-                  {[["calorie", "Podľa kalórií (kcal)"], ["weight", "Podľa hmotnosti (kg)"]].map(([v, l]) => (
-                    <button key={v} onClick={() => setCalcMethod(v)} style={{
-                      flex: 1, padding: "10px 12px", borderRadius: 8, border: `1px solid ${calcMethod === v ? goalColor : "#334155"}`,
-                      background: calcMethod === v ? `${goalColor}15` : "transparent", color: calcMethod === v ? goalColor : "#94a3b8",
-                      cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit"
-                    }}>{l}</button>
-                  ))}
+        <SettSection title={t('settings.surplus.title')}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+            {[['male',t('settings.surplus.muscle.m')],['female',t('settings.surplus.muscle.f')]].map(function(arr){
+              const g=arr[0], lbl=arr[1];
+              return (
+                <div key={g}>
+                  <div style={{fontSize:11,color:'#64748b',marginBottom:4}}>{lbl} (kcal)</div>
+                  <input className="num-input" type="number" min={0} value={loc.defaultSurplus[g]}
+                    onChange={function(e){ setSurplus(g,e.target.value); }}/>
                 </div>
-                {calcMethod === "calorie" ? (
-                  <Slider min={100} max={goal === "muscle" ? 700 : 800} step={50} value={calorieDelta} onChange={setCalorieDelta}
-                    label={goal === "muscle" ? "Kalorický prebytok" : "Kalorický deficit"} unit="kcal/deň" color={goalColor} />
-                ) : (
-                  <Slider min={0.1} max={goal === "muscle" ? 1.5 : 1.0} step={0.1} value={weeklyWeightDelta} onChange={setWeeklyWeightDelta}
-                    label={goal === "muscle" ? "Prírastok za týždeň" : "Úbytok za týždeň"} unit="kg/týždeň" color={goalColor} />
-                )}
-                {calcMethod === "weight" && (
-                  <div style={{ fontSize: 12, color: "#64748b", marginTop: -4 }}>
-                    = {goal === "muscle" ? "+" : "\u2212"}{goalDelta} kcal/deň ({goal === "muscle" ? "prebytok" : "deficit"})
-                  </div>
-                )}
-              </React.Fragment>
-            )}
-
-            <div style={{ marginTop: 16, background: "#0f172a", borderRadius: 12, padding: 20, textAlign: "center", border: `1px solid ${goalColor}33` }}>
-              <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 4 }}>
-                {goal === "muscle" ? `${totalKcal.toLocaleString("sk")} + ${goalDelta}` : goal === "fat_loss" ? `${totalKcal.toLocaleString("sk")} \u2212 ${goalDelta}` : "Udržiavací príjem"}
-              </div>
-              <div style={{ fontSize: 48, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: goalColor }}>
-                {targetKcal.toLocaleString("sk")}
-              </div>
-              <div style={{ fontSize: 14, color: "#64748b" }}>kcal / deň — tvoj cieľový príjem</div>
-            </div>
+              );
+            })}
           </div>
-        )}
+        </SettSection>
 
-        {hoursValid && (
-          <div className="card">
-            <div className="section-title" style={{ color: "#f59e0b" }}>{"\u0035\ufe0f\u20e3"} Makronutrienty</div>
-            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-              <div style={{ flex: "1 1 280px" }}>
-                <Slider
-                  min={macroRange.proteinMin} max={macroRange.proteinMax} step={0.1}
-                  value={parseFloat((macroRange.proteinMin + (macroRange.proteinMax - macroRange.proteinMin) * proteinSlider).toFixed(1))}
-                  onChange={v => setProteinSlider((v - macroRange.proteinMin) / (macroRange.proteinMax - macroRange.proteinMin))}
-                  label="Bielkoviny (g/kg)" unit="g/kg" color="#f59e0b"
-                />
-                <Slider
-                  min={macroRange.fatPctMin} max={macroRange.fatPctMax} step={1}
-                  value={Math.round(macroRange.fatPctMin + (macroRange.fatPctMax - macroRange.fatPctMin) * fatSlider)}
-                  onChange={v => setFatSlider((v - macroRange.fatPctMin) / (macroRange.fatPctMax - macroRange.fatPctMin))}
-                  label="Tuky (% z kalórií)" unit="%" color="#ef4444"
-                />
-                <div style={{ fontSize: 12, color: "#64748b", marginTop: 4 }}>Sacharidy dopĺňajú zvyšok kalórií automaticky.</div>
-              </div>
-              <div style={{ flex: "0 0 200px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                <PieChart protein={proteinKcal} fat={fatKcal} carbs={carbsKcal} />
-                <div style={{ display: "flex", gap: 12, marginTop: 8, fontSize: 11 }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: "#f59e0b", display: "inline-block" }} /> Bielkoviny</span>
-                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: "#ef4444", display: "inline-block" }} /> Tuky</span>
-                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 8, height: 8, borderRadius: 2, background: "#22c55e", display: "inline-block" }} /> Sacharidy</span>
-                </div>
-              </div>
-            </div>
-
-            {fatWarning && (
-              <div style={{ marginTop: 12, padding: "10px 14px", borderRadius: 8, background: "rgba(239,68,68,0.12)", border: "1px solid #ef444433", fontSize: 13, color: "#f87171" }}>
-                {"\u26a0\ufe0f"} Príjem tukov ({fatG} g) je pod odporúčaným minimom ({minFat} g pre {gender === "male" ? "mužov" : "ženy"}) — hrozí hormonálna nerovnováha.
-              </div>
-            )}
-
-            <div style={{ display: "flex", gap: 10, marginTop: 20, flexWrap: "wrap" }}>
-              {[
-                { label: "Bielkoviny", g: proteinG, kcal: proteinKcal, color: "#f59e0b", icon: "\ud83e\udd69" },
-                { label: "Tuky", g: fatG, kcal: fatKcal, color: "#ef4444", icon: "\ud83e\udd51" },
-                { label: "Sacharidy", g: carbsG, kcal: carbsKcal, color: "#22c55e", icon: "\ud83c\udf5a" },
-              ].map(m => (
-                <div key={m.label} style={{
-                  flex: "1 1 120px", background: "#0f172a", borderRadius: 12, padding: "16px 12px", textAlign: "center",
-                  border: `1px solid ${m.color}33`
-                }}>
-                  <div style={{ fontSize: 22, marginBottom: 4 }}>{m.icon}</div>
-                  <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 4 }}>{m.label}</div>
-                  <div style={{ fontSize: 28, fontFamily: "'Outfit', sans-serif", fontWeight: 900, color: m.color }}>{m.g}</div>
-                  <div style={{ fontSize: 12, color: "#64748b" }}>gramov</div>
-                  <div style={{ fontSize: 11, color: "#475569", marginTop: 4 }}>{m.kcal} kcal</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {hoursValid && (
-          <div className="card" style={{ background: "#0f172a", border: "1px solid #334155" }}>
-            <div className="section-title" style={{ color: "#94a3b8", fontSize: 16 }}>{"\ud83d\udccb"} Dôležité pravidlá</div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {[
-                { icon: "\ud83e\udd66", label: "Vláknina", value: `${fiberMin}\u2013${fiberMax} g/deň` },
-                { icon: "\ud83d\udca7", label: "Voda", value: `min. ${waterL} l/deň` },
-                { icon: "\ud83c\udf4e", label: "Pravidlo 80/20", value: "80 % celá strava" },
-              ].map(r => (
-                <div key={r.label} style={{ flex: "1 1 120px", background: "#1e293b", borderRadius: 10, padding: "12px 14px", textAlign: "center" }}>
-                  <div style={{ fontSize: 22 }}>{r.icon}</div>
-                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>{r.label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", marginTop: 2 }}>{r.value}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div style={{ textAlign: "center", fontSize: 11, color: "#334155", paddingTop: 8 }}>
-          Výpočty slúžia ako orientačný základ. Individuálne výsledky sa môžu líšiť.
+        <div style={{display:'flex',gap:8,marginTop:4,flexWrap:'wrap'}}>
+          <button className="btn btn-primary" onClick={function(){ onSave(loc); }} style={{flex:1,padding:13}}>{t('settings.save')}</button>
+          <button className="btn btn-ghost" onClick={function(){ setLoc(JSON.parse(JSON.stringify(DEFAULT_SETTINGS))); }} style={{flex:1}}>{t('settings.reset')}</button>
         </div>
       </div>
     </div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+// ─── Hlavná App ────────────────────────────────────────────────────────────
+function App() {
+  const initSettings = mergeSettings(loadLS(SETTINGS_KEY, {}));
+  const [settings,      setSettings]      = useState(initSettings);
+  const [language,      setLanguage]      = useState(initSettings.language || 'sk_SK');
+  const [activeTab,     setActiveTab]     = useState('calc');
+  const [showSettings,  setShowSettings]  = useState(false);
+  const [savedRecords,  setSavedRecords]  = useState(function(){ return loadLS(RECORDS_KEY,[]); });
+  const [editingRecord, setEditingRecord] = useState(null);
+  const [selectedRecId, setSelectedRecId] = useState(null);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [saveAsNew,     setSaveAsNew]     = useState(true);
+  const [recName,       setRecName]       = useState('');
+  const [weight,        setWeight]        = useState(80);
+  const [gender,        setGender]        = useState('male');
+  const [activities,    setActivities]    = useState(mkActivities);
+  const [goal,          setGoal]          = useState('muscle');
+  const [calcMethod,    setCalcMethod]    = useState('calorie');
+  const [calorieDelta,  setCalorieDelta]  = useState(300);
+  const [weeklyDelta,   setWeeklyDelta]   = useState(0.5);
+  const [proteinSlider, setProteinSlider] = useState(0.5);
+  const [fatSlider,     setFatSlider]     = useState(0.5);
+
+  const t     = useCallback(makeT(language), [language]);
+  const langs = useMemo(availLangs, []);
+  const mr    = settings.macroRanges[goal];
+
+  // BMR: Muži 1,0 × kg × 24h; Ženy 0,9 × kg × 24h (Fitness Fibel 2.0, str. 129)
+  const bmr = Math.round(weight * (gender==='male' ? 1.0 : 0.9) * 24);
+  const totalH = activities.reduce(function(s,a){return s+a.hours;}, 0);
+  const hoursOK = totalH === 24;
+
+  const palValue = useMemo(function() {
+    if (!hoursOK) return 0;
+    return activities.reduce(function(sum,act){
+      const def = PAL_ACTIVITIES.find(function(p){return p.id===act.id;});
+      if (!def) return sum;
+      const pal = def.hasRange ? def.palMin+(def.palMax-def.palMin)*act.intensity : def.palMin;
+      return sum + act.hours*pal;
+    }, 0) / 24;
+  }, [activities, hoursOK]);
+
+  const totalKcal = Math.round(bmr * palValue);
+
+  const goalDelta = useMemo(function() {
+    if (goal==='recomp') return 0;
+    if (calcMethod==='calorie') return calorieDelta;
+    return Math.round((weeklyDelta * 7700) / 7);
+  }, [goal, calcMethod, calorieDelta, weeklyDelta]);
+
+  const targetKcal = goal==='muscle' ? totalKcal+goalDelta : goal==='fat_loss' ? Math.max(0,totalKcal-goalDelta) : totalKcal;
+
+  // Bielkoviny
+  const proteinGkg  = mr.proteinMin + (mr.proteinMax-mr.proteinMin)*proteinSlider;
+  const proteinG    = Math.round(proteinGkg * weight);
+  const proteinKcal = proteinG * 4;
+
+  // ── Dynamický minimálny % tuku (zabraňuje ísť pod biologické minimum gramov)
+  const minFatG      = settings.minFat[gender];
+  const dynMinFatPct = targetKcal > 0 ? Math.ceil(minFatG*9/targetKcal*100) : mr.fatPctMin;
+  const effFatMin    = Math.min(Math.max(mr.fatPctMin, dynMinFatPct), mr.fatPctMax);
+  const effFatMax    = mr.fatPctMax;
+  const rawFatPct    = mr.fatPctMin + (mr.fatPctMax-mr.fatPctMin)*fatSlider;
+  const fatPct       = Math.max(effFatMin, Math.min(effFatMax, rawFatPct));
+  const fatKcal      = Math.round(targetKcal * (fatPct/100));
+  const fatG         = Math.round(fatKcal/9);
+  const carbsKcal    = Math.max(0, targetKcal-proteinKcal-fatKcal);
+  const carbsG       = Math.round(carbsKcal/4);
+
+  const fatConstrained = dynMinFatPct > mr.fatPctMin; // % min zvýšený kvôli gramom
+  const fatBelowMin    = fatG < minFatG - 1;          // emergency fallback
+
+  const fiberMin = 30, fiberMax = 60;
+  const waterL   = (weight/20).toFixed(1);
+  const goalDef  = GOALS.find(function(g){return g.id===goal;}) || GOALS[0];
+  const goalColor = goalDef.color;
+
+  // ── Handlery ──────────────────────────────────────────────────────────────
+  function updAct(id, field, val) {
+    setActivities(function(prev){ return prev.map(function(a){ return a.id===id ? {...a,[field]:val} : a; }); });
+  }
+  function changeGender(g) {
+    setGender(g);
+    if (goal==='muscle') setCalorieDelta(settings.defaultSurplus[g]);
+  }
+  function changeGoal(g) {
+    setGoal(g);
+    if (g==='muscle')        setCalorieDelta(settings.defaultSurplus[gender]);
+    else if (g==='fat_loss') setCalorieDelta(settings.defaultDeficit);
+    else                     setCalorieDelta(0);
+    setWeeklyDelta(0.5);
+  }
+  function changeFatSlider(pct) {
+    const clamped = Math.max(effFatMin, Math.min(effFatMax, pct));
+    const pos = mr.fatPctMax===mr.fatPctMin ? 0 : (clamped-mr.fatPctMin)/(mr.fatPctMax-mr.fatPctMin);
+    setFatSlider(Math.max(0, Math.min(1, pos)));
+  }
+  function saveSettings(newS) {
+    const merged = mergeSettings(newS);
+    setSettings(merged);
+    setLanguage(merged.language);
+    saveLS(SETTINGS_KEY, merged);
+    setShowSettings(false);
+    if (goal==='muscle') setCalorieDelta(merged.defaultSurplus[gender]);
+  }
+  function switchLang(id) {
+    setLanguage(id);
+    const ns = {...settings, language:id};
+    setSettings(ns);
+    saveLS(SETTINGS_KEY, ns);
+  }
+
+  // ── Záznamy ───────────────────────────────────────────────────────────────
+  function autoName() {
+    const d = new Date().toLocaleDateString('sk');
+    return d+' — '+t('goal.'+goal)+' ('+weight+' kg, '+(gender==='male'?t('record.male'):t('record.female'))+')';
+  }
+  function buildRec(id, name) {
+    return { id, name, date:new Date().toISOString(),
+      weight, gender, activities, goal, calcMethod, calorieDelta, weeklyDelta, proteinSlider, fatSlider,
+      bmr, palValue, totalKcal, targetKcal, proteinG, fatG, carbsG };
+  }
+  function doSave() {
+    const name = recName.trim() || autoName();
+    let rec, recs;
+    if (!saveAsNew && editingRecord) {
+      rec  = buildRec(editingRecord.id, name);
+      recs = savedRecords.map(function(r){ return r.id===editingRecord.id ? rec : r; });
+    } else {
+      rec  = buildRec(Date.now(), name);
+      recs = [rec].concat(savedRecords);
+    }
+    setSavedRecords(recs); saveLS(RECORDS_KEY, recs);
+    setEditingRecord(rec); setRecName(name); setShowSaveModal(false);
+  }
+  function loadRec(rec) {
+    setWeight(rec.weight); setGender(rec.gender); setActivities(rec.activities);
+    setGoal(rec.goal); setCalcMethod(rec.calcMethod);
+    setCalorieDelta(rec.calorieDelta);
+    setWeeklyDelta(rec.weeklyDelta || rec.weeklyWeightDelta || 0.5);
+    setProteinSlider(rec.proteinSlider); setFatSlider(rec.fatSlider);
+    setEditingRecord(rec); setRecName(rec.name);
+    setActiveTab('calc'); setSelectedRecId(null);
+    window.scrollTo(0,0);
+  }
+  function delRec(id, name) {
+    if (!window.confirm(t('record.delete_confirm',{name:name}))) return;
+    const recs = savedRecords.filter(function(r){return r.id!==id;});
+    setSavedRecords(recs); saveLS(RECORDS_KEY, recs);
+    if (editingRecord && editingRecord.id===id) { setEditingRecord(null); setRecName(''); }
+    if (selectedRecId===id) setSelectedRecId(null);
+  }
+  function clearEditor() {
+    setEditingRecord(null); setRecName('');
+    setWeight(80); setGender('male'); setActivities(mkActivities());
+    setGoal('muscle'); setCalcMethod('calorie');
+    setCalorieDelta(settings.defaultSurplus.male);
+    setWeeklyDelta(0.5); setProteinSlider(0.5); setFatSlider(0.5);
+  }
+
+  // ── RENDER ────────────────────────────────────────────────────────────────
+  return (
+    <div style={{minHeight:'100vh'}}>
+
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <div style={{background:'linear-gradient(135deg,#1e293b 0%,#0f172a 100%)',borderBottom:'1px solid #1e293b',padding:'22px 20px 0'}}>
+        <div style={{maxWidth:800,margin:'0 auto'}}>
+          <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:12,flexWrap:'wrap'}}>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <span style={{fontSize:26}}>⚡</span>
+              <div>
+                <h1 style={{fontFamily:"'Outfit',sans-serif",fontSize:24,fontWeight:900,letterSpacing:-1,lineHeight:1.1,
+                  background:'linear-gradient(135deg,#f59e0b,#ef4444)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>
+                  {t('app.title')}
+                </h1>
+                <p style={{color:'#475569',fontSize:11,marginTop:1}}>{t('app.subtitle')}</p>
+              </div>
+            </div>
+            {/* Jazykový prepínač + Settings */}
+            <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0,paddingTop:2}}>
+              {langs.map(function(l){ return (
+                <button key={l.id} onClick={function(){ switchLang(l.id); }} style={{
+                  padding:'5px 9px',borderRadius:6,border:'1px solid',fontFamily:'inherit',fontSize:12,fontWeight:700,cursor:'pointer',
+                  borderColor:language===l.id?'#f59e0b':'#334155',
+                  background:language===l.id?'rgba(245,158,11,.15)':'#0f172a',
+                  color:language===l.id?'#f59e0b':'#64748b'}}>
+                  {l.flag} {t('lang.'+l.id)}
+                </button>
+              ); })}
+              <button onClick={function(){setShowSettings(true);}} style={{padding:'5px 9px',borderRadius:6,border:'1px solid #334155',background:'#0f172a',color:'#64748b',cursor:'pointer',fontSize:13}}>⚙️</button>
+            </div>
+          </div>
+          {/* Záložky */}
+          <div style={{display:'flex',marginTop:16}}>
+            {[['calc',t('tab.calc')],['records',t('tab.records')+(savedRecords.length?(' ('+savedRecords.length+')'):'')]].map(function(arr){ return (
+              <button key={arr[0]} className="tab-btn" onClick={function(){setActiveTab(arr[0]);}} style={{
+                color:activeTab===arr[0]?'#f59e0b':'#64748b',
+                borderBottom:'2px solid '+(activeTab===arr[0]?'#f59e0b':'transparent'),
+                paddingBottom:14}}>
+                {arr[1]}
+              </button>
+            ); })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Záložka: Kalkulačka ──────────────────────────────────────────── */}
+      {activeTab==='calc' && (
+        <div style={{maxWidth:800,margin:'0 auto',padding:'24px 16px 80px',display:'flex',flexDirection:'column',gap:20}}>
+
+          {/* Banner – editácia */}
+          {editingRecord && (
+            <div style={{background:'rgba(245,158,11,.07)',border:'1px solid rgba(245,158,11,.22)',borderRadius:12,
+              padding:'11px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8}}>
+              <div style={{display:'flex',alignItems:'center',gap:8}}>
+                <span>✏️</span>
+                <div>
+                  <span style={{fontSize:11,color:'#64748b',display:'block'}}>{t('editing.banner')}</span>
+                  <span style={{fontSize:14,fontWeight:700,color:'#f59e0b'}}>{editingRecord.name}</span>
+                </div>
+              </div>
+              <button className="btn btn-ghost" onClick={clearEditor} style={{fontSize:12}}>{t('editing.new')}</button>
+            </div>
+          )}
+
+          {/* ── Krok 1: BMR ─────────────────────────────────────────────────── */}
+          <div className="card">
+            <div className="section-title" style={{color:'#f59e0b'}}>{t('step1.title')}</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:20,alignItems:'center'}}>
+              <div>
+                <label style={{fontSize:13,color:'#94a3b8',display:'block',marginBottom:6}}>{t('step1.weight')}</label>
+                <input type="number" value={weight} min={30} max={250}
+                  onChange={function(e){setWeight(Math.max(30,parseFloat(e.target.value)||30));}}/>
+              </div>
+              <div>
+                <label style={{fontSize:13,color:'#94a3b8',display:'block',marginBottom:6}}>{t('step1.gender')}</label>
+                <div style={{display:'flex',gap:6}}>
+                  {[['male',t('step1.male')],['female',t('step1.female')]].map(function(arr){ return (
+                    <button key={arr[0]} onClick={function(){changeGender(arr[0]);}} style={{
+                      padding:'8px 16px',borderRadius:8,border:'1px solid',fontSize:13,cursor:'pointer',fontFamily:'inherit',fontWeight:600,
+                      borderColor:gender===arr[0]?'#f59e0b':'#334155',
+                      background:gender===arr[0]?'rgba(245,158,11,.15)':'#0f172a',
+                      color:gender===arr[0]?'#f59e0b':'#94a3b8'}}>{arr[1]}</button>
+                  ); })}
+                </div>
+              </div>
+              <div style={{marginLeft:'auto',textAlign:'right'}}>
+                <div style={{fontSize:13,color:'#94a3b8'}}>{t('step1.formula.'+gender,{weight:weight})}</div>
+                <div style={{fontSize:11,color:'#475569',marginTop:2}}>{t('step1.note.'+gender)}</div>
+                <div style={{fontSize:32,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:'#f59e0b',marginTop:4}}>{bmr.toLocaleString('sk')}</div>
+                <div style={{fontSize:12,color:'#64748b'}}>{t('step1.unit')}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Krok 2: PAL ─────────────────────────────────────────────────── */}
+          <div className="card">
+            <div className="section-title" style={{color:'#3b82f6'}}>{t('step2.title')}</div>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16}}>
+              <span className="badge" style={{
+                background:hoursOK?'rgba(34,197,94,.15)':'rgba(239,68,68,.15)',
+                color:hoursOK?'#22c55e':'#ef4444',
+                border:'1px solid '+(hoursOK?'#22c55e33':'#ef444433')}}>
+                {hoursOK?'✓':'⚠'} {t('step2.hours',{n:totalH})}
+              </span>
+              {!hoursOK && <span style={{fontSize:12,color:'#ef4444'}}>{t('step2.hours.error')}</span>}
+            </div>
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              {PAL_ACTIVITIES.map(function(def){
+                const act = activities.find(function(a){return a.id===def.id;});
+                if (!act) return null;
+                const pal = def.hasRange ? def.palMin+(def.palMax-def.palMin)*act.intensity : def.palMin;
+                const kcal = Math.round(bmr/24*act.hours*pal);
+                return (
+                  <div key={def.id} style={{background:'#0f172a',borderRadius:12,padding:'12px 16px',
+                    border:act.hours>0?'1px solid #334155':'1px solid transparent',
+                    opacity:act.hours>0?1:.5,transition:'all .2s'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap',marginBottom:act.hours>0&&def.hasRange?8:0}}>
+                      <span style={{fontSize:20,width:28}}>{def.icon}</span>
+                      <span style={{fontSize:14,fontWeight:600,flex:1,minWidth:140}}>{t('pal.'+def.id)}</span>
+                      <div style={{display:'flex',alignItems:'center',gap:8}}>
+                        <button onClick={function(){updAct(def.id,'hours',Math.max(0,act.hours-.5));}}
+                          style={{width:28,height:28,borderRadius:6,border:'1px solid #334155',background:'#1e293b',color:'#94a3b8',cursor:'pointer',fontSize:16,display:'flex',alignItems:'center',justifyContent:'center'}}>−</button>
+                        <span style={{width:36,textAlign:'center',fontWeight:700,fontSize:16,fontFamily:"'Outfit',sans-serif"}}>{act.hours}</span>
+                        <button onClick={function(){updAct(def.id,'hours',Math.min(24,act.hours+.5));}}
+                          style={{width:28,height:28,borderRadius:6,border:'1px solid #334155',background:'#1e293b',color:'#94a3b8',cursor:'pointer',fontSize:16,display:'flex',alignItems:'center',justifyContent:'center'}}>+</button>
+                        <span style={{fontSize:12,color:'#64748b',width:14}}>{t('step2.unit.h')}</span>
+                      </div>
+                      <div style={{display:'flex',alignItems:'center',gap:6,minWidth:100,justifyContent:'flex-end'}}>
+                        <span className="badge" style={{background:'rgba(59,130,246,.12)',color:'#60a5fa',fontSize:11}}>PAL {pal.toFixed(2)}</span>
+                        {act.hours>0 && <span style={{fontSize:13,fontWeight:700,color:'#f59e0b',minWidth:55,textAlign:'right'}}>{kcal} kcal</span>}
+                      </div>
+                    </div>
+                    {act.hours>0 && def.hasRange && (
+                      <div style={{marginLeft:38,marginTop:4}}>
+                        <div style={{display:'flex',alignItems:'center',gap:8}}>
+                          <span style={{fontSize:11,color:'#64748b',whiteSpace:'nowrap'}}>{t('step2.intensity')}</span>
+                          <input type="range" min={0} max={1} step={.1} value={act.intensity}
+                            onChange={function(e){updAct(def.id,'intensity',parseFloat(e.target.value));}}
+                            style={{flex:1,height:4,WebkitAppearance:'none',appearance:'none',borderRadius:2,outline:'none',cursor:'pointer',
+                              background:'linear-gradient(to right,#3b82f6 '+(act.intensity*100)+'%,#334155 '+(act.intensity*100)+'%)'}}/>
+                          <span style={{fontSize:11,color:'#60a5fa',width:60,textAlign:'right'}}>{def.palMin.toFixed(1)}–{def.palMax.toFixed(1)}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Krok 3: Celkový výdaj ─────────────────────────────────────────── */}
+          {hoursOK && (
+            <div className="card" style={{background:'linear-gradient(135deg,#1e293b,#1a2744)',borderColor:'#334155'}}>
+              <div className="section-title" style={{color:'#22c55e'}}>{t('step3.title')}</div>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-around',flexWrap:'wrap',gap:20}}>
+                <div style={{textAlign:'center'}}>
+                  <div style={{fontSize:13,color:'#94a3b8',marginBottom:4}}>{t('step3.pal')}</div>
+                  <div style={{fontSize:36,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:'#3b82f6'}}>{palValue.toFixed(4)}</div>
+                </div>
+                <div style={{fontSize:28,color:'#334155'}}>×</div>
+                <div style={{textAlign:'center'}}>
+                  <div style={{fontSize:13,color:'#94a3b8',marginBottom:4}}>{t('step3.bmr')}</div>
+                  <div style={{fontSize:28,fontFamily:"'Outfit',sans-serif",fontWeight:700,color:'#f59e0b'}}>{bmr.toLocaleString('sk')}</div>
+                </div>
+                <div style={{fontSize:28,color:'#334155'}}>=</div>
+                <div style={{textAlign:'center'}}>
+                  <div style={{fontSize:13,color:'#94a3b8',marginBottom:4}}>{t('step3.total')}</div>
+                  <div style={{fontSize:42,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:'#22c55e'}}>{totalKcal.toLocaleString('sk')}</div>
+                  <div style={{fontSize:13,color:'#64748b'}}>{t('step3.unit')}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Krok 4: Cieľ ──────────────────────────────────────────────────── */}
+          {hoursOK && (
+            <div className="card">
+              <div className="section-title" style={{color:goalColor}}>{t('step4.title')}</div>
+              <div style={{display:'flex',gap:8,marginBottom:20,flexWrap:'wrap'}}>
+                {GOALS.map(function(g){ return (
+                  <button key={g.id} onClick={function(){changeGoal(g.id);}} style={{
+                    flex:'1 1 140px',padding:'14px 12px',borderRadius:12,
+                    border:'2px solid '+(goal===g.id?g.color:'#334155'),
+                    background:goal===g.id?g.color+'18':'#0f172a',
+                    cursor:'pointer',textAlign:'center',transition:'all .2s',fontFamily:'inherit'}}>
+                    <div style={{fontSize:24,marginBottom:4}}>{g.icon}</div>
+                    <div style={{fontSize:14,fontWeight:700,color:goal===g.id?g.color:'#e2e8f0'}}>{t('goal.'+g.id)}</div>
+                    <div style={{fontSize:11,color:'#64748b'}}>{t('goal.'+g.id+'.desc')}</div>
+                  </button>
+                ); })}
+              </div>
+
+              {goal!=='recomp' && (
+                <React.Fragment>
+                  <div style={{display:'flex',gap:8,marginBottom:16}}>
+                    {[['calorie',t('calc.by_calories')],['weight',t('calc.by_weight')]].map(function(arr){ return (
+                      <button key={arr[0]} onClick={function(){setCalcMethod(arr[0]);}} style={{
+                        flex:1,padding:'10px 12px',borderRadius:8,
+                        border:'1px solid '+(calcMethod===arr[0]?goalColor:'#334155'),
+                        background:calcMethod===arr[0]?goalColor+'15':'transparent',
+                        color:calcMethod===arr[0]?goalColor:'#94a3b8',
+                        cursor:'pointer',fontSize:13,fontWeight:600,fontFamily:'inherit'}}>{arr[1]}</button>
+                    ); })}
+                  </div>
+                  {calcMethod==='calorie' ? (
+                    <Slider min={100} max={goal==='muscle'?700:1000} step={50}
+                      value={calorieDelta} onChange={setCalorieDelta}
+                      label={goal==='muscle'?t('surplus.label'):t('deficit.label')}
+                      unit={t('unit.kcal_day')} color={goalColor}/>
+                  ) : (
+                    <Slider min={.1} max={goal==='muscle'?1.5:1.0} step={.1}
+                      value={weeklyDelta} onChange={setWeeklyDelta}
+                      label={goal==='muscle'?t('weekly.gain'):t('weekly.loss')}
+                      unit={t('unit.kg_week')} color={goalColor}/>
+                  )}
+                  {calcMethod==='weight' && (
+                    <div style={{fontSize:12,color:'#64748b',marginTop:-4}}>
+                      = {goal==='muscle'?'+':'−'}{goalDelta} kcal/{t('unit.kcal_day').split('/')[1]||'deň'}
+                    </div>
+                  )}
+                  <div style={{marginTop:8,background:'#0f172a',padding:'8px 12px',borderRadius:8,fontSize:12,color:'#64748b'}}>
+                    {goal==='muscle' ? t(gender==='male'?'recommend.muscle.m':'recommend.muscle.f') : t('recommend.fat_loss')}
+                  </div>
+                </React.Fragment>
+              )}
+
+              <div style={{marginTop:16,background:'#0f172a',borderRadius:12,padding:20,textAlign:'center',border:'1px solid '+goalColor+'33'}}>
+                <div style={{fontSize:13,color:'#94a3b8',marginBottom:4}}>
+                  {goal==='muscle' ? totalKcal.toLocaleString('sk')+' + '+goalDelta
+                    : goal==='fat_loss' ? totalKcal.toLocaleString('sk')+' − '+goalDelta
+                    : t('maintenance')}
+                </div>
+                <div style={{fontSize:48,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:goalColor}}>{targetKcal.toLocaleString('sk')}</div>
+                <div style={{fontSize:14,color:'#64748b'}}>{t('target.label')}</div>
+              </div>
+
+              <GoalInfo goalId={goal} t={t}/>
+            </div>
+          )}
+
+          {/* ── Krok 5: Makronutrienty ──────────────────────────────────────────── */}
+          {hoursOK && (
+            <div className="card">
+              <div className="section-title" style={{color:'#f59e0b'}}>{t('step5.title')}</div>
+              <div style={{display:'flex',gap:20,flexWrap:'wrap'}}>
+                <div style={{flex:'1 1 280px'}}>
+                  <Slider
+                    min={mr.proteinMin} max={mr.proteinMax} step={.1}
+                    value={parseFloat((mr.proteinMin+(mr.proteinMax-mr.proteinMin)*proteinSlider).toFixed(1))}
+                    onChange={function(v){setProteinSlider((v-mr.proteinMin)/(mr.proteinMax-mr.proteinMin));}}
+                    label={t('macro.protein_per_kg')} unit="g/kg" color="#f59e0b"/>
+
+                  {/* Posuvník tuku s dynamickým minimom */}
+                  <Slider
+                    min={effFatMin} max={effFatMax} step={1}
+                    value={Math.round(fatPct)}
+                    onChange={changeFatSlider}
+                    label={t('macro.fat_pct')} unit="%" color="#ef4444"
+                    disabled={effFatMin>=effFatMax}/>
+
+                  {/* Upozornenie na biologické minimum */}
+                  {fatConstrained && (
+                    <div style={{marginTop:-4,marginBottom:8,padding:'8px 12px',borderRadius:8,
+                      background:'rgba(245,158,11,.08)',border:'1px solid rgba(245,158,11,.2)',fontSize:12,color:'#fbbf24'}}>
+                      🔒 {t('fat.at_min',{g:fatG,gender:gender==='male'?t('gender.m'):t('gender.f')})}
+                    </div>
+                  )}
+                  {fatBelowMin && (
+                    <div style={{marginTop:-4,marginBottom:8,padding:'8px 12px',borderRadius:8,
+                      background:'rgba(239,68,68,.1)',border:'1px solid #ef444433',fontSize:12,color:'#f87171'}}>
+                      {t('fat.warning',{g:fatG,min:minFatG,gender:gender==='male'?t('gender.m'):t('gender.f')})}
+                    </div>
+                  )}
+                  <div style={{fontSize:12,color:'#64748b',marginTop:4}}>{t('macro.carbs_auto')}</div>
+                </div>
+                <div style={{flex:'0 0 200px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+                  <PieChart protein={proteinKcal} fat={fatKcal} carbs={carbsKcal}/>
+                  <div style={{display:'flex',gap:10,marginTop:8,fontSize:11}}>
+                    {[['#f59e0b',t('macro.protein')],['#ef4444',t('macro.fat')],['#22c55e',t('macro.carbs')]].map(function(arr){ return (
+                      <span key={arr[1]} style={{display:'flex',alignItems:'center',gap:4}}>
+                        <span style={{width:8,height:8,borderRadius:2,background:arr[0],display:'inline-block'}}/>
+                        {arr[1]}
+                      </span>
+                    ); })}
+                  </div>
+                </div>
+              </div>
+              <div style={{display:'flex',gap:10,marginTop:20,flexWrap:'wrap'}}>
+                {[
+                  {label:t('macro.protein'),g:proteinG,kcal:proteinKcal,color:'#f59e0b',icon:'🥩'},
+                  {label:t('macro.fat'),    g:fatG,    kcal:fatKcal,    color:'#ef4444',icon:'🥑'},
+                  {label:t('macro.carbs'),  g:carbsG,  kcal:carbsKcal,  color:'#22c55e',icon:'🍚'},
+                ].map(function(m){ return (
+                  <div key={m.label} style={{flex:'1 1 120px',background:'#0f172a',borderRadius:12,padding:'16px 12px',textAlign:'center',border:'1px solid '+m.color+'33'}}>
+                    <div style={{fontSize:22,marginBottom:4}}>{m.icon}</div>
+                    <div style={{fontSize:12,color:'#94a3b8',marginBottom:4}}>{m.label}</div>
+                    <div style={{fontSize:28,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:m.color}}>{m.g}</div>
+                    <div style={{fontSize:12,color:'#64748b'}}>{t('macro.grams')}</div>
+                    <div style={{fontSize:11,color:'#475569',marginTop:4}}>{m.kcal} kcal</div>
+                  </div>
+                ); })}
+              </div>
+            </div>
+          )}
+
+          {/* ── Pravidlá ──────────────────────────────────────────────────────── */}
+          {hoursOK && (
+            <div className="card" style={{background:'#0f172a',border:'1px solid #334155'}}>
+              <div className="section-title" style={{color:'#94a3b8',fontSize:16}}>{t('rules.title')}</div>
+              <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+                {[
+                  {icon:'🥦',label:t('rules.fiber'),value:t('rules.fiber.value',{min:fiberMin,max:fiberMax})},
+                  {icon:'💧',label:t('rules.water'),value:t('rules.water.value',{l:waterL})},
+                  {icon:'🍎',label:t('rules.8020'),value:t('rules.8020.value')},
+                ].map(function(r){ return (
+                  <div key={r.label} style={{flex:'1 1 120px',background:'#1e293b',borderRadius:10,padding:'12px 14px',textAlign:'center'}}>
+                    <div style={{fontSize:22}}>{r.icon}</div>
+                    <div style={{fontSize:12,color:'#94a3b8',marginTop:4}}>{r.label}</div>
+                    <div style={{fontSize:14,fontWeight:700,color:'#e2e8f0',marginTop:2}}>{r.value}</div>
+                  </div>
+                ); })}
+              </div>
+            </div>
+          )}
+
+          {/* ── Uložiť ────────────────────────────────────────────────────────── */}
+          {hoursOK && (
+            <div className="card" style={{background:'#0f172a',border:'1px solid #1e293b'}}>
+              <div className="section-title" style={{color:'#94a3b8',fontSize:16}}>{t('save.title')}</div>
+              {editingRecord ? (
+                <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+                  <button className="btn btn-primary" onClick={function(){setSaveAsNew(false);setShowSaveModal(true);}} style={{flex:1,padding:13}}>
+                    {t('save.update')} „{editingRecord.name.substring(0,28)+(editingRecord.name.length>28?'…':'')}"
+                  </button>
+                  <button className="btn btn-ghost" onClick={function(){setSaveAsNew(true);setRecName('');setShowSaveModal(true);}} style={{flex:1}}>{t('save.new')}</button>
+                </div>
+              ) : (
+                <button className="btn btn-green" onClick={function(){setSaveAsNew(true);setRecName('');setShowSaveModal(true);}} style={{width:'100%',padding:14,fontSize:15}}>
+                  {t('save.button')}
+                </button>
+              )}
+              <div style={{fontSize:12,color:'#334155',marginTop:8,textAlign:'center'}}>{t('save.note')}</div>
+            </div>
+          )}
+
+          <div style={{textAlign:'center',fontSize:11,color:'#334155',paddingTop:8}}>{t('app.footer')}</div>
+        </div>
+      )}
+
+      {/* ── Záložka: Záznamy ─────────────────────────────────────────────── */}
+      {activeTab==='records' && (
+        <div style={{maxWidth:800,margin:'0 auto',padding:'24px 16px 80px'}}>
+          {savedRecords.length===0 ? (
+            <div style={{textAlign:'center',padding:'80px 20px',color:'#64748b'}}>
+              <div style={{fontSize:56,marginBottom:16}}>📋</div>
+              <div style={{fontSize:20,fontWeight:700,color:'#94a3b8',marginBottom:8}}>{t('records.empty.title')}</div>
+              <div style={{fontSize:14}}>{t('records.empty.desc')}</div>
+              <button className="btn btn-primary" onClick={function(){setActiveTab('calc');}} style={{marginTop:24,padding:'12px 24px'}}>{t('records.go_calc')}</button>
+            </div>
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',gap:14}}>
+              <div style={{fontSize:13,color:'#64748b',marginBottom:4}}>{pluralN(savedRecords.length,language,t)}</div>
+              {savedRecords.map(function(rec){
+                const gd = GOALS.find(function(g){return g.id===rec.goal;})||GOALS[0];
+                const isSel = selectedRecId===rec.id;
+                const isEd  = editingRecord && editingRecord.id===rec.id;
+                return (
+                  <div key={rec.id} style={{
+                    background:isEd?'rgba(245,158,11,.04)':'#1e293b',borderRadius:14,padding:'18px 20px',
+                    border:'1px solid '+(isEd?'rgba(245,158,11,.3)':isSel?'#334155':'transparent'),transition:'all .2s'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:12,flexWrap:'wrap'}}>
+                      <div style={{fontSize:28}}>{gd.icon}</div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:15,fontWeight:700,color:'#e2e8f0',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{rec.name}</div>
+                        <div style={{fontSize:12,color:'#64748b',marginTop:2}}>
+                          {new Date(rec.date).toLocaleDateString('sk',{day:'numeric',month:'long',year:'numeric'})} · {rec.weight} {t('record.unit.kg')} · {rec.gender==='male'?t('record.male'):t('record.female')}
+                        </div>
+                      </div>
+                      <div style={{textAlign:'right',flexShrink:0}}>
+                        <div style={{fontSize:22,fontWeight:900,color:gd.color,fontFamily:"'Outfit',sans-serif"}}>{rec.targetKcal?rec.targetKcal.toLocaleString('sk'):'-'}</div>
+                        <div style={{fontSize:11,color:'#64748b'}}>kcal</div>
+                      </div>
+                    </div>
+                    {isEd && (
+                      <div style={{marginTop:8,padding:'4px 10px',borderRadius:6,background:'rgba(245,158,11,.1)',
+                        border:'1px solid rgba(245,158,11,.2)',fontSize:11,color:'#f59e0b',display:'inline-block'}}>
+                        ✏️ {t('record.editing_note')}
+                      </div>
+                    )}
+                    {isSel && (
+                      <div style={{marginTop:14,paddingTop:14,borderTop:'1px solid #0f172a'}}>
+                        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:10}}>
+                          {[
+                            {label:t('record.bmr'),   val:(rec.bmr||0).toLocaleString('sk')+' kcal',         color:'#f59e0b'},
+                            {label:t('record.total'),  val:(rec.totalKcal||0).toLocaleString('sk')+' kcal',   color:'#3b82f6'},
+                            {label:t('record.target'), val:(rec.targetKcal||0).toLocaleString('sk')+' kcal',  color:gd.color},
+                          ].map(function(i){ return (
+                            <div key={i.label} style={{flex:'1 1 90px',background:'#0f172a',borderRadius:10,padding:'12px 10px',textAlign:'center'}}>
+                              <div style={{fontSize:11,color:'#64748b',marginBottom:4}}>{i.label}</div>
+                              <div style={{fontSize:15,fontWeight:700,color:i.color}}>{i.val}</div>
+                            </div>
+                          ); })}
+                        </div>
+                        <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:14}}>
+                          {[
+                            {label:t('macro.protein'),g:rec.proteinG,color:'#f59e0b',icon:'🥩'},
+                            {label:t('macro.fat'),    g:rec.fatG,    color:'#ef4444',icon:'🥑'},
+                            {label:t('macro.carbs'),  g:rec.carbsG,  color:'#22c55e',icon:'🍚'},
+                          ].map(function(i){ return (
+                            <div key={i.label} style={{flex:'1 1 80px',background:'#0f172a',borderRadius:10,padding:'12px 10px',textAlign:'center'}}>
+                              <div style={{fontSize:18}}>{i.icon}</div>
+                              <div style={{fontSize:11,color:'#64748b',margin:'4px 0 2px'}}>{i.label}</div>
+                              <div style={{fontSize:20,fontWeight:900,color:i.color,fontFamily:"'Outfit',sans-serif"}}>{i.g} g</div>
+                            </div>
+                          ); })}
+                        </div>
+                        <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+                          <button className="btn btn-blue" onClick={function(){loadRec(rec);}} style={{flex:1}}>{t('record.open')}</button>
+                          <button className="btn btn-danger" onClick={function(){delRec(rec.id,rec.name);}}>{t('record.delete')}</button>
+                        </div>
+                      </div>
+                    )}
+                    <button onClick={function(){setSelectedRecId(isSel?null:rec.id);}}
+                      style={{marginTop:10,width:'100%',padding:6,borderRadius:6,border:'none',
+                        background:'transparent',color:'#475569',cursor:'pointer',fontSize:12,fontFamily:'inherit'}}>
+                      {isSel?t('record.hide'):t('record.show')}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Modál: Uložiť záznam ─────────────────────────────────────────── */}
+      {showSaveModal && (
+        <div className="modal-overlay" onClick={function(){setShowSaveModal(false);}}>
+          <div className="modal" style={{maxWidth:420}} onClick={function(e){e.stopPropagation();}}>
+            <div style={{fontSize:20,fontWeight:700,marginBottom:6,color:'#e2e8f0'}}>
+              {saveAsNew?t('modal.save.title'):t('modal.update.title')}
+            </div>
+            <div style={{fontSize:13,color:'#64748b',marginBottom:20}}>
+              {saveAsNew?t('modal.save.note'):t('modal.update.note',{name:editingRecord?editingRecord.name:''})}
+            </div>
+            <label style={{fontSize:13,color:'#94a3b8',display:'block',marginBottom:6}}>{t('modal.name.label')}</label>
+            <input type="text" value={recName} onChange={function(e){setRecName(e.target.value);}}
+              placeholder={autoName()} onKeyDown={function(e){if(e.key==='Enter')doSave();}} autoFocus/>
+            <div style={{display:'flex',gap:8,marginTop:20}}>
+              <button className="btn btn-primary" onClick={doSave} style={{flex:1,padding:13}}>
+                {saveAsNew?t('modal.save.btn'):t('modal.update.btn')}
+              </button>
+              <button className="btn btn-ghost" onClick={function(){setShowSaveModal(false);}} style={{padding:'13px 18px'}}>{t('modal.cancel')}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modál: Nastavenia ─────────────────────────────────────────────── */}
+      {showSettings && (
+        <SettingsModal
+          settings={settings}
+          onSave={saveSettings}
+          onClose={function(){setShowSettings(false);}}
+          t={t}
+          langs={langs}
+        />
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
