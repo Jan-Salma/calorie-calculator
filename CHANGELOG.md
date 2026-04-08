@@ -15,15 +15,29 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.1.2] - 2026-04-08
+
+### Fixed
+- **Weight input field** — removed hard minimum limit (30 kg), field can now be freely cleared and retyped
+  - Typing: any valid number accepted immediately, no forced minimum while typing
+  - On blur (leaving field): if empty or < 1, resets to 80 kg as safe default
+  - Removed `min={30}` HTML attribute that blocked browser from accepting lower values
+  - Calculations guarded with `parseFloat(weight) || 0` — no NaN propagation
+
+### Files changed
+- `web/index.html` — weight input onChange/onBlur logic rewritten, calculation guard added
+
+---
+
 ## [1.1.1] - 2026-04-08
 
 ### Fixed
 - **Removed "Voľný čas (ľahká aktivita)"** PAL activity — not based on Fitness Fibel 2.0 source (p. 129); was incorrectly added
 - **Renamed 4 PAL activity labels** with real-world occupation examples (all 3 languages: SK / EN / DE)
-  - *Sedavý / ležiaci* → includes `(počítač, tv)` / `(computer, TV)` / `(Computer, TV)`
-  - *Sedavá + krátke státie / chôdza* → includes `(vodič, pracovník na montážnej linke)` / `(driver, assembly line worker)` / `(Fahrer, Fließbandarbeiter)`
-  - *Prevažne stojaca / chodiaca práca* → includes `(domáce práce, predajca)` / `(housework, salesperson)` / `(Hausarbeit, Verkäufer)`
-  - *Ťažká fyzická práca* → includes `(stavební robotníci, vrcholový šport)` / `(construction workers, elite sport)` / `(Bauarbeiter, Leistungssport)`
+  - *Sedavý / ležiaci* — includes `(počítač, tv)` / `(computer, TV)` / `(Computer, TV)`
+  - *Sedavá + krátke státie / chôdza* — includes `(vodič, pracovník na montážnej linke)` / `(driver, assembly line worker)` / `(Fahrer, Fließbandarbeiter)`
+  - *Prevažne stojaca / chodiaca práca* — includes `(domáce práce, predajca)` / `(housework, salesperson)` / `(Hausarbeit, Verkäufer)`
+  - *Ťažká fyzická práca* — includes `(stavební robotníci, vrcholový šport)` / `(construction workers, elite sport)` / `(Bauarbeiter, Leistungssport)`
 - **DEFAULT_HOURS redistributed** — leisure (7 h) removed, lying raised from 0 h → 7 h; total remains 24 h
 
 ### Files changed
@@ -107,7 +121,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Jan-Salma/calorie-calculator/releases/tag/v1.0.0
