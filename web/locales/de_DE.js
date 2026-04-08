@@ -11,26 +11,17 @@
     flag: '🇩🇪',
     pluralRule: function (n) { return n === 1 ? 'one' : 'many'; },
     keys: {
-      // ── Anwendung ─────────────────────────────────────────────────────────
       'app.title':            'Kalorienrechner',
       'app.subtitle':         'Täglicher Kalorienbedarf und Makronährstoffverteilung · Fitness Fibel 2.0',
       'app.footer':           'Berechnungen basieren auf der Fitness Fibel 2.0 (Sjard Roscher) und dienen als Orientierungshilfe.',
-
-      // ── Registerkarten ──────────────────────────────────────────────────────────
-      'tab.calc':             '🧲 Rechner',
+      'tab.calc':             '🧮 Rechner',
       'tab.records':          '📋 Aufzeichnungen',
       'tab.settings':         '⚙️ Einstellungen',
-
-      // ── Sprachen ──────────────────────────────────────────────────────────────
       'lang.sk_SK':           'SK',
       'lang.en_EN':           'EN',
       'lang.de_DE':           'DE',
-
-      // ── Bearbeitungsbanner ─────────────────────────────────────────────────────────
       'editing.banner':       'Aufzeichnung wird bearbeitet:',
       'editing.new':          '✕ Neue Berechnung',
-
-      // ── Schritt 1 – Grundumsatz ───────────────────────────────────────────────────
       'step1.title':          '1️⃣ Grundumsatz (BMR)',
       'step1.weight':         'Körpergewicht (kg)',
       'step1.gender':         'Geschlecht',
@@ -41,30 +32,23 @@
       'step1.note.male':      'Männer: 1,0 kcal/kg/h · Fitness Fibel 2.0, S. 129',
       'step1.note.female':    'Frauen: 0,9 kcal/kg/h · Fitness Fibel 2.0, S. 129',
       'step1.unit':           'kcal / Tag',
-
-      // ── Schritt 2 – PAL ─────────────────────────────────────────────────────────
       'step2.title':          '2️⃣ Tagesaktivitäten (PAL)',
       'step2.hours':          '{n} / 24 Stunden',
       'step2.hours.error':    'Die Summe der Stunden muss genau 24 ergeben',
       'step2.intensity':      'Intensität:',
       'step2.unit.h':         'h',
       'pal.sleep':            'Schlaf',
-      'pal.lying':            'Ausschließlich sitzende / liegende Lebensweise',
+      'pal.lying':            'Ausschließlich sitzende / liegende Lebensweise (Computer, TV)',
       'pal.sedentary':        'Sitzende Tätigkeit mit wenig Aktivität',
-      'pal.light':            'Sitzend + kurze Steh- / Gehätigkeiten',
-      'pal.standing':         'Überwiegend stehende / gehende Tätigkeit',
-      'pal.heavy':            'Körperlich schwere Arbeit / Leistungssport',
+      'pal.light':            'Sitzend + kurze Steh- / Geh tätigkeiten (Fahrer, Fließbandarbeiter)',
+      'pal.standing':         'Überwiegend stehende / gehende Tätigkeit (Hausarbeit, Verkäufer)',
+      'pal.heavy':            'Körperlich schwere Arbeit (Bauarbeiter, Leistungssport)',
       'pal.sport':            'Sport / Training',
-      'pal.leisure':          'Freizeit (leichte Aktivität)',
-
-      // ── Schritt 3 – Gesamtbedarf ─────────────────────────────────────────────────────
       'step3.title':          '3️⃣ Gesamtenergiebedarf',
       'step3.pal':            'Durchschnittlicher PAL',
       'step3.bmr':            'Grundumsatz',
       'step3.total':          'Gesamtbedarf',
       'step3.unit':           'kcal / Tag',
-
-      // ── Schritt 4 – Ziel ───────────────────────────────────────────────────────────
       'step4.title':          '4️⃣ Ziel',
       'goal.muscle':          'Muskelaufbau',
       'goal.fat_loss':        'Fettabbau',
@@ -85,8 +69,6 @@
       'recommend.muscle.m':   '📖 Fitness Fibel 2.0: Männer +300 kcal, max. 1–1,5 kg/Monat. Sauberer Aufbau ohne überschüssiges Fett.',
       'recommend.muscle.f':   '📖 Fitness Fibel 2.0: Frauen +200 kcal, max. 0,5–1 kg/Monat. Frauen bauen Muskeln langsamer auf.',
       'recommend.fat_loss':   '📖 Fitness Fibel 2.0: Ein Defizit von 300 kcal/Tag ist der ideale Einstieg. Ziel: 0,5–1 kg/Woche.',
-
-      // ── Info – Makros (aus Fitness Fibel 2.0) ───────────────────────────────────────────
       'info.why_macros':         '📖 Warum diese Makros?',
       'info.muscle.title':       'Makros beim Muskelaufbau',
       'info.muscle.text':        'Der Körper kann natürlich max. ~300 kcal Muskelmasse pro Tag synthetisieren (S. 137). Ein größerer Überschuss = Fett, keine Muskeln. Ein kleiner, kontrollierter Überschuss ist optimal.',
@@ -103,22 +85,18 @@
       'info.recomp.protein':     '1,8–2,2 g/kg — der mittlere Bereich deckt beide Prozesse ab: Aufbau und Schutz der Muskeln. Höhere Zufuhr = bessere Ergebnisse.',
       'info.recomp.fat':         '20–25 % der Kalorien — die goldene Mitte für die hormonelle Balance ohne Einschränkung der Trainingsleistung.',
       'info.recomp.carbs':       'Verbleibend — ausreichende Glykogenversorgung für das Training. Ergebnisse sind langsamer als beim reinen Bulk/Cut, aber ohne Gewichtsschwankungen.',
-
-      // ── Schritt 5 – Makronährstoffe ─────────────────────────────────────────────────────
       'step5.title':          '5️⃣ Makronährstoffe',
-      'macro.protein_per_kg': 'Eiweis (g/kg)',
+      'macro.protein_per_kg': 'Eiweiß (g/kg)',
       'macro.fat_pct':        'Fett (% der Kalorien)',
       'macro.carbs_auto':     'Kohlenhydrate füllen die verbleibenden Kalorien automatisch auf.',
-      'macro.protein':        'Eiweis',
+      'macro.protein':        'Eiweiß',
       'macro.fat':            'Fett',
       'macro.carbs':          'Kohlenhydrate',
       'macro.grams':          'Gramm',
       'fat.at_min':           '⚠️ Fett ({g} g) ist auf dem biologischen Minimum für {gender} — unerlässlich für Hormone und Vitamine A, D, E, K.',
-      'fat.warning':          '⚠️ Fettzufuhr ({g} g) unter dem Minimum für {gender} ({min} g) — Gefahr einer Hormonstpörung.',
+      'fat.warning':          '⚠️ Fettzufuhr ({g} g) unter dem Minimum für {gender} ({min} g) — Gefahr einer Hormonstörung.',
       'gender.m':             'Männer',
       'gender.f':             'Frauen',
-
-      // ── Regeln ────────────────────────────────────────────────────────────────
       'rules.title':          '📋 Wichtige Regeln',
       'rules.fiber':          'Ballaststoffe',
       'rules.fiber.value':    '{min}–{max} g/Tag',
@@ -126,18 +104,14 @@
       'rules.water.value':    'min. {l} L/Tag',
       'rules.8020':           '80/20-Regel',
       'rules.8020.value':     '80 % Vollwertkost',
-
-      // ── Speichern ───────────────────────────────────────────────────────────────
       'save.title':           '💾 Ergebnisse speichern',
       'save.update':          '🔄 Aktualisieren',
       'save.new':             '➕ Als neu speichern',
       'save.button':          '💾 Diese Berechnung speichern',
       'save.note':            'Aufzeichnungen werden lokal in diesem Browser gespeichert.',
-
-      // ── Aufzeichnungen ────────────────────────────────────────────────────────────
       'records.empty.title':  'Keine Aufzeichnungen',
       'records.empty.desc':   'Berechne deinen Plan im Rechner und speichere ihn für die spätere Verwendung.',
-      'records.go_calc':      '🧲 Zum Rechner',
+      'records.go_calc':      '🧮 Zum Rechner',
       'records.count.one':    'Aufzeichnung',
       'records.count.few':    'Aufzeichnungen',
       'records.count.many':   'Aufzeichnungen',
@@ -153,8 +127,6 @@
       'record.unit.kg':       'kg',
       'record.male':          'Mann',
       'record.female':        'Frau',
-
-      // ── Speichern-Modal ──────────────────────────────────────────────────────────────
       'modal.save.title':     '💾 Berechnung speichern',
       'modal.update.title':   '🔄 Aufzeichnung aktualisieren',
       'modal.save.note':      'Ergebnisse werden als neue Aufzeichnung gespeichert.',
@@ -163,15 +135,13 @@
       'modal.save.btn':       'Speichern',
       'modal.update.btn':     'Aktualisieren',
       'modal.cancel':         'Abbrechen',
-
-      // ── Einstellungen ────────────────────────────────────────────────────────────
       'settings.title':           '⚙️ Einstellungen',
       'settings.lang.label':      '🌍 Sprache',
       'settings.lang.note':       'Standardsprache der Anwendung',
       'settings.macros.title':    '⚖️ Makronährstoff-Bereiche',
       'settings.macros.note':     'Bereiche nach eigenen Vorlieben anpassen. Standardwerte aus Fitness Fibel 2.0 (S. 168–170).',
-      'settings.protein.min':     'Eiweis min.',
-      'settings.protein.max':     'Eiweis max.',
+      'settings.protein.min':     'Eiweiß min.',
+      'settings.protein.max':     'Eiweiß max.',
       'settings.fat.min':         'Fett min.',
       'settings.fat.max':         'Fett max.',
       'settings.protein.unit':    'g/kg',

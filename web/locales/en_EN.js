@@ -11,26 +11,17 @@
     flag: '🇬🇧',
     pluralRule: function (n) { return n === 1 ? 'one' : 'many'; },
     keys: {
-      // ── Application ──────────────────────────────────────────────────────
       'app.title':            'Calorie Calculator',
       'app.subtitle':         'Daily calorie and macronutrient needs · Fitness Fibel 2.0',
       'app.footer':           'Calculations are based on Fitness Fibel 2.0 (Sjard Roscher) and serve as a reference guide.',
-
-      // ── Tabs ───────────────────────────────────────────────────────────
-      'tab.calc':             '🧲 Calculator',
+      'tab.calc':             '🧮 Calculator',
       'tab.records':          '📋 Records',
       'tab.settings':         '⚙️ Settings',
-
-      // ── Languages ─────────────────────────────────────────────────────
       'lang.sk_SK':           'SK',
       'lang.en_EN':           'EN',
       'lang.de_DE':           'DE',
-
-      // ── Edit banner ────────────────────────────────────────────────────
       'editing.banner':       'Editing record:',
       'editing.new':          '✕ New calculation',
-
-      // ── Step 1 – BMR ────────────────────────────────────────────────────
       'step1.title':          '1️⃣ Basal Metabolic Rate (BMR)',
       'step1.weight':         'Weight (kg)',
       'step1.gender':         'Gender',
@@ -41,30 +32,23 @@
       'step1.note.male':      'Men: 1.0 kcal/kg/h · Fitness Fibel 2.0, p. 129',
       'step1.note.female':    'Women: 0.9 kcal/kg/h · Fitness Fibel 2.0, p. 129',
       'step1.unit':           'kcal / day',
-
-      // ── Step 2 – PAL ────────────────────────────────────────────────────
       'step2.title':          '2️⃣ Daily Activities (PAL)',
       'step2.hours':          '{n} / 24 hours',
       'step2.hours.error':    'Total hours must equal exactly 24',
       'step2.intensity':      'Intensity:',
       'step2.unit.h':         'h',
       'pal.sleep':            'Sleep',
-      'pal.lying':            'Exclusively sedentary / lying lifestyle',
+      'pal.lying':            'Exclusively sedentary / lying lifestyle (computer, TV)',
       'pal.sedentary':        'Sedentary work with little activity',
-      'pal.light':            'Sedentary + occasional standing / walking',
-      'pal.standing':         'Predominantly standing / walking work',
-      'pal.heavy':            'Heavy physical work / competitive sport',
+      'pal.light':            'Sedentary + occasional standing / walking (driver, assembly line worker)',
+      'pal.standing':         'Predominantly standing / walking work (housework, salesperson)',
+      'pal.heavy':            'Heavy physical work (construction workers, elite sport)',
       'pal.sport':            'Sport / training',
-      'pal.leisure':          'Leisure time (light activity)',
-
-      // ── Step 3 – Total expenditure ────────────────────────────────────────────
       'step3.title':          '3️⃣ Total Daily Expenditure',
       'step3.pal':            'Average PAL',
       'step3.bmr':            'BMR',
       'step3.total':          'Total Expenditure',
       'step3.unit':           'kcal / day',
-
-      // ── Step 4 – Goal ─────────────────────────────────────────────────────
       'step4.title':          '4️⃣ Goal',
       'goal.muscle':          'Muscle Building',
       'goal.fat_loss':        'Fat Loss',
@@ -85,8 +69,6 @@
       'recommend.muscle.m':   '📖 Fitness Fibel 2.0: Men +300 kcal, max. 1–1.5 kg/month. Clean gains without excess fat.',
       'recommend.muscle.f':   '📖 Fitness Fibel 2.0: Women +200 kcal, max. 0.5–1 kg/month. Women build muscle more slowly.',
       'recommend.fat_loss':   '📖 Fitness Fibel 2.0: A 300 kcal/day deficit is the ideal start. Goal: 0.5–1 kg/week.',
-
-      // ── Info – macros (from Fitness Fibel 2.0) ────────────────────────────────────────────
       'info.why_macros':         '📖 Why these macros?',
       'info.muscle.title':       'Macros for muscle building',
       'info.muscle.text':        'The body can only synthesize ~300 kcal of muscle tissue per day naturally (p. 137). A larger surplus = fat, not muscle. A small, controlled surplus is optimal.',
@@ -103,8 +85,6 @@
       'info.recomp.protein':     '1.8–2.2 g/kg — the middle range covers both processes: building and protecting muscle. Higher intake = better results.',
       'info.recomp.fat':         '20–25% of calories — the golden mean for hormonal balance without limiting training performance.',
       'info.recomp.carbs':       'Remaining — adequate glycogen supply for training. Results are slower than pure bulk/cut, but without weight fluctuations.',
-
-      // ── Step 5 – Macronutrients ───────────────────────────────────────────────────
       'step5.title':          '5️⃣ Macronutrients',
       'macro.protein_per_kg': 'Protein (g/kg)',
       'macro.fat_pct':        'Fat (% of calories)',
@@ -117,8 +97,6 @@
       'fat.warning':          '⚠️ Fat intake ({g} g) is below the minimum for {gender} ({min} g) — risk of hormonal imbalance.',
       'gender.m':             'men',
       'gender.f':             'women',
-
-      // ── Rules ─────────────────────────────────────────────────────────────
       'rules.title':          '📋 Important Rules',
       'rules.fiber':          'Fiber',
       'rules.fiber.value':    '{min}–{max} g/day',
@@ -126,18 +104,14 @@
       'rules.water.value':    'min. {l} L/day',
       'rules.8020':           '80/20 Rule',
       'rules.8020.value':     '80% whole foods',
-
-      // ── Save ──────────────────────────────────────────────────────────────
       'save.title':           '💾 Save Results',
       'save.update':          '🔄 Update',
       'save.new':             '➕ Save as new',
       'save.button':          '💾 Save this calculation',
       'save.note':            'Records are saved locally in this browser.',
-
-      // ── Records ────────────────────────────────────────────────────────────
       'records.empty.title':  'No records',
       'records.empty.desc':   'Calculate your plan in the calculator and save it for future use.',
-      'records.go_calc':      '🧲 Go to calculator',
+      'records.go_calc':      '🧮 Go to calculator',
       'records.count.one':    'record',
       'records.count.few':    'records',
       'records.count.many':   'records',
@@ -153,8 +127,6 @@
       'record.unit.kg':       'kg',
       'record.male':          'Male',
       'record.female':        'Female',
-
-      // ── Save modal ────────────────────────────────────────────────────────────
       'modal.save.title':     '💾 Save calculation',
       'modal.update.title':   '🔄 Update record',
       'modal.save.note':      'Results will be saved as a new record.',
@@ -163,8 +135,6 @@
       'modal.save.btn':       'Save',
       'modal.update.btn':     'Update',
       'modal.cancel':         'Cancel',
-
-      // ── Settings ────────────────────────────────────────────────────────────
       'settings.title':           '⚙️ Settings',
       'settings.lang.label':      '🌍 Language',
       'settings.lang.note':       'Default application language',

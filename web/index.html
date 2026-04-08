@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kalorická Kalkulačka · Fitness Fibel 2.0</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
-<!-- Locale files – pridajte ďalší jazyk rovnako: <script src="locales/es_ES.js"></script> -->
+<!-- Locale files – pridájte ďalší jazyk rovnako: <script src="locales/es_ES.js"></script> -->
 <script src="locales/sk_SK.js"></script>
 <script src="locales/en_EN.js"></script>
 <script src="locales/de_DE.js"></script>
@@ -69,9 +69,8 @@ const PAL_ACTIVITIES = [
   { id:'standing',  palMin:1.8,  palMax:1.9,  hasRange:true,  icon:'🧑‍🍳' },
   { id:'heavy',     palMin:2.0,  palMax:2.4,  hasRange:true,  icon:'🏗️' },
   { id:'sport',     palMin:2.0,  palMax:2.0,  hasRange:false, icon:'🏋️' },
-  { id:'leisure',   palMin:1.2,  palMax:1.4,  hasRange:true,  icon:'🛋️' },
 ];
-const DEFAULT_HOURS = { sleep:8, lying:0, sedentary:8, light:0, standing:0, heavy:0, sport:1, leisure:7 };
+const DEFAULT_HOURS = { sleep:8, lying:7, sedentary:8, light:0, standing:0, heavy:0, sport:1 };
 
 const GOALS = [
   { id:'muscle',   icon:'💪', color:'#22c55e' },
@@ -181,7 +180,6 @@ function Slider({ min, max, step, value, onChange, label, unit, color, disabled 
   );
 }
 
-// Nápoveda k makrám (vysvetlenia z knihy)
 function GoalInfo({ goalId, t }) {
   const [open, setOpen] = useState(false);
   const color = (GOALS.find(function(g){return g.id===goalId;})||{color:'#64748b'}).color;
@@ -216,7 +214,6 @@ function GoalInfo({ goalId, t }) {
   );
 }
 
-// Sekcia v nastaveniach
 function SettSection({ title, children }) {
   return (
     <div style={{marginBottom:20}}>
@@ -226,7 +223,6 @@ function SettSection({ title, children }) {
   );
 }
 
-// Modál nastavení
 function SettingsModal({ settings, onSave, onClose, t, langs }) {
   const [loc, setLoc] = useState(function(){ return JSON.parse(JSON.stringify(settings)); });
   const [openGoal, setOpenGoal] = useState(null);
@@ -252,7 +248,6 @@ function SettingsModal({ settings, onSave, onClose, t, langs }) {
           <div style={{fontFamily:"'Outfit',sans-serif",fontSize:22,fontWeight:900,color:'#e2e8f0'}}>{t('settings.title')}</div>
           <button className="btn btn-ghost" onClick={onClose} style={{fontSize:18,padding:'4px 10px'}}>✕</button>
         </div>
-
         <SettSection title={t('settings.lang.label')}>
           <div style={{fontSize:12,color:'#64748b',marginBottom:10}}>{t('settings.lang.note')}</div>
           <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
@@ -267,7 +262,6 @@ function SettingsModal({ settings, onSave, onClose, t, langs }) {
             ); })}
           </div>
         </SettSection>
-
         <SettSection title={t('settings.macros.title')}>
           <div style={{fontSize:12,color:'#64748b',marginBottom:12}}>{t('settings.macros.note')}</div>
           {goals.map(function(gid){
@@ -307,7 +301,6 @@ function SettingsModal({ settings, onSave, onClose, t, langs }) {
             );
           })}
         </SettSection>
-
         <SettSection title={t('settings.minfat.title')}>
           <div style={{fontSize:12,color:'#64748b',marginBottom:10}}>{t('settings.minfat.note')}</div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
@@ -323,7 +316,6 @@ function SettingsModal({ settings, onSave, onClose, t, langs }) {
             })}
           </div>
         </SettSection>
-
         <SettSection title={t('settings.surplus.title')}>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
             {[['male',t('settings.surplus.muscle.m')],['female',t('settings.surplus.muscle.f')]].map(function(arr){
@@ -338,7 +330,6 @@ function SettingsModal({ settings, onSave, onClose, t, langs }) {
             })}
           </div>
         </SettSection>
-
         <div style={{display:'flex',gap:8,marginTop:4,flexWrap:'wrap'}}>
           <button className="btn btn-primary" onClick={function(){ onSave(loc); }} style={{flex:1,padding:13}}>{t('settings.save')}</button>
           <button className="btn btn-ghost" onClick={function(){ setLoc(JSON.parse(JSON.stringify(DEFAULT_SETTINGS))); }} style={{flex:1}}>{t('settings.reset')}</button>
@@ -348,7 +339,6 @@ function SettingsModal({ settings, onSave, onClose, t, langs }) {
   );
 }
 
-// ─── Hlavná App ────────────────────────────────────────────────────────────
 function App() {
   const initSettings = mergeSettings(loadLS(SETTINGS_KEY, {}));
   const [settings,      setSettings]      = useState(initSettings);
@@ -375,7 +365,6 @@ function App() {
   const langs = useMemo(availLangs, []);
   const mr    = settings.macroRanges[goal];
 
-  // BMR: Muži 1,0 × kg × 24h; Ženy 0,9 × kg × 24h (Fitness Fibel 2.0, str. 129)
   const bmr = Math.round(weight * (gender==='male' ? 1.0 : 0.9) * 24);
   const totalH = activities.reduce(function(s,a){return s+a.hours;}, 0);
   const hoursOK = totalH === 24;
@@ -400,12 +389,10 @@ function App() {
 
   const targetKcal = goal==='muscle' ? totalKcal+goalDelta : goal==='fat_loss' ? Math.max(0,totalKcal-goalDelta) : totalKcal;
 
-  // Bielkoviny
   const proteinGkg  = mr.proteinMin + (mr.proteinMax-mr.proteinMin)*proteinSlider;
   const proteinG    = Math.round(proteinGkg * weight);
   const proteinKcal = proteinG * 4;
 
-  // ── Dynamický minimálny % tuku (zabraňuje ísť pod biologické minimum gramov)
   const minFatG      = settings.minFat[gender];
   const dynMinFatPct = targetKcal > 0 ? Math.ceil(minFatG*9/targetKcal*100) : mr.fatPctMin;
   const effFatMin    = Math.min(Math.max(mr.fatPctMin, dynMinFatPct), mr.fatPctMax);
@@ -417,15 +404,14 @@ function App() {
   const carbsKcal    = Math.max(0, targetKcal-proteinKcal-fatKcal);
   const carbsG       = Math.round(carbsKcal/4);
 
-  const fatConstrained = dynMinFatPct > mr.fatPctMin; // % min zvýšený kvôli gramom
-  const fatBelowMin    = fatG < minFatG - 1;          // emergency fallback
+  const fatConstrained = dynMinFatPct > mr.fatPctMin;
+  const fatBelowMin    = fatG < minFatG - 1;
 
   const fiberMin = 30, fiberMax = 60;
   const waterL   = (weight/20).toFixed(1);
   const goalDef  = GOALS.find(function(g){return g.id===goal;}) || GOALS[0];
   const goalColor = goalDef.color;
 
-  // ── Handlery ──────────────────────────────────────────────────────────────
   function updAct(id, field, val) {
     setActivities(function(prev){ return prev.map(function(a){ return a.id===id ? {...a,[field]:val} : a; }); });
   }
@@ -460,7 +446,6 @@ function App() {
     saveLS(SETTINGS_KEY, ns);
   }
 
-  // ── Záznamy ───────────────────────────────────────────────────────────────
   function autoName() {
     const d = new Date().toLocaleDateString('sk');
     return d+' — '+t('goal.'+goal)+' ('+weight+' kg, '+(gender==='male'?t('record.male'):t('record.female'))+')';
@@ -508,11 +493,8 @@ function App() {
     setWeeklyDelta(0.5); setProteinSlider(0.5); setFatSlider(0.5);
   }
 
-  // ── RENDER ────────────────────────────────────────────────────────────────
   return (
     <div style={{minHeight:'100vh'}}>
-
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div style={{background:'linear-gradient(135deg,#1e293b 0%,#0f172a 100%)',borderBottom:'1px solid #1e293b',padding:'22px 20px 0'}}>
         <div style={{maxWidth:800,margin:'0 auto'}}>
           <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:12,flexWrap:'wrap'}}>
@@ -526,7 +508,6 @@ function App() {
                 <p style={{color:'#475569',fontSize:11,marginTop:1}}>{t('app.subtitle')}</p>
               </div>
             </div>
-            {/* Jazykový prepínač + Settings */}
             <div style={{display:'flex',alignItems:'center',gap:5,flexShrink:0,paddingTop:2}}>
               {langs.map(function(l){ return (
                 <button key={l.id} onClick={function(){ switchLang(l.id); }} style={{
@@ -540,7 +521,6 @@ function App() {
               <button onClick={function(){setShowSettings(true);}} style={{padding:'5px 9px',borderRadius:6,border:'1px solid #334155',background:'#0f172a',color:'#64748b',cursor:'pointer',fontSize:13}}>⚙️</button>
             </div>
           </div>
-          {/* Záložky */}
           <div style={{display:'flex',marginTop:16}}>
             {[['calc',t('tab.calc')],['records',t('tab.records')+(savedRecords.length?(' ('+savedRecords.length+')'):'')]].map(function(arr){ return (
               <button key={arr[0]} className="tab-btn" onClick={function(){setActiveTab(arr[0]);}} style={{
@@ -554,11 +534,8 @@ function App() {
         </div>
       </div>
 
-      {/* ── Záložka: Kalkulačka ──────────────────────────────────────────── */}
       {activeTab==='calc' && (
         <div style={{maxWidth:800,margin:'0 auto',padding:'24px 16px 80px',display:'flex',flexDirection:'column',gap:20}}>
-
-          {/* Banner – editácia */}
           {editingRecord && (
             <div style={{background:'rgba(245,158,11,.07)',border:'1px solid rgba(245,158,11,.22)',borderRadius:12,
               padding:'11px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:8}}>
@@ -572,8 +549,6 @@ function App() {
               <button className="btn btn-ghost" onClick={clearEditor} style={{fontSize:12}}>{t('editing.new')}</button>
             </div>
           )}
-
-          {/* ── Krok 1: BMR ─────────────────────────────────────────────────── */}
           <div className="card">
             <div className="section-title" style={{color:'#f59e0b'}}>{t('step1.title')}</div>
             <div style={{display:'flex',flexWrap:'wrap',gap:20,alignItems:'center'}}>
@@ -602,8 +577,6 @@ function App() {
               </div>
             </div>
           </div>
-
-          {/* ── Krok 2: PAL ─────────────────────────────────────────────────── */}
           <div className="card">
             <div className="section-title" style={{color:'#3b82f6'}}>{t('step2.title')}</div>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16}}>
@@ -658,8 +631,6 @@ function App() {
               })}
             </div>
           </div>
-
-          {/* ── Krok 3: Celkový výdaj ─────────────────────────────────────────── */}
           {hoursOK && (
             <div className="card" style={{background:'linear-gradient(135deg,#1e293b,#1a2744)',borderColor:'#334155'}}>
               <div className="section-title" style={{color:'#22c55e'}}>{t('step3.title')}</div>
@@ -682,8 +653,6 @@ function App() {
               </div>
             </div>
           )}
-
-          {/* ── Krok 4: Cieľ ──────────────────────────────────────────────────── */}
           {hoursOK && (
             <div className="card">
               <div className="section-title" style={{color:goalColor}}>{t('step4.title')}</div>
@@ -700,7 +669,6 @@ function App() {
                   </button>
                 ); })}
               </div>
-
               {goal!=='recomp' && (
                 <React.Fragment>
                   <div style={{display:'flex',gap:8,marginBottom:16}}>
@@ -734,7 +702,6 @@ function App() {
                   </div>
                 </React.Fragment>
               )}
-
               <div style={{marginTop:16,background:'#0f172a',borderRadius:12,padding:20,textAlign:'center',border:'1px solid '+goalColor+'33'}}>
                 <div style={{fontSize:13,color:'#94a3b8',marginBottom:4}}>
                   {goal==='muscle' ? totalKcal.toLocaleString('sk')+' + '+goalDelta
@@ -744,12 +711,9 @@ function App() {
                 <div style={{fontSize:48,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:goalColor}}>{targetKcal.toLocaleString('sk')}</div>
                 <div style={{fontSize:14,color:'#64748b'}}>{t('target.label')}</div>
               </div>
-
               <GoalInfo goalId={goal} t={t}/>
             </div>
           )}
-
-          {/* ── Krok 5: Makronutrienty ──────────────────────────────────────────── */}
           {hoursOK && (
             <div className="card">
               <div className="section-title" style={{color:'#f59e0b'}}>{t('step5.title')}</div>
@@ -760,16 +724,12 @@ function App() {
                     value={parseFloat((mr.proteinMin+(mr.proteinMax-mr.proteinMin)*proteinSlider).toFixed(1))}
                     onChange={function(v){setProteinSlider((v-mr.proteinMin)/(mr.proteinMax-mr.proteinMin));}}
                     label={t('macro.protein_per_kg')} unit="g/kg" color="#f59e0b"/>
-
-                  {/* Posuvník tuku s dynamickým minimom */}
                   <Slider
                     min={effFatMin} max={effFatMax} step={1}
                     value={Math.round(fatPct)}
                     onChange={changeFatSlider}
                     label={t('macro.fat_pct')} unit="%" color="#ef4444"
                     disabled={effFatMin>=effFatMax}/>
-
-                  {/* Upozornenie na biologické minimum */}
                   {fatConstrained && (
                     <div style={{marginTop:-4,marginBottom:8,padding:'8px 12px',borderRadius:8,
                       background:'rgba(245,158,11,.08)',border:'1px solid rgba(245,158,11,.2)',fontSize:12,color:'#fbbf24'}}>
@@ -813,8 +773,6 @@ function App() {
               </div>
             </div>
           )}
-
-          {/* ── Pravidlá ──────────────────────────────────────────────────────── */}
           {hoursOK && (
             <div className="card" style={{background:'#0f172a',border:'1px solid #334155'}}>
               <div className="section-title" style={{color:'#94a3b8',fontSize:16}}>{t('rules.title')}</div>
@@ -833,8 +791,6 @@ function App() {
               </div>
             </div>
           )}
-
-          {/* ── Uložiť ────────────────────────────────────────────────────────── */}
           {hoursOK && (
             <div className="card" style={{background:'#0f172a',border:'1px solid #1e293b'}}>
               <div className="section-title" style={{color:'#94a3b8',fontSize:16}}>{t('save.title')}</div>
@@ -853,12 +809,10 @@ function App() {
               <div style={{fontSize:12,color:'#334155',marginTop:8,textAlign:'center'}}>{t('save.note')}</div>
             </div>
           )}
-
           <div style={{textAlign:'center',fontSize:11,color:'#334155',paddingTop:8}}>{t('app.footer')}</div>
         </div>
       )}
 
-      {/* ── Záložka: Záznamy ─────────────────────────────────────────────── */}
       {activeTab==='records' && (
         <div style={{maxWidth:800,margin:'0 auto',padding:'24px 16px 80px'}}>
           {savedRecords.length===0 ? (
@@ -902,9 +856,9 @@ function App() {
                       <div style={{marginTop:14,paddingTop:14,borderTop:'1px solid #0f172a'}}>
                         <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:10}}>
                           {[
-                            {label:t('record.bmr'),   val:(rec.bmr||0).toLocaleString('sk')+' kcal',         color:'#f59e0b'},
-                            {label:t('record.total'),  val:(rec.totalKcal||0).toLocaleString('sk')+' kcal',   color:'#3b82f6'},
-                            {label:t('record.target'), val:(rec.targetKcal||0).toLocaleString('sk')+' kcal',  color:gd.color},
+                            {label:t('record.bmr'),   val:(rec.bmr||0).toLocaleString('sk')+' kcal', color:'#f59e0b'},
+                            {label:t('record.total'),  val:(rec.totalKcal||0).toLocaleString('sk')+' kcal', color:'#3b82f6'},
+                            {label:t('record.target'), val:(rec.targetKcal||0).toLocaleString('sk')+' kcal', color:gd.color},
                           ].map(function(i){ return (
                             <div key={i.label} style={{flex:'1 1 90px',background:'#0f172a',borderRadius:10,padding:'12px 10px',textAlign:'center'}}>
                               <div style={{fontSize:11,color:'#64748b',marginBottom:4}}>{i.label}</div>
@@ -944,7 +898,6 @@ function App() {
         </div>
       )}
 
-      {/* ── Modál: Uložiť záznam ─────────────────────────────────────────── */}
       {showSaveModal && (
         <div className="modal-overlay" onClick={function(){setShowSaveModal(false);}}>
           <div className="modal" style={{maxWidth:420}} onClick={function(e){e.stopPropagation();}}>
@@ -967,7 +920,6 @@ function App() {
         </div>
       )}
 
-      {/* ── Modál: Nastavenia ─────────────────────────────────────────────── */}
       {showSettings && (
         <SettingsModal
           settings={settings}
