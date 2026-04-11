@@ -1,0 +1,729 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Calorie Calculator 2.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-10 14:18+0000\n"
+"PO-Revision-Date: 2026-04-10 14:18+0000\n"
+"Last-Translator: Jan Salma <jsalma6274@gmail.com>\n"
+"Language-Team: Deutsch\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "app.footer"
+msgid ""
+"Calculations are based on Fitness Fibel 2.0 (Sjard Roscher) and serve as a "
+"reference guide."
+msgstr ""
+"Berechnungen basieren auf der Fitness Fibel 2.0 (Sjard Roscher) und dienen "
+"als Orientierungshilfe."
+
+msgctxt "app.subtitle"
+msgid "Daily calorie and macronutrient needs · Fitness Fibel 2.0"
+msgstr ""
+"Täglicher Kalorienbedarf und Makronährstoffverteilung · Fitness Fibel 2.0"
+
+msgctxt "app.title"
+msgid "Calorie Calculator"
+msgstr "Kalorienrechner"
+
+msgctxt "calc.by_calories"
+msgid "By calories (kcal)"
+msgstr "Nach Kalorien (kcal)"
+
+msgctxt "calc.by_weight"
+msgid "By weight (kg)"
+msgstr "Nach Gewicht (kg)"
+
+msgctxt "deficit.label"
+msgid "Caloric deficit"
+msgstr "Kaloriendefizit"
+
+msgctxt "editing.banner"
+msgid "Editing record:"
+msgstr "Aufzeichnung wird bearbeitet:"
+
+msgctxt "editing.new"
+msgid "✕ New calculation"
+msgstr "✕ Neue Berechnung"
+
+msgctxt "fat.at_min"
+msgid ""
+"⚠️ Fat ({g} g) is set to the biological minimum for {gender} — essential for"
+" hormones and vitamins A, D, E, K."
+msgstr ""
+"⚠️ Fett ({g} g) ist auf dem biologischen Minimum für {gender} — unerlässlich"
+" für Hormone und Vitamine A, D, E, K."
+
+msgctxt "fat.warning"
+msgid ""
+"⚠️ Fat intake ({g} g) is below the minimum for {gender} ({min} g) — risk of "
+"hormonal imbalance."
+msgstr ""
+"⚠️ Fettzufuhr ({g} g) unter dem Minimum für {gender} ({min} g) — Gefahr "
+"einer Hormonstörung."
+
+msgctxt "gender.f"
+msgid "women"
+msgstr "Frauen"
+
+msgctxt "gender.m"
+msgid "men"
+msgstr "Männer"
+
+msgctxt "goal.fat_loss"
+msgid "Fat Loss"
+msgstr "Fettabbau"
+
+msgctxt "goal.fat_loss.desc"
+msgid "Caloric deficit"
+msgstr "Kaloriendefizit"
+
+msgctxt "goal.muscle"
+msgid "Muscle Building"
+msgstr "Muskelaufbau"
+
+msgctxt "goal.muscle.desc"
+msgid "Caloric surplus"
+msgstr "Kalorienüberschuss"
+
+msgctxt "goal.recomp"
+msgid "Body Recomposition"
+msgstr "Body-Rekomposition"
+
+msgctxt "goal.recomp.desc"
+msgid "Maintenance intake"
+msgstr "Erhaltungsbedarf"
+
+msgctxt "info.fat_loss.carbs"
+msgid ""
+"Remaining — keep as high as possible to preserve training energy and "
+"strength, which increases total calorie expenditure."
+msgstr ""
+"Verbleibend — so hoch wie möglich halten, um Energie und Kraft im Training "
+"zu erhalten, was den Gesamtkalorienverbrauch erhöht."
+
+msgctxt "info.fat_loss.fat"
+msgid ""
+"15–20% of calories — minimized but never below biological minimum. Fats are "
+"essential for hormones (testosterone, estrogen) and fat-soluble vitamins A, "
+"D, E, K."
+msgstr ""
+"15–20 % der Kalorien — minimiert, aber nie unter das biologische Minimum. "
+"Fette sind unerlässlich für Hormone (Testosteron, Östrogen) und Vitamine A, "
+"D, E, K."
+
+msgctxt "info.fat_loss.protein"
+msgid ""
+"2.2–2.4 g/kg — strongly protects muscle mass during caloric deficit. More "
+"amino acids = less catabolism."
+msgstr ""
+"2,2–2,4 g/kg — schützt die Muskelmasse stark beim Kaloriendefizit. Mehr "
+"Aminosäuren = weniger Katabolismus."
+
+msgctxt "info.fat_loss.text"
+msgid ""
+"In a deficit, the body burns both fat and muscle. Higher protein and "
+"strength training are the main tools for preserving lean mass (p. 140)."
+msgstr ""
+"Im Defizit verbrennt der Körper sowohl Fett als auch Muskeln. Erhöhtes "
+"Protein und Krafttraining sind die wichtigsten Mittel zum Muskelerhalt (S. "
+"140)."
+
+msgctxt "info.fat_loss.title"
+msgid "Macros for fat loss"
+msgstr "Makros beim Fettabbau"
+
+msgctxt "info.muscle.carbs"
+msgid ""
+"Remaining calories — primary fuel for training, replenishes glycogen and "
+"enables progressive overload."
+msgstr ""
+"Verbleibende Kalorien — primärer Treibstoff für das Training, füllt Glykogen"
+" und ermöglicht Trainingsfortschritte."
+
+msgctxt "info.muscle.fat"
+msgid ""
+"25–30% of calories — higher fat intake is essential for testosterone and "
+"anabolic hormones critical for muscle growth."
+msgstr ""
+"25–30 % der Kalorien — ein höherer Fettanteil ist entscheidend für "
+"Testosteron und anabole Hormone, die für den Muskelaufbau notwendig sind."
+
+msgctxt "info.muscle.protein"
+msgid ""
+"1.8–2.0 g/kg — stimulates muscle protein synthesis (MPS). In a caloric "
+"surplus, lower protein is sufficient compared to a deficit."
+msgstr ""
+"1,8–2,0 g/kg — stimuliert die Muskelproteinsynthese (MPS). Im "
+"Kalorienüberschuss reicht ein niedrigerer Proteinbedarf als bei der Diät."
+
+msgctxt "info.muscle.text"
+msgid ""
+"The body can only synthesize ~300 kcal of muscle tissue per day naturally "
+"(p. 137). A larger surplus = fat, not muscle. A small, controlled surplus is"
+" optimal."
+msgstr ""
+"Der Körper kann natürlich max. ~300 kcal Muskelmasse pro Tag synthetisieren "
+"(S. 137). Ein größerer Überschuss = Fett, keine Muskeln. Ein kleiner, "
+"kontrollierter Überschuss ist optimal."
+
+msgctxt "info.muscle.title"
+msgid "Macros for muscle building"
+msgstr "Makros beim Muskelaufbau"
+
+msgctxt "info.recomp.carbs"
+msgid ""
+"Remaining — adequate glycogen supply for training. Results are slower than "
+"pure bulk/cut, but without weight fluctuations."
+msgstr ""
+"Verbleibend — ausreichende Glykogenversorgung für das Training. Ergebnisse "
+"sind langsamer als beim reinen Bulk/Cut, aber ohne Gewichtsschwankungen."
+
+msgctxt "info.recomp.fat"
+msgid ""
+"20–25% of calories — the golden mean for hormonal balance without limiting "
+"training performance."
+msgstr ""
+"20–25 % der Kalorien — die goldene Mitte für die hormonelle Balance ohne "
+"Einschränkung der Trainingsleistung."
+
+msgctxt "info.recomp.protein"
+msgid ""
+"1.8–2.2 g/kg — the middle range covers both processes: building and "
+"protecting muscle. Higher intake = better results."
+msgstr ""
+"1,8–2,2 g/kg — der mittlere Bereich deckt beide Prozesse ab: Aufbau und "
+"Schutz der Muskeln. Höhere Zufuhr = bessere Ergebnisse."
+
+msgctxt "info.recomp.text"
+msgid ""
+"Recomposition = simultaneous muscle building and fat loss at maintenance "
+"calories (p. 128). Most effective for beginners or those returning after a "
+"break."
+msgstr ""
+"Rekomposition = gleichzeitiger Muskelaufbau und Fettabbau beim "
+"Erhaltungsbedarf (S. 128). Am effektivsten bei Anfängern oder nach einer "
+"Trainingspause."
+
+msgctxt "info.recomp.title"
+msgid "Macros for body recomposition"
+msgstr "Makros bei der Body-Rekomposition"
+
+msgctxt "info.why_macros"
+msgid "📖 Why these macros?"
+msgstr "📖 Warum diese Makros?"
+
+msgctxt "lang.de_DE"
+msgid "DE"
+msgstr "DE"
+
+msgctxt "lang.en_EN"
+msgid "EN"
+msgstr "EN"
+
+msgctxt "lang.sk_SK"
+msgid "SK"
+msgstr "SK"
+
+msgctxt "macro.carbs"
+msgid "Carbs"
+msgstr "Kohlenhydrate"
+
+msgctxt "macro.carbs_auto"
+msgid "Carbohydrates fill the remaining calories automatically."
+msgstr "Kohlenhydrate füllen die verbleibenden Kalorien automatisch auf."
+
+msgctxt "macro.fat"
+msgid "Fat"
+msgstr "Fett"
+
+msgctxt "macro.fat_pct"
+msgid "Fat (% of calories)"
+msgstr "Fett (% der Kalorien)"
+
+msgctxt "macro.grams"
+msgid "grams"
+msgstr "Gramm"
+
+msgctxt "macro.protein"
+msgid "Protein"
+msgstr "Eiweiß"
+
+msgctxt "macro.protein_per_kg"
+msgid "Protein (g/kg)"
+msgstr "Eiweiß (g/kg)"
+
+msgctxt "maintenance"
+msgid "Maintenance intake"
+msgstr "Erhaltungsbedarf"
+
+msgctxt "meta.flag"
+msgid "🇬🇧"
+msgstr "🇩🇪"
+
+msgctxt "meta.name"
+msgid "English"
+msgstr "German"
+
+msgctxt "meta.nativeName"
+msgid "English"
+msgstr "Deutsch"
+
+msgctxt "modal.cancel"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "modal.name.label"
+msgid "Record name (optional)"
+msgstr "Name der Aufzeichnung (optional)"
+
+msgctxt "modal.save.btn"
+msgid "Save"
+msgstr "Speichern"
+
+msgctxt "modal.save.note"
+msgid "Results will be saved as a new record."
+msgstr "Ergebnisse werden als neue Aufzeichnung gespeichert."
+
+msgctxt "modal.save.title"
+msgid "💾 Save calculation"
+msgstr "💾 Berechnung speichern"
+
+msgctxt "modal.update.btn"
+msgid "Update"
+msgstr "Aktualisieren"
+
+msgctxt "modal.update.note"
+msgid "This will overwrite record: \"{name}\""
+msgstr "Diese Aufzeichnung wird überschrieben: „{name}\""
+
+msgctxt "modal.update.title"
+msgid "🔄 Update record"
+msgstr "🔄 Aufzeichnung aktualisieren"
+
+msgctxt "pal.heavy"
+msgid "Heavy physical work (construction workers, elite sport)"
+msgstr "Körperlich schwere Arbeit (Bauarbeiter, Leistungssport)"
+
+msgctxt "pal.light"
+msgid ""
+"Sedentary + occasional standing / walking (driver, assembly line worker)"
+msgstr "Sitzend + kurze Steh- / Gehtätigkeiten (Fahrer, Fließbandarbeiter)"
+
+msgctxt "pal.lying"
+msgid "Exclusively sedentary / lying lifestyle (computer, TV)"
+msgstr "Ausschließlich sitzende / liegende Lebensweise (Computer, TV)"
+
+msgctxt "pal.sedentary"
+msgid "Sedentary work with little activity"
+msgstr "Sitzende Tätigkeit mit wenig Aktivität"
+
+msgctxt "pal.sleep"
+msgid "Sleep"
+msgstr "Schlaf"
+
+msgctxt "pal.sport"
+msgid "Sport / training"
+msgstr "Sport / Training"
+
+msgctxt "pal.standing"
+msgid "Predominantly standing / walking work (housework, salesperson)"
+msgstr "Überwiegend stehende / gehende Tätigkeit (Hausarbeit, Verkäufer)"
+
+msgctxt "recommend.fat_loss"
+msgid ""
+"📖 Fitness Fibel 2.0: A 300 kcal/day deficit is the ideal start. Goal: 0.5–1 "
+"kg/week."
+msgstr ""
+"📖 Fitness Fibel 2.0: Ein Defizit von 300 kcal/Tag ist der ideale Einstieg. "
+"Ziel: 0,5–1 kg/Woche."
+
+msgctxt "recommend.muscle.f"
+msgid ""
+"📖 Fitness Fibel 2.0: Women +200 kcal, max. 0.5–1 kg/month. Women build "
+"muscle more slowly."
+msgstr ""
+"📖 Fitness Fibel 2.0: Frauen +200 kcal, max. 0,5–1 kg/Monat. Frauen bauen "
+"Muskeln langsamer auf."
+
+msgctxt "recommend.muscle.m"
+msgid ""
+"📖 Fitness Fibel 2.0: Men +300 kcal, max. 1–1.5 kg/month. Clean gains without"
+" excess fat."
+msgstr ""
+"📖 Fitness Fibel 2.0: Männer +300 kcal, max. 1–1,5 kg/Monat. Sauberer Aufbau "
+"ohne überschüssiges Fett."
+
+msgctxt "record.bmr"
+msgid "BMR"
+msgstr "Grundumsatz"
+
+msgctxt "record.delete"
+msgid "🗑️ Delete"
+msgstr "🗑️ Löschen"
+
+msgctxt "record.delete_confirm"
+msgid "Delete record \"{name}\"?"
+msgstr "Aufzeichnung „{name}\" löschen?"
+
+msgctxt "record.editing_note"
+msgid "You are currently editing this record in the calculator"
+msgstr "Diese Aufzeichnung wird gerade im Rechner bearbeitet"
+
+msgctxt "record.female"
+msgid "Female"
+msgstr "Frau"
+
+msgctxt "record.hide"
+msgid "▲ Hide details"
+msgstr "▲ Details ausblenden"
+
+msgctxt "record.male"
+msgid "Male"
+msgstr "Mann"
+
+msgctxt "record.open"
+msgid "✏️ Open in calculator"
+msgstr "✏️ Im Rechner öffnen"
+
+msgctxt "record.show"
+msgid "▼ Show details"
+msgstr "▼ Details anzeigen"
+
+msgctxt "record.target"
+msgid "Target Intake"
+msgstr "Zielwert"
+
+msgctxt "record.total"
+msgid "Total Expenditure"
+msgstr "Gesamtbedarf"
+
+msgctxt "record.unit.kg"
+msgid "kg"
+msgstr "kg"
+
+msgctxt "records.count.few"
+msgid "records"
+msgstr "Aufzeichnungen"
+
+msgctxt "records.count.many"
+msgid "records"
+msgstr "Aufzeichnungen"
+
+msgctxt "records.count.one"
+msgid "record"
+msgstr "Aufzeichnung"
+
+msgctxt "records.empty.desc"
+msgid "Calculate your plan in the calculator and save it for future use."
+msgstr ""
+"Berechne deinen Plan im Rechner und speichere ihn für die spätere "
+"Verwendung."
+
+msgctxt "records.empty.title"
+msgid "No records"
+msgstr "Keine Aufzeichnungen"
+
+msgctxt "records.go_calc"
+msgid "🧮 Go to calculator"
+msgstr "🧮 Zum Rechner"
+
+msgctxt "rules.8020"
+msgid "80/20 Rule"
+msgstr "80/20-Regel"
+
+msgctxt "rules.8020.value"
+msgid "80% whole foods"
+msgstr "80 % Vollwertkost"
+
+msgctxt "rules.fiber"
+msgid "Fiber"
+msgstr "Ballaststoffe"
+
+msgctxt "rules.fiber.value"
+msgid "{min}–{max} g/day"
+msgstr "{min}–{max} g/Tag"
+
+msgctxt "rules.title"
+msgid "📋 Important Rules"
+msgstr "📋 Wichtige Regeln"
+
+msgctxt "rules.water"
+msgid "Water"
+msgstr "Wasser"
+
+msgctxt "rules.water.value"
+msgid "min. {l} L/day"
+msgstr "min. {l} L/Tag"
+
+msgctxt "save.button"
+msgid "💾 Save this calculation"
+msgstr "💾 Diese Berechnung speichern"
+
+msgctxt "save.new"
+msgid "➕ Save as new"
+msgstr "➕ Als neu speichern"
+
+msgctxt "save.note"
+msgid "Records are saved as portable files in the app folder."
+msgstr "Aufzeichnungen werden als portable Dateien im App-Ordner gespeichert."
+
+msgctxt "save.title"
+msgid "💾 Save Results"
+msgstr "💾 Ergebnisse speichern"
+
+msgctxt "save.update"
+msgid "🔄 Update"
+msgstr "🔄 Aktualisieren"
+
+msgctxt "settings.close"
+msgid "Close"
+msgstr "Schließen"
+
+msgctxt "settings.deficit.default"
+msgid "Default deficit"
+msgstr "Standarddefizit"
+
+msgctxt "settings.fat.max"
+msgid "Fat max."
+msgstr "Fett max."
+
+msgctxt "settings.fat.min"
+msgid "Fat min."
+msgstr "Fett min."
+
+msgctxt "settings.fat.unit"
+msgid "%"
+msgstr "%"
+
+msgctxt "settings.lang.label"
+msgid "🌍 Language"
+msgstr "🌍 Sprache"
+
+msgctxt "settings.lang.note"
+msgid "Default application language"
+msgstr "Standardsprache der Anwendung"
+
+msgctxt "settings.macros.note"
+msgid ""
+"Adjust ranges to your preferences. Default values are from Fitness Fibel 2.0"
+" (pp. 168–170)."
+msgstr ""
+"Bereiche nach eigenen Vorlieben anpassen. Standardwerte aus Fitness Fibel "
+"2.0 (S. 168–170)."
+
+msgctxt "settings.macros.title"
+msgid "⚖️ Macronutrient Ranges"
+msgstr "⚖️ Makronährstoff-Bereiche"
+
+msgctxt "settings.minfat.female"
+msgid "Minimum for women"
+msgstr "Minimum für Frauen"
+
+msgctxt "settings.minfat.male"
+msgid "Minimum for men"
+msgstr "Minimum für Männer"
+
+msgctxt "settings.minfat.note"
+msgid ""
+"Minimum daily fat intake regardless of % setting. Lower intake damages "
+"hormones."
+msgstr ""
+"Minimale tägliche Fettzufuhr unabhängig von der %-Einstellung. Eine "
+"niedrigere Zufuhr schädigt die Hormone."
+
+msgctxt "settings.minfat.title"
+msgid "🛡️ Biological Fat Minimum"
+msgstr "🛡️ Biologisches Fettminimum"
+
+msgctxt "settings.minfat.unit"
+msgid "g/day"
+msgstr "g/Tag"
+
+msgctxt "settings.protein.max"
+msgid "Protein max."
+msgstr "Eiweiß max."
+
+msgctxt "settings.protein.min"
+msgid "Protein min."
+msgstr "Eiweiß min."
+
+msgctxt "settings.protein.unit"
+msgid "g/kg"
+msgstr "g/kg"
+
+msgctxt "settings.reset"
+msgid "🔄 Reset to defaults (Fitness Fibel 2.0)"
+msgstr "🔄 Auf Standardwerte zurücksetzen (Fitness Fibel 2.0)"
+
+msgctxt "settings.save"
+msgid "Save settings"
+msgstr "Einstellungen speichern"
+
+msgctxt "settings.surplus.muscle.f"
+msgid "Default surplus (women)"
+msgstr "Standardüberschuss (Frauen)"
+
+msgctxt "settings.surplus.muscle.m"
+msgid "Default surplus (men)"
+msgstr "Standardüberschuss (Männer)"
+
+msgctxt "settings.surplus.title"
+msgid "📈 Default Values"
+msgstr "📈 Standardwerte"
+
+msgctxt "settings.title"
+msgid "⚙️ Settings"
+msgstr "⚙️ Einstellungen"
+
+msgctxt "step1.female"
+msgid "👩 Female"
+msgstr "👩 Frau"
+
+msgctxt "step1.formula.female"
+msgid "Formula: 0.9 × {weight} kg × 24h"
+msgstr "Formel: 0,9 × {weight} kg × 24h"
+
+msgctxt "step1.formula.male"
+msgid "Formula: 1.0 × {weight} kg × 24h"
+msgstr "Formel: 1,0 × {weight} kg × 24h"
+
+msgctxt "step1.gender"
+msgid "Gender"
+msgstr "Geschlecht"
+
+msgctxt "step1.male"
+msgid "👨 Male"
+msgstr "👨 Mann"
+
+msgctxt "step1.note.female"
+msgid "Women: 0.9 kcal/kg/h · Fitness Fibel 2.0, p. 129"
+msgstr "Frauen: 0,9 kcal/kg/h · Fitness Fibel 2.0, S. 129"
+
+msgctxt "step1.note.male"
+msgid "Men: 1.0 kcal/kg/h · Fitness Fibel 2.0, p. 129"
+msgstr "Männer: 1,0 kcal/kg/h · Fitness Fibel 2.0, S. 129"
+
+msgctxt "step1.title"
+msgid "1️⃣ Basal Metabolic Rate (BMR)"
+msgstr "1️⃣ Grundumsatz (BMR)"
+
+msgctxt "step1.unit"
+msgid "kcal / day"
+msgstr "kcal / Tag"
+
+msgctxt "step1.weight"
+msgid "Weight (kg)"
+msgstr "Körpergewicht (kg)"
+
+msgctxt "step2.hours"
+msgid "{n} / 24 hours"
+msgstr "{n} / 24 Stunden"
+
+msgctxt "step2.hours.error"
+msgid "Total hours must equal exactly 24"
+msgstr "Die Summe der Stunden muss genau 24 ergeben"
+
+msgctxt "step2.intensity"
+msgid "Intensity:"
+msgstr "Intensität:"
+
+msgctxt "step2.title"
+msgid "2️⃣ Daily Activities (PAL)"
+msgstr "2️⃣ Tagesaktivitäten (PAL)"
+
+msgctxt "step2.unit.h"
+msgid "h"
+msgstr "h"
+
+msgctxt "step3.bmr"
+msgid "BMR"
+msgstr "Grundumsatz"
+
+msgctxt "step3.pal"
+msgid "Average PAL"
+msgstr "Durchschnittlicher PAL"
+
+msgctxt "step3.title"
+msgid "3️⃣ Total Daily Expenditure"
+msgstr "3️⃣ Gesamtenergiebedarf"
+
+msgctxt "step3.total"
+msgid "Total Expenditure"
+msgstr "Gesamtbedarf"
+
+msgctxt "step3.unit"
+msgid "kcal / day"
+msgstr "kcal / Tag"
+
+msgctxt "step4.title"
+msgid "4️⃣ Goal"
+msgstr "4️⃣ Ziel"
+
+msgctxt "step5.title"
+msgid "5️⃣ Macronutrients"
+msgstr "5️⃣ Makronährstoffe"
+
+msgctxt "storage.connected"
+msgid "Portable storage connected"
+msgstr "Portabler Speicher verbunden"
+
+msgctxt "storage.not_connected"
+msgid "Select the folder where this app lives to enable portable data storage"
+msgstr "Wählen Sie den App-Ordner für portablen Datenspeicher"
+
+msgctxt "storage.select_folder"
+msgid "Select app folder"
+msgstr "App-Ordner auswählen"
+
+msgctxt "surplus.label"
+msgid "Caloric surplus"
+msgstr "Kalorienüberschuss"
+
+msgctxt "tab.calc"
+msgid "🧮 Calculator"
+msgstr "🧮 Rechner"
+
+msgctxt "tab.records"
+msgid "📋 Records"
+msgstr "📋 Aufzeichnungen"
+
+msgctxt "tab.settings"
+msgid "⚙️ Settings"
+msgstr "⚙️ Einstellungen"
+
+msgctxt "target.label"
+msgid "kcal / day — your target intake"
+msgstr "kcal / Tag — dein Zielwert"
+
+msgctxt "unit.kcal_day"
+msgid "kcal/day"
+msgstr "kcal/Tag"
+
+msgctxt "unit.kg_week"
+msgid "kg/week"
+msgstr "kg/Woche"
+
+msgctxt "weekly.gain"
+msgid "Weekly weight gain"
+msgstr "Gewichtszunahme pro Woche"
+
+msgctxt "weekly.loss"
+msgid "Weekly weight loss"
+msgstr "Gewichtsabnahme pro Woche"
+
+msgctxt "storage.reconnect"
+msgid "Erneut verbinden"
+msgstr "Erneut verbinden"
+
+msgctxt "storage.change_folder"
+msgid "Ordner wechseln"
+msgstr "Ordner wechseln"
+
+msgctxt "storage.folder_title"
+msgid "App-Ordner"
+msgstr "App-Ordner"

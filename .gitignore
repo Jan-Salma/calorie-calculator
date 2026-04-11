@@ -33,9 +33,13 @@ build/
 # Books / large assets (do not commit to repository)
 *.pdf
 
-# Gettext compiled binaries (source .po files are sufficient)
-*.mo
-
 # Temporary / session files
 *.tmp
 *.log
+
+# Cowork / Claude session files
+CLAUDE.md
+.claude/
+
+# App data folder — personal settings and records, never commit
+web/data/

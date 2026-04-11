@@ -9,9 +9,55 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-- Portable file-based storage (File System Access API + JSON) replacing localStorage
-- `.po`/`.mo` translation system with Poedit workflow
-- Multilingual README variants (SK, DE)
+---
+
+## [2.0.0] - 2026-04-11
+
+### Added
+- **Portable file-based storage** — data stored in `data/` folder next to `index.html`
+  - `data/settings.json` — language and macro settings
+  - `data/records.json` — saved calculations
+  - One-time folder connection via File System Access API; auto-restores silently on return visits
+  - Reconnect button appears only when browser permission expires (new session) — one click
+- **GNU gettext translation system** — flat `languages/` structure replacing `.js` locale files
+  - `en_EN.po` / `en_EN.mo` — English source (anchor strings, also used as Poedit template)
+  - `sk_SK.po` / `sk_SK.mo` — Slovak translations
+  - `de_DE.po` / `de_DE.mo` — German translations
+  - Adding new language: create `xx_XX.po` in Poedit from `en_EN.po`, save `xx_XX.po` + `xx_XX.mo` to `languages/`, reconnect app folder → new language appears automatically in dropdown
+  - `.mo` binary parser built into `index.html` (DataView / ArrayBuffer, magic `0x950412de`)
+- **Dynamic language discovery** — language dropdown auto-built from `languages/*.mo` after folder connection
+- **Language switcher — `<select>` dropdown** replacing side-by-side buttons in header and settings modal
+  - Header: shows short code only (`EN`, `SK`, `DE`, …)
+  - Settings modal: shows code + native name (`EN — English`, `SK — Slovenčina`, `DE — Deutsch`)
+- **Automatic language name resolution via `Intl.DisplayNames`** — browser resolves the native name for any language code without a hardcoded list (`it_IT` → `italiano (Italia)`, `ar_SA` → `العربية`, etc.)
+- **`langShortCode()`** — derives display code from locale filename (`sk_SK.mo` → `SK`)
+- **`resolveIntlName()`** — wraps `Intl.DisplayNames` with BCP47 conversion and graceful fallback
+- **Connected folder path display** — when portable storage is connected, full path shown next to status indicator in both header and settings modal
+- **`detectAppWebPath()`** — reads path of currently open `index.html` from `window.location.href` (file:// only), including the `web/` directory
+- **"Change folder" button** in Settings modal — allows reconnecting or switching folder without leaving settings
+- **New translation keys** added to all three languages (`.po` + `.mo`):
+  - `storage.reconnect` — button label when stored handle exists but permission expired
+  - `storage.change_folder` — button label in settings when already connected
+  - `storage.folder_title` — section title in settings modal
+- All three core translations embedded inline in `index.html` for immediate use without folder connection
+
+### Changed
+- `index.html` — complete rewrite; localStorage replaced by portable file storage, all locale scripts removed, storage module rewritten, language switcher replaced with `<select>` dropdown
+- `languages/` directory — flattened; removed `sk_SK/LC_MESSAGES/` and `de_DE/LC_MESSAGES/` nested structure
+- `tools/po2locale.py` — rewritten as v2 dev tool; compiles `.po` → `.mo` via `polib`; marked clearly as development-only utility, not required to run the app
+
+### Removed
+- `locales/` directory — all `en_EN.js`, `sk_SK.js`, `de_DE.js` files removed
+- `<script src="locales/...">` tags from `index.html`
+- Nested `languages/sk_SK/LC_MESSAGES/` and `languages/de_DE/LC_MESSAGES/` subdirectories
+
+### Files changed
+- `web/index.html` — complete v2.0.0 rewrite
+- `web/languages/en_EN.po` + `en_EN.mo` — new (English source/template, 156 entries)
+- `web/languages/sk_SK.po` + `sk_SK.mo` — new flat location (156 entries)
+- `web/languages/de_DE.po` + `de_DE.mo` — new flat location (156 entries)
+- `web/tools/po2locale.py` — rewritten for v2 workflow
+- `web/locales/` — removed entirely
 
 ---
 
@@ -34,10 +80,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Fixed
 - **Removed "Voľný čas (ľahká aktivita)"** PAL activity — not based on Fitness Fibel 2.0 source (p. 129); was incorrectly added
 - **Renamed 4 PAL activity labels** with real-world occupation examples (all 3 languages: SK / EN / DE)
-  - *Sedavý / ležiaci* — includes `(počítač, tv)` / `(computer, TV)` / `(Computer, TV)`
-  - *Sedavá + krátke státie / chôdza* — includes `(vodič, pracovník na montážnej linke)` / `(driver, assembly line worker)` / `(Fahrer, Fließbandarbeiter)`
-  - *Prevažne stojaca / chodiaca práca* — includes `(domáce práce, predajca)` / `(housework, salesperson)` / `(Hausarbeit, Verkäufer)`
-  - *Ťažká fyzická práca* — includes `(stavební robotníci, vrcholový šport)` / `(construction workers, elite sport)` / `(Bauarbeiter, Leistungssport)`
+  - *Sedavý / ležiaci* → includes `(počítač, tv)` / `(computer, TV)` / `(Computer, TV)`
+  - *Sedavá + krátke státie / chôdza* → includes `(vodič, pracovník na montážnej linke)` / `(driver, assembly line worker)` / `(Fahrer, Fließbandarbeiter)`
+  - *Prevažne stojaca / chodiaca práca* → includes `(domáce práce, predajca)` / `(housework, salesperson)` / `(Hausarbeit, Verkäufer)`
+  - *Ťažká fyzická práca* → includes `(stavební robotníci, vrcholový šport)` / `(construction workers, elite sport)` / `(Bauarbeiter, Leistungssport)`
 - **DEFAULT_HOURS redistributed** — leisure (7 h) removed, lying raised from 0 h → 7 h; total remains 24 h
 
 ### Files changed
@@ -117,11 +163,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Known Limitations
 - Slovak language only (multilanguage added in v1.1.0)
 - Records and settings are bound to the browser and device (localStorage)
-- Portable cross-device storage planned for v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.2...HEAD
+[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.2...v2.0.0
 [1.1.2]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.0.0...v1.1.0

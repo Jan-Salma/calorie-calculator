@@ -1,0 +1,722 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Calorie Calculator 2.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-10 14:18+0000\n"
+"PO-Revision-Date: 2026-04-10 14:18+0000\n"
+"Last-Translator: Jan Salma <jsalma6274@gmail.com>\n"
+"Language-Team: Slovenčina\n"
+"Language: sk_SK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "app.footer"
+msgid ""
+"Calculations are based on Fitness Fibel 2.0 (Sjard Roscher) and serve as a "
+"reference guide."
+msgstr ""
+"Výpočty vychádzajú z Fitness Fibel 2.0 (Sjard Roscher) a slúžia ako "
+"orientačný základ."
+
+msgctxt "app.subtitle"
+msgid "Daily calorie and macronutrient needs · Fitness Fibel 2.0"
+msgstr "Výpočet dennej potreby kalórií a makronutrientov · Fitness Fibel 2.0"
+
+msgctxt "app.title"
+msgid "Calorie Calculator"
+msgstr "Kalorická Kalkulačka"
+
+msgctxt "calc.by_calories"
+msgid "By calories (kcal)"
+msgstr "Podľa kalórií (kcal)"
+
+msgctxt "calc.by_weight"
+msgid "By weight (kg)"
+msgstr "Podľa hmotnosti (kg)"
+
+msgctxt "deficit.label"
+msgid "Caloric deficit"
+msgstr "Kalorický deficit"
+
+msgctxt "editing.banner"
+msgid "Editing record:"
+msgstr "Editujete záznam:"
+
+msgctxt "editing.new"
+msgid "✕ New calculation"
+msgstr "✕ Nový výpočet"
+
+msgctxt "fat.at_min"
+msgid ""
+"⚠️ Fat ({g} g) is set to the biological minimum for {gender} — essential for"
+" hormones and vitamins A, D, E, K."
+msgstr ""
+"⚠️ Tuky ({g} g) sú nastavené na biologické minimum pre {gender} — nevyhnutné"
+" pre hormóny a vitamíny A, D, E, K."
+
+msgctxt "fat.warning"
+msgid ""
+"⚠️ Fat intake ({g} g) is below the minimum for {gender} ({min} g) — risk of "
+"hormonal imbalance."
+msgstr ""
+"⚠️ Príjem tukov ({g} g) pod minimom pre {gender} ({min} g) — hrozí "
+"hormonálna nerovnováha."
+
+msgctxt "gender.f"
+msgid "women"
+msgstr "ženy"
+
+msgctxt "gender.m"
+msgid "men"
+msgstr "mužov"
+
+msgctxt "goal.fat_loss"
+msgid "Fat Loss"
+msgstr "Spaľovanie tuku"
+
+msgctxt "goal.fat_loss.desc"
+msgid "Caloric deficit"
+msgstr "Kalorický deficit"
+
+msgctxt "goal.muscle"
+msgid "Muscle Building"
+msgstr "Budovanie svalov"
+
+msgctxt "goal.muscle.desc"
+msgid "Caloric surplus"
+msgstr "Kalorický prebytok"
+
+msgctxt "goal.recomp"
+msgid "Body Recomposition"
+msgstr "Body Recompozícia"
+
+msgctxt "goal.recomp.desc"
+msgid "Maintenance intake"
+msgstr "Udržiavací príjem"
+
+msgctxt "info.fat_loss.carbs"
+msgid ""
+"Remaining — keep as high as possible to preserve training energy and "
+"strength, which increases total calorie expenditure."
+msgstr ""
+"Zostatok — udržujeme čo najviac pre zachovanie energie a sily v tréningu, čo"
+" zvyšuje celkový kalorický výdaj."
+
+msgctxt "info.fat_loss.fat"
+msgid ""
+"15–20% of calories — minimized but never below biological minimum. Fats are "
+"essential for hormones (testosterone, estrogen) and fat-soluble vitamins A, "
+"D, E, K."
+msgstr ""
+"15–20% kalórií — minimalizujeme, ale nie pod biologické minimum. Tuky sú "
+"nevyhnutné pre hormóny (testosterón, estrogén) a vitamíny A, D, E, K."
+
+msgctxt "info.fat_loss.protein"
+msgid ""
+"2.2–2.4 g/kg — strongly protects muscle mass during caloric deficit. More "
+"amino acids = less catabolism."
+msgstr ""
+"2,2–2,4 g/kg — výrazne chráni svalovú hmotu pri kalorickom deficite. Viac "
+"aminokyselín = menej katabolizmu."
+
+msgctxt "info.fat_loss.text"
+msgid ""
+"In a deficit, the body burns both fat and muscle. Higher protein and "
+"strength training are the main tools for preserving lean mass (p. 140)."
+msgstr ""
+"Pri deficite telo siaha aj po svaloch. Zvýšené bielkoviny a silový tréning "
+"sú hlavné nástroje ochrany svalovej hmoty (str. 140)."
+
+msgctxt "info.fat_loss.title"
+msgid "Macros for fat loss"
+msgstr "Makrá pri spaľovaní tuku"
+
+msgctxt "info.muscle.carbs"
+msgid ""
+"Remaining calories — primary fuel for training, replenishes glycogen and "
+"enables progressive overload."
+msgstr ""
+"Zostatok kalórií — primárne palivo pre tréning, dopĺňa glykogén a umožňuje "
+"progresiu záťaže."
+
+msgctxt "info.muscle.fat"
+msgid ""
+"25–30% of calories — higher fat intake is essential for testosterone and "
+"anabolic hormones critical for muscle growth."
+msgstr ""
+"25–30% kalórií — vyšší podiel tukov je kľúčový pre testosterón a anabolické "
+"hormóny nevyhnutné pre rast svalov."
+
+msgctxt "info.muscle.protein"
+msgid ""
+"1.8–2.0 g/kg — stimulates muscle protein synthesis (MPS). In a caloric "
+"surplus, lower protein is sufficient compared to a deficit."
+msgstr ""
+"1,8–2,0 g/kg — stimuluje syntézu svalových proteínov (MPS). V kalorickom "
+"prebytku stačí nižší príjem bielkovín ako pri diéte."
+
+msgctxt "info.muscle.text"
+msgid ""
+"The body can only synthesize ~300 kcal of muscle tissue per day naturally "
+"(p. 137). A larger surplus = fat, not muscle. A small, controlled surplus is"
+" optimal."
+msgstr ""
+"Telo syntetizuje prirodzene max. ~300 kcal svalovej hmoty denne (str. 137). "
+"Väčší prebytok = tuk, nie svaly. Preto stačí malý, kontrolovaný prebytok."
+
+msgctxt "info.muscle.title"
+msgid "Macros for muscle building"
+msgstr "Makrá pri budovaní svalov"
+
+msgctxt "info.recomp.carbs"
+msgid ""
+"Remaining — adequate glycogen supply for training. Results are slower than "
+"pure bulk/cut, but without weight fluctuations."
+msgstr ""
+"Zostatok — dostatočne zásobuje glykogén pre tréning. Výsledky sú pomalšie "
+"ako pri čistej mase/diéte, ale bez výkyvov hmotnosti."
+
+msgctxt "info.recomp.fat"
+msgid ""
+"20–25% of calories — the golden mean for hormonal balance without limiting "
+"training performance."
+msgstr ""
+"20–25% kalórií — zlatý stred pre hormonálnu rovnováhu bez obmedzenia výkonu "
+"v tréningu."
+
+msgctxt "info.recomp.protein"
+msgid ""
+"1.8–2.2 g/kg — the middle range covers both processes: building and "
+"protecting muscle. Higher intake = better results."
+msgstr ""
+"1,8–2,2 g/kg — stred rozsahu pokrýva oba procesy: budovanie aj ochranu "
+"svalov. Vyšší príjem = lepší výsledok."
+
+msgctxt "info.recomp.text"
+msgid ""
+"Recomposition = simultaneous muscle building and fat loss at maintenance "
+"calories (p. 128). Most effective for beginners or those returning after a "
+"break."
+msgstr ""
+"Rekompozícia = súčasné budovanie svalov a spaľovanie tuku pri udržiavacom "
+"príjme (str. 128). Najúčinnejšia u začiatočníkov alebo ľudí po prestávke."
+
+msgctxt "info.recomp.title"
+msgid "Macros for body recomposition"
+msgstr "Makrá pri rekompozícii tela"
+
+msgctxt "info.why_macros"
+msgid "📖 Why these macros?"
+msgstr "📖 Prečo tieto makrá?"
+
+msgctxt "lang.de_DE"
+msgid "DE"
+msgstr "DE"
+
+msgctxt "lang.en_EN"
+msgid "EN"
+msgstr "EN"
+
+msgctxt "lang.sk_SK"
+msgid "SK"
+msgstr "SK"
+
+msgctxt "macro.carbs"
+msgid "Carbs"
+msgstr "Sacharidy"
+
+msgctxt "macro.carbs_auto"
+msgid "Carbohydrates fill the remaining calories automatically."
+msgstr "Sacharidy dopĺňajú zvyšok kalórií automaticky."
+
+msgctxt "macro.fat"
+msgid "Fat"
+msgstr "Tuky"
+
+msgctxt "macro.fat_pct"
+msgid "Fat (% of calories)"
+msgstr "Tuky (% z kalórií)"
+
+msgctxt "macro.grams"
+msgid "grams"
+msgstr "gramov"
+
+msgctxt "macro.protein"
+msgid "Protein"
+msgstr "Bielkoviny"
+
+msgctxt "macro.protein_per_kg"
+msgid "Protein (g/kg)"
+msgstr "Bielkoviny (g/kg)"
+
+msgctxt "maintenance"
+msgid "Maintenance intake"
+msgstr "Udržiavací príjem"
+
+msgctxt "meta.flag"
+msgid "🇬🇧"
+msgstr "🇸🇰"
+
+msgctxt "meta.name"
+msgid "English"
+msgstr "Slovak"
+
+msgctxt "meta.nativeName"
+msgid "English"
+msgstr "Slovenčina"
+
+msgctxt "modal.cancel"
+msgid "Cancel"
+msgstr "Zrušiť"
+
+msgctxt "modal.name.label"
+msgid "Record name (optional)"
+msgstr "Názov záznamu (voliteľné)"
+
+msgctxt "modal.save.btn"
+msgid "Save"
+msgstr "Uložiť"
+
+msgctxt "modal.save.note"
+msgid "Results will be saved as a new record."
+msgstr "Výsledky budú uložené ako nový záznam."
+
+msgctxt "modal.save.title"
+msgid "💾 Save calculation"
+msgstr "💾 Uložiť výpočet"
+
+msgctxt "modal.update.btn"
+msgid "Update"
+msgstr "Aktualizovať"
+
+msgctxt "modal.update.note"
+msgid "This will overwrite record: \"{name}\""
+msgstr "Prepíše sa záznam: „{name}\""
+
+msgctxt "modal.update.title"
+msgid "🔄 Update record"
+msgstr "🔄 Aktualizovať záznam"
+
+msgctxt "pal.heavy"
+msgid "Heavy physical work (construction workers, elite sport)"
+msgstr "Ťažká fyzická práca (stavební robotníci, vrcholový šport)"
+
+msgctxt "pal.light"
+msgid ""
+"Sedentary + occasional standing / walking (driver, assembly line worker)"
+msgstr "Sedavá + krátke státie / chôdza (vodič, pracovník na montážnej linke)"
+
+msgctxt "pal.lying"
+msgid "Exclusively sedentary / lying lifestyle (computer, TV)"
+msgstr "Výlučne sedavý / ležiaci životný štýl (počítač, tv)"
+
+msgctxt "pal.sedentary"
+msgid "Sedentary work with little activity"
+msgstr "Sedavá činnosť s malou aktivitou"
+
+msgctxt "pal.sleep"
+msgid "Sleep"
+msgstr "Spánok"
+
+msgctxt "pal.sport"
+msgid "Sport / training"
+msgstr "Šport / tréning"
+
+msgctxt "pal.standing"
+msgid "Predominantly standing / walking work (housework, salesperson)"
+msgstr "Prevažne stojaca / chodiaca práca (domáce práce, predajca)"
+
+msgctxt "recommend.fat_loss"
+msgid ""
+"📖 Fitness Fibel 2.0: A 300 kcal/day deficit is the ideal start. Goal: 0.5–1 "
+"kg/week."
+msgstr ""
+"📖 Fitness Fibel 2.0: Deficit 300 kcal/deň je ideálny štart. Cieľ: 0,5–1 "
+"kg/týždeň."
+
+msgctxt "recommend.muscle.f"
+msgid ""
+"📖 Fitness Fibel 2.0: Women +200 kcal, max. 0.5–1 kg/month. Women build "
+"muscle more slowly."
+msgstr ""
+"📖 Fitness Fibel 2.0: Ženy +200 kcal, max. 0,5–1 kg/mes. Ženy budujú svaly "
+"pomalšie."
+
+msgctxt "recommend.muscle.m"
+msgid ""
+"📖 Fitness Fibel 2.0: Men +300 kcal, max. 1–1.5 kg/month. Clean gains without"
+" excess fat."
+msgstr ""
+"📖 Fitness Fibel 2.0: Muži +300 kcal, max. 1–1,5 kg/mes. Čistý rast bez "
+"nadbytočného tuku."
+
+msgctxt "record.bmr"
+msgid "BMR"
+msgstr "BMR"
+
+msgctxt "record.delete"
+msgid "🗑️ Delete"
+msgstr "🗑️ Vymazať"
+
+msgctxt "record.delete_confirm"
+msgid "Delete record \"{name}\"?"
+msgstr "Vymazať záznam „{name}\"?"
+
+msgctxt "record.editing_note"
+msgid "You are currently editing this record in the calculator"
+msgstr "Tento záznam práve editujete v kalkulačke"
+
+msgctxt "record.female"
+msgid "Female"
+msgstr "Žena"
+
+msgctxt "record.hide"
+msgid "▲ Hide details"
+msgstr "▲ Skryť detail"
+
+msgctxt "record.male"
+msgid "Male"
+msgstr "Muž"
+
+msgctxt "record.open"
+msgid "✏️ Open in calculator"
+msgstr "✏️ Otvoriť v kalkulačke"
+
+msgctxt "record.show"
+msgid "▼ Show details"
+msgstr "▼ Zobraziť detail"
+
+msgctxt "record.target"
+msgid "Target Intake"
+msgstr "Cieľový príjem"
+
+msgctxt "record.total"
+msgid "Total Expenditure"
+msgstr "Celkový výdaj"
+
+msgctxt "record.unit.kg"
+msgid "kg"
+msgstr "kg"
+
+msgctxt "records.count.few"
+msgid "records"
+msgstr "záznamy"
+
+msgctxt "records.count.many"
+msgid "records"
+msgstr "záznamov"
+
+msgctxt "records.count.one"
+msgid "record"
+msgstr "záznam"
+
+msgctxt "records.empty.desc"
+msgid "Calculate your plan in the calculator and save it for future use."
+msgstr "Vypočítaj si plán v kalkulačke a ulož ho pre budúce použitie."
+
+msgctxt "records.empty.title"
+msgid "No records"
+msgstr "Žiadne záznamy"
+
+msgctxt "records.go_calc"
+msgid "🧮 Go to calculator"
+msgstr "🧮 Prejsť do kalkulačky"
+
+msgctxt "rules.8020"
+msgid "80/20 Rule"
+msgstr "Pravidlo 80/20"
+
+msgctxt "rules.8020.value"
+msgid "80% whole foods"
+msgstr "80 % celá strava"
+
+msgctxt "rules.fiber"
+msgid "Fiber"
+msgstr "Vláknina"
+
+msgctxt "rules.fiber.value"
+msgid "{min}–{max} g/day"
+msgstr "{min}–{max} g/deň"
+
+msgctxt "rules.title"
+msgid "📋 Important Rules"
+msgstr "📋 Dôležité pravidlá"
+
+msgctxt "rules.water"
+msgid "Water"
+msgstr "Voda"
+
+msgctxt "rules.water.value"
+msgid "min. {l} L/day"
+msgstr "min. {l} l/deň"
+
+msgctxt "save.button"
+msgid "💾 Save this calculation"
+msgstr "💾 Uložiť tento výpočet"
+
+msgctxt "save.new"
+msgid "➕ Save as new"
+msgstr "➕ Uložiť ako nový"
+
+msgctxt "save.note"
+msgid "Records are saved as portable files in the app folder."
+msgstr "Záznamy sa ukladajú ako prenosné súbory v priečinku aplikácie."
+
+msgctxt "save.title"
+msgid "💾 Save Results"
+msgstr "💾 Uložiť výsledky"
+
+msgctxt "save.update"
+msgid "🔄 Update"
+msgstr "🔄 Aktualizovať"
+
+msgctxt "settings.close"
+msgid "Close"
+msgstr "Zatvoriť"
+
+msgctxt "settings.deficit.default"
+msgid "Default deficit"
+msgstr "Predvolený deficit"
+
+msgctxt "settings.fat.max"
+msgid "Fat max."
+msgstr "Tuky max."
+
+msgctxt "settings.fat.min"
+msgid "Fat min."
+msgstr "Tuky min."
+
+msgctxt "settings.fat.unit"
+msgid "%"
+msgstr "%"
+
+msgctxt "settings.lang.label"
+msgid "🌍 Language"
+msgstr "🌍 Jazyk"
+
+msgctxt "settings.lang.note"
+msgid "Default application language"
+msgstr "Predvolený jazyk aplikácie"
+
+msgctxt "settings.macros.note"
+msgid ""
+"Adjust ranges to your preferences. Default values are from Fitness Fibel 2.0"
+" (pp. 168–170)."
+msgstr ""
+"Upravte rozsahy podľa vlastných preferencií. Predvolené hodnoty sú z Fitness"
+" Fibel 2.0 (str. 168–170)."
+
+msgctxt "settings.macros.title"
+msgid "⚖️ Macronutrient Ranges"
+msgstr "⚖️ Rozsahy makronutrientov"
+
+msgctxt "settings.minfat.female"
+msgid "Minimum for women"
+msgstr "Minimum pre ženy"
+
+msgctxt "settings.minfat.male"
+msgid "Minimum for men"
+msgstr "Minimum pre mužov"
+
+msgctxt "settings.minfat.note"
+msgid ""
+"Minimum daily fat intake regardless of % setting. Lower intake damages "
+"hormones."
+msgstr ""
+"Minimálny denný príjem tukov bez ohľadu na % nastavenie. Nižší príjem "
+"poškodzuje hormóny."
+
+msgctxt "settings.minfat.title"
+msgid "🛡️ Biological Fat Minimum"
+msgstr "🛡️ Biologické minimum tukov"
+
+msgctxt "settings.minfat.unit"
+msgid "g/day"
+msgstr "g/deň"
+
+msgctxt "settings.protein.max"
+msgid "Protein max."
+msgstr "Bielkoviny max."
+
+msgctxt "settings.protein.min"
+msgid "Protein min."
+msgstr "Bielkoviny min."
+
+msgctxt "settings.protein.unit"
+msgid "g/kg"
+msgstr "g/kg"
+
+msgctxt "settings.reset"
+msgid "🔄 Reset to defaults (Fitness Fibel 2.0)"
+msgstr "🔄 Obnoviť predvolené (Fitness Fibel 2.0)"
+
+msgctxt "settings.save"
+msgid "Save settings"
+msgstr "Uložiť nastavenia"
+
+msgctxt "settings.surplus.muscle.f"
+msgid "Default surplus (women)"
+msgstr "Predvolený prebytok (ženy)"
+
+msgctxt "settings.surplus.muscle.m"
+msgid "Default surplus (men)"
+msgstr "Predvolený prebytok (muži)"
+
+msgctxt "settings.surplus.title"
+msgid "📈 Default Values"
+msgstr "📈 Predvolené hodnoty"
+
+msgctxt "settings.title"
+msgid "⚙️ Settings"
+msgstr "⚙️ Nastavenia"
+
+msgctxt "step1.female"
+msgid "👩 Female"
+msgstr "👩 Žena"
+
+msgctxt "step1.formula.female"
+msgid "Formula: 0.9 × {weight} kg × 24h"
+msgstr "Vzorec: 0,9 × {weight} kg × 24h"
+
+msgctxt "step1.formula.male"
+msgid "Formula: 1.0 × {weight} kg × 24h"
+msgstr "Vzorec: 1,0 × {weight} kg × 24h"
+
+msgctxt "step1.gender"
+msgid "Gender"
+msgstr "Pohlavie"
+
+msgctxt "step1.male"
+msgid "👨 Male"
+msgstr "👨 Muž"
+
+msgctxt "step1.note.female"
+msgid "Women: 0.9 kcal/kg/h · Fitness Fibel 2.0, p. 129"
+msgstr "Ženy: 0,9 kcal/kg/h · Fitness Fibel 2.0, str. 129"
+
+msgctxt "step1.note.male"
+msgid "Men: 1.0 kcal/kg/h · Fitness Fibel 2.0, p. 129"
+msgstr "Muži: 1,0 kcal/kg/h · Fitness Fibel 2.0, str. 129"
+
+msgctxt "step1.title"
+msgid "1️⃣ Basal Metabolic Rate (BMR)"
+msgstr "1️⃣ Základný metabolizmus (BMR)"
+
+msgctxt "step1.unit"
+msgid "kcal / day"
+msgstr "kcal / deň"
+
+msgctxt "step1.weight"
+msgid "Weight (kg)"
+msgstr "Hmotnosť (kg)"
+
+msgctxt "step2.hours"
+msgid "{n} / 24 hours"
+msgstr "{n} / 24 hodín"
+
+msgctxt "step2.hours.error"
+msgid "Total hours must equal exactly 24"
+msgstr "Súčet hodín musí byť presne 24"
+
+msgctxt "step2.intensity"
+msgid "Intensity:"
+msgstr "Intenzita:"
+
+msgctxt "step2.title"
+msgid "2️⃣ Daily Activities (PAL)"
+msgstr "2️⃣ Denné aktivity (PAL)"
+
+msgctxt "step2.unit.h"
+msgid "h"
+msgstr "h"
+
+msgctxt "step3.bmr"
+msgid "BMR"
+msgstr "BMR"
+
+msgctxt "step3.pal"
+msgid "Average PAL"
+msgstr "Priemerný PAL"
+
+msgctxt "step3.title"
+msgid "3️⃣ Total Daily Expenditure"
+msgstr "3️⃣ Celkový denný výdaj"
+
+msgctxt "step3.total"
+msgid "Total Expenditure"
+msgstr "Celkový výdaj"
+
+msgctxt "step3.unit"
+msgid "kcal / day"
+msgstr "kcal / deň"
+
+msgctxt "step4.title"
+msgid "4️⃣ Goal"
+msgstr "4️⃣ Cieľ"
+
+msgctxt "step5.title"
+msgid "5️⃣ Macronutrients"
+msgstr "5️⃣ Makronutrienty"
+
+msgctxt "storage.connected"
+msgid "Portable storage connected"
+msgstr "Prenosné úložisko pripojené"
+
+msgctxt "storage.not_connected"
+msgid "Select the folder where this app lives to enable portable data storage"
+msgstr "Vyberte priečinok aplikácie pre prenosné ukladanie dát"
+
+msgctxt "storage.select_folder"
+msgid "Select app folder"
+msgstr "Vybrať priečinok aplikácie"
+
+msgctxt "surplus.label"
+msgid "Caloric surplus"
+msgstr "Kalorický prebytok"
+
+msgctxt "tab.calc"
+msgid "🧮 Calculator"
+msgstr "🧮 Kalkulačka"
+
+msgctxt "tab.records"
+msgid "📋 Records"
+msgstr "📋 Záznamy"
+
+msgctxt "tab.settings"
+msgid "⚙️ Settings"
+msgstr "⚙️ Nastavenia"
+
+msgctxt "target.label"
+msgid "kcal / day — your target intake"
+msgstr "kcal / deň — tvoj cieľový príjem"
+
+msgctxt "unit.kcal_day"
+msgid "kcal/day"
+msgstr "kcal/deň"
+
+msgctxt "unit.kg_week"
+msgid "kg/week"
+msgstr "kg/týždeň"
+
+msgctxt "weekly.gain"
+msgid "Weekly weight gain"
+msgstr "Prírastok za týždeň"
+
+msgctxt "weekly.loss"
+msgid "Weekly weight loss"
+msgstr "Úbytok za týždeň"
+
+msgctxt "storage.reconnect"
+msgid "Znovu pripojiť"
+msgstr "Znovu pripojiť"
+
+msgctxt "storage.change_folder"
+msgid "Zmeniť priečinok"
+msgstr "Zmeniť priečinok"
+
+msgctxt "storage.folder_title"
+msgid "Priečinok aplikácie"
+msgstr "Priečinok aplikácie"
