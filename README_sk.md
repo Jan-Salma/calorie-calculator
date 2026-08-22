@@ -1,8 +1,8 @@
 # ⚡ Kalorická Kalkulačka
 
-> Viacjazyčná kalkulačka dennej potreby kalórií a makronutrientov, postavená na vedeckých vzorcoch z knihy **Fitness Fibel 2.0** (Sjard Roscher).
+> Viacjazyčná kalkulačka dennej potreby kalórií, makronutrientov a telesného tuku.
 
-[![Verzia](https://img.shields.io/badge/verzia-2.0.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.0.0)
+[![Verzia](https://img.shields.io/badge/verzia-2.1.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.0)
 [![Platforma](https://img.shields.io/badge/platforma-Web-blue)](#)
 [![Licencia](https://img.shields.io/badge/licencia-Súkromná-red)](#)
 
@@ -16,13 +16,14 @@ Kompletný nástroj na výpočet dennej potreby kalórií a makronutrientov. Web
 
 ### Funkcie
 
-- **Výpočet BMR** — Bazálny metabolizmus s pohlavie-špecifickými vzorcami (Fitness Fibel 2.0, str. 129)
+- **Výpočet BMR** — Bazálny metabolizmus s pohlavie-špecifickými vzorcami
   - Muži: `1,0 × hmotnosť (kg) × 24h`
   - Ženy: `0,9 × hmotnosť (kg) × 24h`
+- **Sekcia telesného tuku** — zadáš aktuálny podiel tuku a hneď vidíš hmotnosť tuku aj čistú hmotu; zadáš cieľový podiel a kalkulačka vypíše, koľko kg tuku musíš zhodiť, akú budeš mať hmotnosť a ako dlho to pri aktuálnom deficite potrvá
 - **Systém PAL aktivít** — 7 typov aktivít s nastaviteľnou intenzitou, 24-hodinová validácia
 - **3 cieľové režimy** — Budovanie svalov, Spaľovanie tuku, Body Rekomposícia
 - **Dynamické minimum tuku** — posuvník fyzicky blokovaný pod biologickým minimom (40 g muži / 30 g ženy)
-- **Nápovedy k cieľom** — vysvetlenia z knihy pre logiku makier každého cieľa
+- **Nápovedy k cieľom** — vysvetlenie logiky makier pre každý cieľ
 - **Nastaviteľné rozsahy** — makrá, minimá tuku, predvolené prebytky/deficity
 - **Záznamy** — uložiť, načítať, upraviť a vymazať výpočty
 - **Prenosné úložisko** — dáta uložené v priečinku `data/` vedľa aplikácie; funguje naprieč prehliadačmi a zariadeniami
@@ -73,7 +74,15 @@ calorie-calculator/
 Muži:  BMR = 1,0 × hmotnosť (kg) × 24
 Ženy:  BMR = 0,9 × hmotnosť (kg) × 24
 ```
-Zdroj: Fitness Fibel 2.0, str. 129
+
+### Telesný tuk
+```
+hmotnosť tuku     = hmotnosť × podiel tuku % / 100
+čistá hmota       = hmotnosť − hmotnosť tuku
+cieľová hmotnosť  = čistá hmota / (1 − cieľový podiel tuku % / 100)
+tuk na zhodenie   = hmotnosť tuku − (cieľová hmotnosť − čistá hmota)
+```
+Predpokladá sa, že čistá hmota ostáva zachovaná. Odhad trvania počíta s `1 kg tuku ≈ 7 700 kcal`.
 
 ### PAL
 ```

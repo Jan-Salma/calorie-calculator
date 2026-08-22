@@ -11,6 +11,37 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [2.1.0] - 2026-08-22
+
+### Added
+- **Body fat section** — new step `2️⃣` in the calculator, placed directly after BMR
+  - Current body fat % input (number field + slider, 3–60 %) → instantly shows **fat mass** and **lean mass** in kg
+  - Target body fat % input → shows **target weight** and **how many kg of fat must be lost**
+  - Calculation assumes lean mass (muscle, water, bone) stays unchanged:
+    `lean = weight × (1 − bf%/100)` · `target weight = lean / (1 − target bf%/100)` · `fat to lose = weight − target weight`
+  - When the goal is **Fat Loss**, an estimate is shown of how long the target takes at the current daily deficit (`1 kg fat ≈ 7,700 kcal`)
+  - Handles the reverse case too — if the target is above the current value, the tile switches to "Fat to gain"
+- **Body fat data stored in records** — `bodyFatPct`, `targetFatPct`, `fatMassKg`, `leanMassKg`, `fatDeltaKg` saved in `data/records.json`; shown in the record detail view. Older records without these fields load without errors (defaults applied per gender)
+- **13 new translation keys** (`bodyfat.*`) in all three languages (`.po` + `.mo` + inline built-ins)
+- **SEO meta tags** — `description`, `og:title`, `og:description`, `og:type`; `<title>`, meta description and `<html lang>` update dynamically when the language is switched
+
+### Changed
+- **All "Fitness Fibel 2.0" references removed from user-facing texts** — page title, subtitle, BMR notes, goal recommendations, macro info panels and settings. The single remaining mention is the footer line, unchanged:
+  `Calculations are based on Fitness Fibel 2.0 (Sjard Roscher) and serve as a reference guide.`
+- Page references to the book (`p. 129`, `p. 137`, `p. 140`, `p. 128`, `pp. 168–170`) removed from all texts
+- `<title>` — `Calorie Calculator · Fitness Fibel 2.0` → `Calorie Calculator`
+- **Calculator steps renumbered** — body fat inserted as step 2: PAL `2️⃣`→`3️⃣`, Total expenditure `3️⃣`→`4️⃣`, Goal `4️⃣`→`5️⃣`, Macronutrients `5️⃣`→`6️⃣`
+- `README.md`, `README_sk.md`, `README_de.md` — book branding removed from title, description and feature list; body fat formulas documented; version badge bumped to 2.1.0. Attribution kept in the licence section only
+
+### Files changed
+- `web/index.html` — body fat section, dynamic title/meta, all text changes
+- `web/languages/en_EN.po` + `.mo` — 169 entries (was 156)
+- `web/languages/sk_SK.po` + `.mo` — 169 entries (was 156)
+- `web/languages/de_DE.po` + `.mo` — 169 entries (was 156)
+- `README.md`, `README_sk.md`, `README_de.md`, `CHANGELOG.md`
+
+---
+
 ## [2.0.0] - 2026-04-11
 
 ### Added
@@ -166,7 +197,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.2...v2.0.0
 [1.1.2]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.0...v1.1.1

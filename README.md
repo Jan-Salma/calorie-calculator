@@ -1,8 +1,8 @@
 # ⚡ Calorie Calculator
 
-> A multilingual calorie and macronutrient calculator based on **Fitness Fibel 2.0** (Sjard Roscher).
+> A multilingual calorie, macronutrient and body-fat calculator.
 
-[![Version](https://img.shields.io/badge/version-2.0.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.0.0)
+[![Version](https://img.shields.io/badge/version-2.1.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.0)
 [![Platform](https://img.shields.io/badge/platform-Web-blue)](#)
 [![License](https://img.shields.io/badge/license-Private-red)](#)
 
@@ -12,17 +12,18 @@
 
 ## 📋 Overview
 
-A complete tool for calculating daily calorie requirements and macronutrients, built on the scientific formulas from Fitness Fibel 2.0. Zero-install web app — open `index.html` in a browser and connect your folder once.
+A complete tool for calculating daily calorie requirements and macronutrients. Zero-install web app — open `index.html` in a browser and connect your folder once.
 
 ### Key Features
 
-- **BMR calculation** — Basal Metabolic Rate with gender-specific formulas (Fitness Fibel 2.0, p. 129)
+- **BMR calculation** — Basal Metabolic Rate with gender-specific formulas
   - Men: `1.0 × weight (kg) × 24h`
   - Women: `0.9 × weight (kg) × 24h`
+- **Body fat section** — enter your current body fat %, get fat mass and lean mass instantly; set a target % and see exactly how many kg of fat you need to lose, your target weight, and how long it takes at your current deficit
 - **PAL activity system** — 7 activity types with adjustable intensity, strict 24-hour validation
 - **3 goal modes** — Muscle Gain, Fat Loss, Body Recomposition
 - **Dynamic fat minimum** — slider physically blocked below biological minimum (40 g men / 30 g women)
-- **Goal info panels** — collapsible explanations from the book for each goal's macro logic
+- **Goal info panels** — collapsible explanations of each goal's macro logic
 - **Configurable settings** — adjust macro ranges, fat minimums, and default surplus/deficit per goal
 - **Records system** — save, load, edit, and delete calculations
 - **Portable storage** — data saved in `data/` folder next to the app; works across browsers and devices
@@ -73,7 +74,15 @@ calorie-calculator/
 Men:   BMR = 1.0 × weight (kg) × 24
 Women: BMR = 0.9 × weight (kg) × 24
 ```
-Source: Fitness Fibel 2.0, p. 129
+
+### Body Fat
+```
+fat mass    = weight × body fat % / 100
+lean mass   = weight − fat mass
+target weight = lean mass / (1 − target body fat % / 100)
+fat to lose = fat mass − (target weight − lean mass)
+```
+Lean mass is assumed to stay unchanged. Time estimate uses `1 kg fat ≈ 7,700 kcal`.
 
 ### PAL (Physical Activity Level)
 ```
@@ -85,7 +94,7 @@ PAL = Σ(activity_hours × PAL_value) / 24
 TDEE = BMR × PAL
 ```
 
-### Macronutrients (defaults per Fitness Fibel 2.0)
+### Macronutrients (default ranges)
 
 | Goal          | Protein       | Fat     | Carbs     |
 |---------------|---------------|---------|-----------|

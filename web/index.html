@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calorie Calculator · Fitness Fibel 2.0</title>
+<title>Calorie Calculator</title>
+<meta name="description" content="Daily calorie and macronutrient needs — BMR, activity level (PAL), total daily expenditure, body fat overview and protein / fat / carb split.">
+<meta property="og:title" content="Calorie Calculator">
+<meta property="og:description" content="Daily calorie and macronutrient needs — BMR, activity level (PAL), total daily expenditure, body fat overview and protein / fat / carb split.">
+<meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -55,30 +59,32 @@ const BUILT_IN_LOCALES = {
     name: 'English', nativeName: 'English', flag: '🇬🇧',
     pluralRule: function(n){ return n===1?'one':'many'; },
     keys: {
-      'app.title':'Calorie Calculator','app.subtitle':'Daily calorie and macronutrient needs · Fitness Fibel 2.0','app.footer':'Calculations are based on Fitness Fibel 2.0 (Sjard Roscher) and serve as a reference guide.',
+      'app.title':'Calorie Calculator','app.subtitle':'Daily calorie and macronutrient needs','app.footer':'Calculations are based on Fitness Fibel 2.0 (Sjard Roscher) and serve as a reference guide.',
       'tab.calc':'🧮 Calculator','tab.records':'📋 Records','tab.settings':'⚙️ Settings',
       'lang.sk_SK':'SK','lang.en_EN':'EN','lang.de_DE':'DE',
       'editing.banner':'Editing record:','editing.new':'✕ New calculation',
       'step1.title':'1️⃣ Basal Metabolic Rate (BMR)','step1.weight':'Weight (kg)','step1.gender':'Gender','step1.male':'👨 Male','step1.female':'👩 Female',
       'step1.formula.male':'Formula: 1.0 × {weight} kg × 24h','step1.formula.female':'Formula: 0.9 × {weight} kg × 24h',
-      'step1.note.male':'Men: 1.0 kcal/kg/h · Fitness Fibel 2.0, p. 129','step1.note.female':'Women: 0.9 kcal/kg/h · Fitness Fibel 2.0, p. 129','step1.unit':'kcal / day',
-      'step2.title':'2️⃣ Daily Activities (PAL)','step2.hours':'{n} / 24 hours','step2.hours.error':'Total hours must equal exactly 24','step2.intensity':'Intensity:','step2.unit.h':'h',
+      'step1.note.male':'Men: 1.0 kcal/kg/h','step1.note.female':'Women: 0.9 kcal/kg/h','step1.unit':'kcal / day',
+      'bodyfat.title':'2️⃣ Body Fat','bodyfat.current':'Current body fat','bodyfat.target':'Target body fat','bodyfat.fatmass':'Fat mass','bodyfat.leanmass':'Lean mass','bodyfat.tolose':'Fat to lose','bodyfat.togain':'Fat to gain','bodyfat.target_weight':'Target weight','bodyfat.unit.kg':'kg',
+      'bodyfat.summary':'At {pct} % body fat with your lean mass of {lean} kg preserved, you would weigh about {tw} kg.','bodyfat.same':'Set a target below your current body fat to see how much fat you need to lose.','bodyfat.eta':'⏱️ At your current deficit of {kcal} kcal/day this takes about {weeks} weeks ({days} days).','bodyfat.note':'Assumes lean mass (muscle, water, bone) stays unchanged. 1 kg of fat ≈ 7,700 kcal.',
+      'step2.title':'3️⃣ Daily Activities (PAL)','step2.hours':'{n} / 24 hours','step2.hours.error':'Total hours must equal exactly 24','step2.intensity':'Intensity:','step2.unit.h':'h',
       'pal.sleep':'Sleep','pal.lying':'Exclusively sedentary / lying lifestyle (computer, TV)','pal.sedentary':'Sedentary work with little activity','pal.light':'Sedentary + occasional standing / walking (driver, assembly line worker)','pal.standing':'Predominantly standing / walking work (housework, salesperson)','pal.heavy':'Heavy physical work (construction workers, elite sport)','pal.sport':'Sport / training',
-      'step3.title':'3️⃣ Total Daily Expenditure','step3.pal':'Average PAL','step3.bmr':'BMR','step3.total':'Total Expenditure','step3.unit':'kcal / day',
-      'step4.title':'4️⃣ Goal','goal.muscle':'Muscle Building','goal.fat_loss':'Fat Loss','goal.recomp':'Body Recomposition','goal.muscle.desc':'Caloric surplus','goal.fat_loss.desc':'Caloric deficit','goal.recomp.desc':'Maintenance intake',
+      'step3.title':'4️⃣ Total Daily Expenditure','step3.pal':'Average PAL','step3.bmr':'BMR','step3.total':'Total Expenditure','step3.unit':'kcal / day',
+      'step4.title':'5️⃣ Goal','goal.muscle':'Muscle Building','goal.fat_loss':'Fat Loss','goal.recomp':'Body Recomposition','goal.muscle.desc':'Caloric surplus','goal.fat_loss.desc':'Caloric deficit','goal.recomp.desc':'Maintenance intake',
       'calc.by_calories':'By calories (kcal)','calc.by_weight':'By weight (kg)','surplus.label':'Caloric surplus','deficit.label':'Caloric deficit','weekly.gain':'Weekly weight gain','weekly.loss':'Weekly weight loss','unit.kcal_day':'kcal/day','unit.kg_week':'kg/week','maintenance':'Maintenance intake','target.label':'kcal / day — your target intake',
-      'recommend.muscle.m':'📖 Fitness Fibel 2.0: Men +300 kcal, max. 1–1.5 kg/month. Clean gains without excess fat.','recommend.muscle.f':'📖 Fitness Fibel 2.0: Women +200 kcal, max. 0.5–1 kg/month. Women build muscle more slowly.','recommend.fat_loss':'📖 Fitness Fibel 2.0: A 300 kcal/day deficit is the ideal start. Goal: 0.5–1 kg/week.',
-      'info.why_macros':'📖 Why these macros?','info.muscle.title':'Macros for muscle building','info.muscle.text':'The body can only synthesize ~300 kcal of muscle tissue per day naturally (p. 137). A larger surplus = fat, not muscle. A small, controlled surplus is optimal.','info.muscle.protein':'1.8–2.0 g/kg — stimulates muscle protein synthesis (MPS). In a caloric surplus, lower protein is sufficient compared to a deficit.','info.muscle.fat':'25–30% of calories — higher fat intake is essential for testosterone and anabolic hormones critical for muscle growth.','info.muscle.carbs':'Remaining calories — primary fuel for training, replenishes glycogen and enables progressive overload.',
-      'info.fat_loss.title':'Macros for fat loss','info.fat_loss.text':'In a deficit, the body burns both fat and muscle. Higher protein and strength training are the main tools for preserving lean mass (p. 140).','info.fat_loss.protein':'2.2–2.4 g/kg — strongly protects muscle mass during caloric deficit. More amino acids = less catabolism.','info.fat_loss.fat':'15–20% of calories — minimized but never below biological minimum. Fats are essential for hormones (testosterone, estrogen) and fat-soluble vitamins A, D, E, K.','info.fat_loss.carbs':'Remaining — keep as high as possible to preserve training energy and strength, which increases total calorie expenditure.',
-      'info.recomp.title':'Macros for body recomposition','info.recomp.text':'Recomposition = simultaneous muscle building and fat loss at maintenance calories (p. 128). Most effective for beginners or those returning after a break.','info.recomp.protein':'1.8–2.2 g/kg — the middle range covers both processes: building and protecting muscle. Higher intake = better results.','info.recomp.fat':'20–25% of calories — the golden mean for hormonal balance without limiting training performance.','info.recomp.carbs':'Remaining — adequate glycogen supply for training. Results are slower than pure bulk/cut, but without weight fluctuations.',
-      'step5.title':'5️⃣ Macronutrients','macro.protein_per_kg':'Protein (g/kg)','macro.fat_pct':'Fat (% of calories)','macro.carbs_auto':'Carbohydrates fill the remaining calories automatically.','macro.protein':'Protein','macro.fat':'Fat','macro.carbs':'Carbs','macro.grams':'grams',
+      'recommend.muscle.m':'📖 Men +300 kcal, max. 1–1.5 kg/month. Clean gains without excess fat.','recommend.muscle.f':'📖 Women +200 kcal, max. 0.5–1 kg/month. Women build muscle more slowly.','recommend.fat_loss':'📖 A 300 kcal/day deficit is the ideal start. Goal: 0.5–1 kg/week.',
+      'info.why_macros':'📖 Why these macros?','info.muscle.title':'Macros for muscle building','info.muscle.text':'The body can only synthesize ~300 kcal of muscle tissue per day naturally. A larger surplus = fat, not muscle. A small, controlled surplus is optimal.','info.muscle.protein':'1.8–2.0 g/kg — stimulates muscle protein synthesis (MPS). In a caloric surplus, lower protein is sufficient compared to a deficit.','info.muscle.fat':'25–30% of calories — higher fat intake is essential for testosterone and anabolic hormones critical for muscle growth.','info.muscle.carbs':'Remaining calories — primary fuel for training, replenishes glycogen and enables progressive overload.',
+      'info.fat_loss.title':'Macros for fat loss','info.fat_loss.text':'In a deficit, the body burns both fat and muscle. Higher protein and strength training are the main tools for preserving lean mass.','info.fat_loss.protein':'2.2–2.4 g/kg — strongly protects muscle mass during caloric deficit. More amino acids = less catabolism.','info.fat_loss.fat':'15–20% of calories — minimized but never below biological minimum. Fats are essential for hormones (testosterone, estrogen) and fat-soluble vitamins A, D, E, K.','info.fat_loss.carbs':'Remaining — keep as high as possible to preserve training energy and strength, which increases total calorie expenditure.',
+      'info.recomp.title':'Macros for body recomposition','info.recomp.text':'Recomposition = simultaneous muscle building and fat loss at maintenance calories. Most effective for beginners or those returning after a break.','info.recomp.protein':'1.8–2.2 g/kg — the middle range covers both processes: building and protecting muscle. Higher intake = better results.','info.recomp.fat':'20–25% of calories — the golden mean for hormonal balance without limiting training performance.','info.recomp.carbs':'Remaining — adequate glycogen supply for training. Results are slower than pure bulk/cut, but without weight fluctuations.',
+      'step5.title':'6️⃣ Macronutrients','macro.protein_per_kg':'Protein (g/kg)','macro.fat_pct':'Fat (% of calories)','macro.carbs_auto':'Carbohydrates fill the remaining calories automatically.','macro.protein':'Protein','macro.fat':'Fat','macro.carbs':'Carbs','macro.grams':'grams',
       'fat.at_min':'⚠️ Fat ({g} g) is set to the biological minimum for {gender} — essential for hormones and vitamins A, D, E, K.','fat.warning':'⚠️ Fat intake ({g} g) is below the minimum for {gender} ({min} g) — risk of hormonal imbalance.','gender.m':'men','gender.f':'women',
       'rules.title':'📋 Important Rules','rules.fiber':'Fiber','rules.fiber.value':'{min}–{max} g/day','rules.water':'Water','rules.water.value':'min. {l} L/day','rules.8020':'80/20 Rule','rules.8020.value':'80% whole foods',
       'save.title':'💾 Save Results','save.update':'🔄 Update','save.new':'➕ Save as new','save.button':'💾 Save this calculation','save.note':'Records are saved as portable files in the app folder.',
       'records.empty.title':'No records','records.empty.desc':'Calculate your plan in the calculator and save it for future use.','records.go_calc':'🧮 Go to calculator','records.count.one':'record','records.count.few':'records','records.count.many':'records',
       'record.bmr':'BMR','record.total':'Total Expenditure','record.target':'Target Intake','record.open':'✏️ Open in calculator','record.delete':'🗑️ Delete','record.show':'▼ Show details','record.hide':'▲ Hide details','record.editing_note':'You are currently editing this record in the calculator','record.delete_confirm':'Delete record "{name}"?','record.unit.kg':'kg','record.male':'Male','record.female':'Female',
       'modal.save.title':'💾 Save calculation','modal.update.title':'🔄 Update record','modal.save.note':'Results will be saved as a new record.','modal.update.note':'This will overwrite record: "{name}"','modal.name.label':'Record name (optional)','modal.save.btn':'Save','modal.update.btn':'Update','modal.cancel':'Cancel',
-      'settings.title':'⚙️ Settings','settings.lang.label':'🌍 Language','settings.lang.note':'Default application language','settings.macros.title':'⚖️ Macronutrient Ranges','settings.macros.note':'Adjust ranges to your preferences. Default values are from Fitness Fibel 2.0 (pp. 168–170).','settings.protein.min':'Protein min.','settings.protein.max':'Protein max.','settings.fat.min':'Fat min.','settings.fat.max':'Fat max.','settings.protein.unit':'g/kg','settings.fat.unit':'%','settings.minfat.title':'🛡️ Biological Fat Minimum','settings.minfat.note':'Minimum daily fat intake regardless of % setting. Lower intake damages hormones.','settings.minfat.male':'Minimum for men','settings.minfat.female':'Minimum for women','settings.minfat.unit':'g/day','settings.surplus.title':'📈 Default Values','settings.surplus.muscle.m':'Default surplus (men)','settings.surplus.muscle.f':'Default surplus (women)','settings.deficit.default':'Default deficit','settings.reset':'🔄 Reset to defaults (Fitness Fibel 2.0)','settings.save':'Save settings','settings.close':'Close',
+      'settings.title':'⚙️ Settings','settings.lang.label':'🌍 Language','settings.lang.note':'Default application language','settings.macros.title':'⚖️ Macronutrient Ranges','settings.macros.note':'Adjust ranges to your preferences. Defaults follow proven recommended ranges.','settings.protein.min':'Protein min.','settings.protein.max':'Protein max.','settings.fat.min':'Fat min.','settings.fat.max':'Fat max.','settings.protein.unit':'g/kg','settings.fat.unit':'%','settings.minfat.title':'🛡️ Biological Fat Minimum','settings.minfat.note':'Minimum daily fat intake regardless of % setting. Lower intake damages hormones.','settings.minfat.male':'Minimum for men','settings.minfat.female':'Minimum for women','settings.minfat.unit':'g/day','settings.surplus.title':'📈 Default Values','settings.surplus.muscle.m':'Default surplus (men)','settings.surplus.muscle.f':'Default surplus (women)','settings.deficit.default':'Default deficit','settings.reset':'🔄 Reset to defaults','settings.save':'Save settings','settings.close':'Close',
       'storage.select_folder':'Select app folder','storage.connected':'Portable storage connected','storage.not_connected':'Select the folder where this app lives to enable portable storage and additional languages','storage.reconnect':'Reconnect','storage.change_folder':'Change folder','storage.folder_title':'App Folder',
     }
   },
@@ -86,30 +92,32 @@ const BUILT_IN_LOCALES = {
     name: 'Slovak', nativeName: 'Slovenčina', flag: '🇸🇰',
     pluralRule: function(n){ return n===1?'one':(n>=2&&n<=4?'few':'many'); },
     keys: {
-      'app.title':'Kalorická Kalkulačka','app.subtitle':'Výpočet dennej potreby kalórií a makronutrientov · Fitness Fibel 2.0','app.footer':'Výpočty vychádzajú z Fitness Fibel 2.0 (Sjard Roscher) a slúžia ako orientačný základ.',
+      'app.title':'Kalorická Kalkulačka','app.subtitle':'Výpočet dennej potreby kalórií a makronutrientov','app.footer':'Výpočty vychádzajú z Fitness Fibel 2.0 (Sjard Roscher) a slúžia ako orientačný základ.',
       'tab.calc':'🧮 Kalkulačka','tab.records':'📋 Záznamy','tab.settings':'⚙️ Nastavenia',
       'lang.sk_SK':'SK','lang.en_EN':'EN','lang.de_DE':'DE',
       'editing.banner':'Editujete záznam:','editing.new':'✕ Nový výpočet',
       'step1.title':'1️⃣ Základný metabolizmus (BMR)','step1.weight':'Hmotnosť (kg)','step1.gender':'Pohlavie','step1.male':'👨 Muž','step1.female':'👩 Žena',
       'step1.formula.male':'Vzorec: 1,0 × {weight} kg × 24h','step1.formula.female':'Vzorec: 0,9 × {weight} kg × 24h',
-      'step1.note.male':'Muži: 1,0 kcal/kg/h · Fitness Fibel 2.0, str. 129','step1.note.female':'Ženy: 0,9 kcal/kg/h · Fitness Fibel 2.0, str. 129','step1.unit':'kcal / deň',
-      'step2.title':'2️⃣ Denné aktivity (PAL)','step2.hours':'{n} / 24 hodín','step2.hours.error':'Súčet hodín musí byť presne 24','step2.intensity':'Intenzita:','step2.unit.h':'h',
+      'step1.note.male':'Muži: 1,0 kcal/kg/h','step1.note.female':'Ženy: 0,9 kcal/kg/h','step1.unit':'kcal / deň',
+      'bodyfat.title':'2️⃣ Telesný tuk','bodyfat.current':'Aktuálny podiel tuku','bodyfat.target':'Cieľový podiel tuku','bodyfat.fatmass':'Hmotnosť tuku','bodyfat.leanmass':'Čistá hmota','bodyfat.tolose':'Tuk na zhodenie','bodyfat.togain':'Tuk navyše','bodyfat.target_weight':'Cieľová hmotnosť','bodyfat.unit.kg':'kg',
+      'bodyfat.summary':'Pri {pct} % tuku a zachovanej čistej hmote {lean} kg by si vážil približne {tw} kg.','bodyfat.same':'Nastav cieľ nižšie ako aktuálny podiel tuku a uvidíš, koľko tuku musíš zhodiť.','bodyfat.eta':'⏱️ Pri aktuálnom deficite {kcal} kcal/deň to trvá približne {weeks} týždňov ({days} dní).','bodyfat.note':'Predpokladá sa, že čistá hmota (svaly, voda, kosti) ostáva zachovaná. 1 kg tuku ≈ 7 700 kcal.',
+      'step2.title':'3️⃣ Denné aktivity (PAL)','step2.hours':'{n} / 24 hodín','step2.hours.error':'Súčet hodín musí byť presne 24','step2.intensity':'Intenzita:','step2.unit.h':'h',
       'pal.sleep':'Spánok','pal.lying':'Výlučne sedavý / ležiaci životný štýl (počítač, tv)','pal.sedentary':'Sedavá činnosť s malou aktivitou','pal.light':'Sedavá + krátke státie / chôdza (vodič, pracovník na montážnej linke)','pal.standing':'Prevažne stojaca / chodiaca práca (domáce práce, predajca)','pal.heavy':'Ťažká fyzická práca (stavební robotníci, vrcholový šport)','pal.sport':'Šport / tréning',
-      'step3.title':'3️⃣ Celkový denný výdaj','step3.pal':'Priemerný PAL','step3.bmr':'BMR','step3.total':'Celkový výdaj','step3.unit':'kcal / deň',
-      'step4.title':'4️⃣ Cieľ','goal.muscle':'Budovanie svalov','goal.fat_loss':'Spaľovanie tuku','goal.recomp':'Body Recompozícia','goal.muscle.desc':'Kalorický prebytok','goal.fat_loss.desc':'Kalorický deficit','goal.recomp.desc':'Udržiavací príjem',
+      'step3.title':'4️⃣ Celkový denný výdaj','step3.pal':'Priemerný PAL','step3.bmr':'BMR','step3.total':'Celkový výdaj','step3.unit':'kcal / deň',
+      'step4.title':'5️⃣ Cieľ','goal.muscle':'Budovanie svalov','goal.fat_loss':'Spaľovanie tuku','goal.recomp':'Body Recompozícia','goal.muscle.desc':'Kalorický prebytok','goal.fat_loss.desc':'Kalorický deficit','goal.recomp.desc':'Udržiavací príjem',
       'calc.by_calories':'Podľa kalórií (kcal)','calc.by_weight':'Podľa hmotnosti (kg)','surplus.label':'Kalorický prebytok','deficit.label':'Kalorický deficit','weekly.gain':'Prírastok za týždeň','weekly.loss':'Úbytok za týždeň','unit.kcal_day':'kcal/deň','unit.kg_week':'kg/týždeň','maintenance':'Udržiavací príjem','target.label':'kcal / deň — tvoj cieľový príjem',
-      'recommend.muscle.m':'📖 Fitness Fibel 2.0: Muži +300 kcal, max. 1–1,5 kg/mes. Čistý rast bez nadbytočného tuku.','recommend.muscle.f':'📖 Fitness Fibel 2.0: Ženy +200 kcal, max. 0,5–1 kg/mes. Ženy budujú svaly pomalšie.','recommend.fat_loss':'📖 Fitness Fibel 2.0: Deficit 300 kcal/deň je ideálny štart. Cieľ: 0,5–1 kg/týždeň.',
-      'info.why_macros':'📖 Prečo tieto makrá?','info.muscle.title':'Makrá pri budovaní svalov','info.muscle.text':'Telo syntetizuje prirodzene max. ~300 kcal svalovej hmoty denne (str. 137). Väčší prebytok = tuk, nie svaly. Preto stačí malý, kontrolovaný prebytok.','info.muscle.protein':'1,8–2,0 g/kg — stimuluje syntézu svalových proteínov (MPS). V kalorickom prebytku stačí nižší príjem bielkovín ako pri diéte.','info.muscle.fat':'25–30% kalórií — vyšší podiel tukov je kľúčový pre testosterón a anabolické hormóny nevyhnutné pre rast svalov.','info.muscle.carbs':'Zostatok kalórií — primárne palivo pre tréning, dopĺňa glykogén a umožňuje progresiu záťaže.',
-      'info.fat_loss.title':'Makrá pri spaľovaní tuku','info.fat_loss.text':'Pri deficite telo siaha aj po svaloch. Zvýšené bielkoviny a silový tréning sú hlavné nástroje ochrany svalovej hmoty (str. 140).','info.fat_loss.protein':'2,2–2,4 g/kg — výrazne chráni svalovú hmotu pri kalorickom deficite. Viac aminokyselín = menej katabolizmu.','info.fat_loss.fat':'15–20% kalórií — minimalizujeme, ale nie pod biologické minimum. Tuky sú nevyhnutné pre hormóny (testosterón, estrogén) a vitamíny A, D, E, K.','info.fat_loss.carbs':'Zostatok — udržujeme čo najviac pre zachovanie energie a sily v tréningu, čo zvyšuje celkový kalorický výdaj.',
-      'info.recomp.title':'Makrá pri rekompozícii tela','info.recomp.text':'Rekompozícia = súčasné budovanie svalov a spaľovanie tuku pri udržiavacom príjme (str. 128). Najúčinnejšia u začiatočníkov alebo ľudí po prestávke.','info.recomp.protein':'1,8–2,2 g/kg — stred rozsahu pokrýva oba procesy: budovanie aj ochranu svalov. Vyšší príjem = lepší výsledok.','info.recomp.fat':'20–25% kalórií — zlatý stred pre hormonálnu rovnováhu bez obmedzenia výkonu v tréningu.','info.recomp.carbs':'Zostatok — dostatočne zásobuje glykogén pre tréning. Výsledky sú pomalšie ako pri čistej mase/diéte, ale bez výkyvov hmotnosti.',
-      'step5.title':'5️⃣ Makronutrienty','macro.protein_per_kg':'Bielkoviny (g/kg)','macro.fat_pct':'Tuky (% z kalórií)','macro.carbs_auto':'Sacharidy dopĺňajú zvyšok kalórií automaticky.','macro.protein':'Bielkoviny','macro.fat':'Tuky','macro.carbs':'Sacharidy','macro.grams':'gramov',
+      'recommend.muscle.m':'📖 Muži +300 kcal, max. 1–1,5 kg/mes. Čistý rast bez nadbytočného tuku.','recommend.muscle.f':'📖 Ženy +200 kcal, max. 0,5–1 kg/mes. Ženy budujú svaly pomalšie.','recommend.fat_loss':'📖 Deficit 300 kcal/deň je ideálny štart. Cieľ: 0,5–1 kg/týždeň.',
+      'info.why_macros':'📖 Prečo tieto makrá?','info.muscle.title':'Makrá pri budovaní svalov','info.muscle.text':'Telo syntetizuje prirodzene max. ~300 kcal svalovej hmoty denne. Väčší prebytok = tuk, nie svaly. Preto stačí malý, kontrolovaný prebytok.','info.muscle.protein':'1,8–2,0 g/kg — stimuluje syntézu svalových proteínov (MPS). V kalorickom prebytku stačí nižší príjem bielkovín ako pri diéte.','info.muscle.fat':'25–30% kalórií — vyšší podiel tukov je kľúčový pre testosterón a anabolické hormóny nevyhnutné pre rast svalov.','info.muscle.carbs':'Zostatok kalórií — primárne palivo pre tréning, dopĺňa glykogén a umožňuje progresiu záťaže.',
+      'info.fat_loss.title':'Makrá pri spaľovaní tuku','info.fat_loss.text':'Pri deficite telo siaha aj po svaloch. Zvýšené bielkoviny a silový tréning sú hlavné nástroje ochrany svalovej hmoty.','info.fat_loss.protein':'2,2–2,4 g/kg — výrazne chráni svalovú hmotu pri kalorickom deficite. Viac aminokyselín = menej katabolizmu.','info.fat_loss.fat':'15–20% kalórií — minimalizujeme, ale nie pod biologické minimum. Tuky sú nevyhnutné pre hormóny (testosterón, estrogén) a vitamíny A, D, E, K.','info.fat_loss.carbs':'Zostatok — udržujeme čo najviac pre zachovanie energie a sily v tréningu, čo zvyšuje celkový kalorický výdaj.',
+      'info.recomp.title':'Makrá pri rekompozícii tela','info.recomp.text':'Rekompozícia = súčasné budovanie svalov a spaľovanie tuku pri udržiavacom príjme. Najúčinnejšia u začiatočníkov alebo ľudí po prestávke.','info.recomp.protein':'1,8–2,2 g/kg — stred rozsahu pokrýva oba procesy: budovanie aj ochranu svalov. Vyšší príjem = lepší výsledok.','info.recomp.fat':'20–25% kalórií — zlatý stred pre hormonálnu rovnováhu bez obmedzenia výkonu v tréningu.','info.recomp.carbs':'Zostatok — dostatočne zásobuje glykogén pre tréning. Výsledky sú pomalšie ako pri čistej mase/diéte, ale bez výkyvov hmotnosti.',
+      'step5.title':'6️⃣ Makronutrienty','macro.protein_per_kg':'Bielkoviny (g/kg)','macro.fat_pct':'Tuky (% z kalórií)','macro.carbs_auto':'Sacharidy dopĺňajú zvyšok kalórií automaticky.','macro.protein':'Bielkoviny','macro.fat':'Tuky','macro.carbs':'Sacharidy','macro.grams':'gramov',
       'fat.at_min':'⚠️ Tuky ({g} g) sú nastavené na biologické minimum pre {gender} — nevyhnutné pre hormóny a vitamíny A, D, E, K.','fat.warning':'⚠️ Príjem tukov ({g} g) pod minimom pre {gender} ({min} g) — hrozí hormonálna nerovnováha.','gender.m':'mužov','gender.f':'ženy',
       'rules.title':'📋 Dôležité pravidlá','rules.fiber':'Vláknina','rules.fiber.value':'{min}–{max} g/deň','rules.water':'Voda','rules.water.value':'min. {l} l/deň','rules.8020':'Pravidlo 80/20','rules.8020.value':'80 % celá strava',
       'save.title':'💾 Uložiť výsledky','save.update':'🔄 Aktualizovať','save.new':'➕ Uložiť ako nový','save.button':'💾 Uložiť tento výpočet','save.note':'Záznamy sa ukladajú ako prenosné súbory v priečinku aplikácie.',
       'records.empty.title':'Žiadne záznamy','records.empty.desc':'Vypočítaj si plán v kalkulačke a ulož ho pre budúce použitie.','records.go_calc':'🧮 Prejsť do kalkulačky','records.count.one':'záznam','records.count.few':'záznamy','records.count.many':'záznamov',
       'record.bmr':'BMR','record.total':'Celkový výdaj','record.target':'Cieľový príjem','record.open':'✏️ Otvoriť v kalkulačke','record.delete':'🗑️ Vymazať','record.show':'▼ Zobraziť detail','record.hide':'▲ Skryť detail','record.editing_note':'Tento záznam práve editujete v kalkulačke','record.delete_confirm':'Vymazať záznam „{name}"?','record.unit.kg':'kg','record.male':'Muž','record.female':'Žena',
       'modal.save.title':'💾 Uložiť výpočet','modal.update.title':'🔄 Aktualizovať záznam','modal.save.note':'Výsledky budú uložené ako nový záznam.','modal.update.note':'Prepíše sa záznam: „{name}"','modal.name.label':'Názov záznamu (voliteľné)','modal.save.btn':'Uložiť','modal.update.btn':'Aktualizovať','modal.cancel':'Zrušiť',
-      'settings.title':'⚙️ Nastavenia','settings.lang.label':'🌍 Jazyk','settings.lang.note':'Predvolený jazyk aplikácie','settings.macros.title':'⚖️ Rozsahy makronutrientov','settings.macros.note':'Upravte rozsahy podľa vlastných preferencií. Predvolené hodnoty sú z Fitness Fibel 2.0 (str. 168–170).','settings.protein.min':'Bielkoviny min.','settings.protein.max':'Bielkoviny max.','settings.fat.min':'Tuky min.','settings.fat.max':'Tuky max.','settings.protein.unit':'g/kg','settings.fat.unit':'%','settings.minfat.title':'🛡️ Biologické minimum tukov','settings.minfat.note':'Minimálny denný príjem tukov bez ohľadu na % nastavenie. Nižší príjem poškodzuje hormóny.','settings.minfat.male':'Minimum pre mužov','settings.minfat.female':'Minimum pre ženy','settings.minfat.unit':'g/deň','settings.surplus.title':'📈 Predvolené hodnoty','settings.surplus.muscle.m':'Predvolený prebytok (muži)','settings.surplus.muscle.f':'Predvolený prebytok (ženy)','settings.deficit.default':'Predvolený deficit','settings.reset':'🔄 Obnoviť predvolené (Fitness Fibel 2.0)','settings.save':'Uložiť nastavenia','settings.close':'Zatvoriť',
+      'settings.title':'⚙️ Nastavenia','settings.lang.label':'🌍 Jazyk','settings.lang.note':'Predvolený jazyk aplikácie','settings.macros.title':'⚖️ Rozsahy makronutrientov','settings.macros.note':'Upravte rozsahy podľa vlastných preferencií. Predvolené hodnoty vychádzajú z overených odporúčaných rozsahov.','settings.protein.min':'Bielkoviny min.','settings.protein.max':'Bielkoviny max.','settings.fat.min':'Tuky min.','settings.fat.max':'Tuky max.','settings.protein.unit':'g/kg','settings.fat.unit':'%','settings.minfat.title':'🛡️ Biologické minimum tukov','settings.minfat.note':'Minimálny denný príjem tukov bez ohľadu na % nastavenie. Nižší príjem poškodzuje hormóny.','settings.minfat.male':'Minimum pre mužov','settings.minfat.female':'Minimum pre ženy','settings.minfat.unit':'g/deň','settings.surplus.title':'📈 Predvolené hodnoty','settings.surplus.muscle.m':'Predvolený prebytok (muži)','settings.surplus.muscle.f':'Predvolený prebytok (ženy)','settings.deficit.default':'Predvolený deficit','settings.reset':'🔄 Obnoviť predvolené','settings.save':'Uložiť nastavenia','settings.close':'Zatvoriť',
       'storage.select_folder':'Vybrať priečinok aplikácie','storage.connected':'Prenosné úložisko pripojené','storage.not_connected':'Vyberte priečinok aplikácie pre prenosné ukladanie dát a ďalšie jazyky','storage.reconnect':'Znovu pripojiť','storage.change_folder':'Zmeniť priečinok','storage.folder_title':'Priečinok aplikácie',
     }
   },
@@ -117,36 +125,38 @@ const BUILT_IN_LOCALES = {
     name: 'German', nativeName: 'Deutsch', flag: '🇩🇪',
     pluralRule: function(n){ return n===1?'one':'many'; },
     keys: {
-      'app.title':'Kalorienrechner','app.subtitle':'Täglicher Kalorienbedarf und Makronährstoffverteilung · Fitness Fibel 2.0','app.footer':'Berechnungen basieren auf der Fitness Fibel 2.0 (Sjard Roscher) und dienen als Orientierungshilfe.',
+      'app.title':'Kalorienrechner','app.subtitle':'Täglicher Kalorienbedarf und Makronährstoffverteilung','app.footer':'Berechnungen basieren auf der Fitness Fibel 2.0 (Sjard Roscher) und dienen als Orientierungshilfe.',
       'tab.calc':'🧮 Rechner','tab.records':'📋 Aufzeichnungen','tab.settings':'⚙️ Einstellungen',
       'lang.sk_SK':'SK','lang.en_EN':'EN','lang.de_DE':'DE',
       'editing.banner':'Aufzeichnung wird bearbeitet:','editing.new':'✕ Neue Berechnung',
       'step1.title':'1️⃣ Grundumsatz (BMR)','step1.weight':'Körpergewicht (kg)','step1.gender':'Geschlecht','step1.male':'👨 Mann','step1.female':'👩 Frau',
       'step1.formula.male':'Formel: 1,0 × {weight} kg × 24h','step1.formula.female':'Formel: 0,9 × {weight} kg × 24h',
-      'step1.note.male':'Männer: 1,0 kcal/kg/h · Fitness Fibel 2.0, S. 129','step1.note.female':'Frauen: 0,9 kcal/kg/h · Fitness Fibel 2.0, S. 129','step1.unit':'kcal / Tag',
-      'step2.title':'2️⃣ Tagesaktivitäten (PAL)','step2.hours':'{n} / 24 Stunden','step2.hours.error':'Die Summe der Stunden muss genau 24 ergeben','step2.intensity':'Intensität:','step2.unit.h':'h',
+      'step1.note.male':'Männer: 1,0 kcal/kg/h','step1.note.female':'Frauen: 0,9 kcal/kg/h','step1.unit':'kcal / Tag',
+      'bodyfat.title':'2️⃣ Körperfett','bodyfat.current':'Aktueller Körperfettanteil','bodyfat.target':'Ziel-Körperfettanteil','bodyfat.fatmass':'Fettmasse','bodyfat.leanmass':'Magermasse','bodyfat.tolose':'Abzubauendes Fett','bodyfat.togain':'Zusätzliches Fett','bodyfat.target_weight':'Zielgewicht','bodyfat.unit.kg':'kg',
+      'bodyfat.summary':'Bei {pct} % Körperfett und unveränderter Magermasse von {lean} kg würdest du etwa {tw} kg wiegen.','bodyfat.same':'Setze das Ziel unter deinen aktuellen Körperfettanteil, um zu sehen, wie viel Fett du abbauen musst.','bodyfat.eta':'⏱️ Bei deinem aktuellen Defizit von {kcal} kcal/Tag dauert das etwa {weeks} Wochen ({days} Tage).','bodyfat.note':'Angenommen, die Magermasse (Muskeln, Wasser, Knochen) bleibt erhalten. 1 kg Fett ≈ 7.700 kcal.',
+      'step2.title':'3️⃣ Tagesaktivitäten (PAL)','step2.hours':'{n} / 24 Stunden','step2.hours.error':'Die Summe der Stunden muss genau 24 ergeben','step2.intensity':'Intensität:','step2.unit.h':'h',
       'pal.sleep':'Schlaf','pal.lying':'Ausschließlich sitzende / liegende Lebensweise (Computer, TV)','pal.sedentary':'Sitzende Tätigkeit mit wenig Aktivität','pal.light':'Sitzend + kurze Steh- / Gehtätigkeiten (Fahrer, Fließbandarbeiter)','pal.standing':'Überwiegend stehende / gehende Tätigkeit (Hausarbeit, Verkäufer)','pal.heavy':'Körperlich schwere Arbeit (Bauarbeiter, Leistungssport)','pal.sport':'Sport / Training',
-      'step3.title':'3️⃣ Gesamtenergiebedarf','step3.pal':'Durchschnittlicher PAL','step3.bmr':'Grundumsatz','step3.total':'Gesamtbedarf','step3.unit':'kcal / Tag',
-      'step4.title':'4️⃣ Ziel','goal.muscle':'Muskelaufbau','goal.fat_loss':'Fettabbau','goal.recomp':'Body-Rekomposition','goal.muscle.desc':'Kalorienüberschuss','goal.fat_loss.desc':'Kaloriendefizit','goal.recomp.desc':'Erhaltungsbedarf',
+      'step3.title':'4️⃣ Gesamtenergiebedarf','step3.pal':'Durchschnittlicher PAL','step3.bmr':'Grundumsatz','step3.total':'Gesamtbedarf','step3.unit':'kcal / Tag',
+      'step4.title':'5️⃣ Ziel','goal.muscle':'Muskelaufbau','goal.fat_loss':'Fettabbau','goal.recomp':'Body-Rekomposition','goal.muscle.desc':'Kalorienüberschuss','goal.fat_loss.desc':'Kaloriendefizit','goal.recomp.desc':'Erhaltungsbedarf',
       'calc.by_calories':'Nach Kalorien (kcal)','calc.by_weight':'Nach Gewicht (kg)','surplus.label':'Kalorienüberschuss','deficit.label':'Kaloriendefizit','weekly.gain':'Gewichtszunahme pro Woche','weekly.loss':'Gewichtsabnahme pro Woche','unit.kcal_day':'kcal/Tag','unit.kg_week':'kg/Woche','maintenance':'Erhaltungsbedarf','target.label':'kcal / Tag — dein Zielwert',
-      'recommend.muscle.m':'📖 Fitness Fibel 2.0: Männer +300 kcal, max. 1–1,5 kg/Monat. Sauberer Aufbau ohne überschüssiges Fett.','recommend.muscle.f':'📖 Fitness Fibel 2.0: Frauen +200 kcal, max. 0,5–1 kg/Monat. Frauen bauen Muskeln langsamer auf.','recommend.fat_loss':'📖 Fitness Fibel 2.0: Ein Defizit von 300 kcal/Tag ist der ideale Einstieg. Ziel: 0,5–1 kg/Woche.',
-      'info.why_macros':'📖 Warum diese Makros?','info.muscle.title':'Makros beim Muskelaufbau','info.muscle.text':'Der Körper kann natürlich max. ~300 kcal Muskelmasse pro Tag synthetisieren (S. 137). Ein größerer Überschuss = Fett, keine Muskeln. Ein kleiner, kontrollierter Überschuss ist optimal.','info.muscle.protein':'1,8–2,0 g/kg — stimuliert die Muskelproteinsynthese (MPS). Im Kalorienüberschuss reicht ein niedrigerer Proteinbedarf als bei der Diät.','info.muscle.fat':'25–30 % der Kalorien — ein höherer Fettanteil ist entscheidend für Testosteron und anabole Hormone, die für den Muskelaufbau notwendig sind.','info.muscle.carbs':'Verbleibende Kalorien — primärer Treibstoff für das Training, füllt Glykogen und ermöglicht Trainingsfortschritte.',
-      'info.fat_loss.title':'Makros beim Fettabbau','info.fat_loss.text':'Im Defizit verbrennt der Körper sowohl Fett als auch Muskeln. Erhöhtes Protein und Krafttraining sind die wichtigsten Mittel zum Muskelerhalt (S. 140).','info.fat_loss.protein':'2,2–2,4 g/kg — schützt die Muskelmasse stark beim Kaloriendefizit. Mehr Aminosäuren = weniger Katabolismus.','info.fat_loss.fat':'15–20 % der Kalorien — minimiert, aber nie unter das biologische Minimum. Fette sind unerlässlich für Hormone (Testosteron, Östrogen) und Vitamine A, D, E, K.','info.fat_loss.carbs':'Verbleibend — so hoch wie möglich halten, um Energie und Kraft im Training zu erhalten, was den Gesamtkalorienverbrauch erhöht.',
-      'info.recomp.title':'Makros bei der Body-Rekomposition','info.recomp.text':'Rekomposition = gleichzeitiger Muskelaufbau und Fettabbau beim Erhaltungsbedarf (S. 128). Am effektivsten bei Anfängern oder nach einer Trainingspause.','info.recomp.protein':'1,8–2,2 g/kg — der mittlere Bereich deckt beide Prozesse ab: Aufbau und Schutz der Muskeln. Höhere Zufuhr = bessere Ergebnisse.','info.recomp.fat':'20–25 % der Kalorien — die goldene Mitte für die hormonelle Balance ohne Einschränkung der Trainingsleistung.','info.recomp.carbs':'Verbleibend — ausreichende Glykogenversorgung für das Training. Ergebnisse sind langsamer als beim reinen Bulk/Cut, aber ohne Gewichtsschwankungen.',
-      'step5.title':'5️⃣ Makronährstoffe','macro.protein_per_kg':'Eiweiß (g/kg)','macro.fat_pct':'Fett (% der Kalorien)','macro.carbs_auto':'Kohlenhydrate füllen die verbleibenden Kalorien automatisch auf.','macro.protein':'Eiweiß','macro.fat':'Fett','macro.carbs':'Kohlenhydrate','macro.grams':'Gramm',
+      'recommend.muscle.m':'📖 Männer +300 kcal, max. 1–1,5 kg/Monat. Sauberer Aufbau ohne überschüssiges Fett.','recommend.muscle.f':'📖 Frauen +200 kcal, max. 0,5–1 kg/Monat. Frauen bauen Muskeln langsamer auf.','recommend.fat_loss':'📖 Ein Defizit von 300 kcal/Tag ist der ideale Einstieg. Ziel: 0,5–1 kg/Woche.',
+      'info.why_macros':'📖 Warum diese Makros?','info.muscle.title':'Makros beim Muskelaufbau','info.muscle.text':'Der Körper kann natürlich max. ~300 kcal Muskelmasse pro Tag synthetisieren. Ein größerer Überschuss = Fett, keine Muskeln. Ein kleiner, kontrollierter Überschuss ist optimal.','info.muscle.protein':'1,8–2,0 g/kg — stimuliert die Muskelproteinsynthese (MPS). Im Kalorienüberschuss reicht ein niedrigerer Proteinbedarf als bei der Diät.','info.muscle.fat':'25–30 % der Kalorien — ein höherer Fettanteil ist entscheidend für Testosteron und anabole Hormone, die für den Muskelaufbau notwendig sind.','info.muscle.carbs':'Verbleibende Kalorien — primärer Treibstoff für das Training, füllt Glykogen und ermöglicht Trainingsfortschritte.',
+      'info.fat_loss.title':'Makros beim Fettabbau','info.fat_loss.text':'Im Defizit verbrennt der Körper sowohl Fett als auch Muskeln. Erhöhtes Protein und Krafttraining sind die wichtigsten Mittel zum Muskelerhalt.','info.fat_loss.protein':'2,2–2,4 g/kg — schützt die Muskelmasse stark beim Kaloriendefizit. Mehr Aminosäuren = weniger Katabolismus.','info.fat_loss.fat':'15–20 % der Kalorien — minimiert, aber nie unter das biologische Minimum. Fette sind unerlässlich für Hormone (Testosteron, Östrogen) und Vitamine A, D, E, K.','info.fat_loss.carbs':'Verbleibend — so hoch wie möglich halten, um Energie und Kraft im Training zu erhalten, was den Gesamtkalorienverbrauch erhöht.',
+      'info.recomp.title':'Makros bei der Body-Rekomposition','info.recomp.text':'Rekomposition = gleichzeitiger Muskelaufbau und Fettabbau beim Erhaltungsbedarf. Am effektivsten bei Anfängern oder nach einer Trainingspause.','info.recomp.protein':'1,8–2,2 g/kg — der mittlere Bereich deckt beide Prozesse ab: Aufbau und Schutz der Muskeln. Höhere Zufuhr = bessere Ergebnisse.','info.recomp.fat':'20–25 % der Kalorien — die goldene Mitte für die hormonelle Balance ohne Einschränkung der Trainingsleistung.','info.recomp.carbs':'Verbleibend — ausreichende Glykogenversorgung für das Training. Ergebnisse sind langsamer als beim reinen Bulk/Cut, aber ohne Gewichtsschwankungen.',
+      'step5.title':'6️⃣ Makronährstoffe','macro.protein_per_kg':'Eiweiß (g/kg)','macro.fat_pct':'Fett (% der Kalorien)','macro.carbs_auto':'Kohlenhydrate füllen die verbleibenden Kalorien automatisch auf.','macro.protein':'Eiweiß','macro.fat':'Fett','macro.carbs':'Kohlenhydrate','macro.grams':'Gramm',
       'fat.at_min':'⚠️ Fett ({g} g) ist auf dem biologischen Minimum für {gender} — unerlässlich für Hormone und Vitamine A, D, E, K.','fat.warning':'⚠️ Fettzufuhr ({g} g) unter dem Minimum für {gender} ({min} g) — Gefahr einer Hormonstörung.','gender.m':'Männer','gender.f':'Frauen',
       'rules.title':'📋 Wichtige Regeln','rules.fiber':'Ballaststoffe','rules.fiber.value':'{min}–{max} g/Tag','rules.water':'Wasser','rules.water.value':'min. {l} L/Tag','rules.8020':'80/20-Regel','rules.8020.value':'80 % Vollwertkost',
       'save.title':'💾 Ergebnisse speichern','save.update':'🔄 Aktualisieren','save.new':'➕ Als neu speichern','save.button':'💾 Diese Berechnung speichern','save.note':'Aufzeichnungen werden als portable Dateien im App-Ordner gespeichert.',
       'records.empty.title':'Keine Aufzeichnungen','records.empty.desc':'Berechne deinen Plan im Rechner und speichere ihn für die spätere Verwendung.','records.go_calc':'🧮 Zum Rechner','records.count.one':'Aufzeichnung','records.count.few':'Aufzeichnungen','records.count.many':'Aufzeichnungen',
       'record.bmr':'Grundumsatz','record.total':'Gesamtbedarf','record.target':'Zielwert','record.open':'✏️ Im Rechner öffnen','record.delete':'🗑️ Löschen','record.show':'▼ Details anzeigen','record.hide':'▲ Details ausblenden','record.editing_note':'Diese Aufzeichnung wird gerade im Rechner bearbeitet','record.delete_confirm':'Aufzeichnung „{name}" löschen?','record.unit.kg':'kg','record.male':'Mann','record.female':'Frau',
       'modal.save.title':'💾 Berechnung speichern','modal.update.title':'🔄 Aufzeichnung aktualisieren','modal.save.note':'Ergebnisse werden als neue Aufzeichnung gespeichert.','modal.update.note':'Diese Aufzeichnung wird überschrieben: „{name}"','modal.name.label':'Name der Aufzeichnung (optional)','modal.save.btn':'Speichern','modal.update.btn':'Aktualisieren','modal.cancel':'Abbrechen',
-      'settings.title':'⚙️ Einstellungen','settings.lang.label':'🌍 Sprache','settings.lang.note':'Standardsprache der Anwendung','settings.macros.title':'⚖️ Makronährstoff-Bereiche','settings.macros.note':'Bereiche nach eigenen Vorlieben anpassen. Standardwerte aus Fitness Fibel 2.0 (S. 168–170).','settings.protein.min':'Eiweiß min.','settings.protein.max':'Eiweiß max.','settings.fat.min':'Fett min.','settings.fat.max':'Fett max.','settings.protein.unit':'g/kg','settings.fat.unit':'%','settings.minfat.title':'🛡️ Biologisches Fettminimum','settings.minfat.note':'Minimale tägliche Fettzufuhr unabhängig von der %-Einstellung. Eine niedrigere Zufuhr schädigt die Hormone.','settings.minfat.male':'Minimum für Männer','settings.minfat.female':'Minimum für Frauen','settings.minfat.unit':'g/Tag','settings.surplus.title':'📈 Standardwerte','settings.surplus.muscle.m':'Standardüberschuss (Männer)','settings.surplus.muscle.f':'Standardüberschuss (Frauen)','settings.deficit.default':'Standarddefizit','settings.reset':'🔄 Auf Standardwerte zurücksetzen (Fitness Fibel 2.0)','settings.save':'Einstellungen speichern','settings.close':'Schließen',
+      'settings.title':'⚙️ Einstellungen','settings.lang.label':'🌍 Sprache','settings.lang.note':'Standardsprache der Anwendung','settings.macros.title':'⚖️ Makronährstoff-Bereiche','settings.macros.note':'Bereiche nach eigenen Vorlieben anpassen. Die Standardwerte entsprechen bewährten Empfehlungsbereichen.','settings.protein.min':'Eiweiß min.','settings.protein.max':'Eiweiß max.','settings.fat.min':'Fett min.','settings.fat.max':'Fett max.','settings.protein.unit':'g/kg','settings.fat.unit':'%','settings.minfat.title':'🛡️ Biologisches Fettminimum','settings.minfat.note':'Minimale tägliche Fettzufuhr unabhängig von der %-Einstellung. Eine niedrigere Zufuhr schädigt die Hormone.','settings.minfat.male':'Minimum für Männer','settings.minfat.female':'Minimum für Frauen','settings.minfat.unit':'g/Tag','settings.surplus.title':'📈 Standardwerte','settings.surplus.muscle.m':'Standardüberschuss (Männer)','settings.surplus.muscle.f':'Standardüberschuss (Frauen)','settings.deficit.default':'Standarddefizit','settings.reset':'🔄 Auf Standardwerte zurücksetzen','settings.save':'Einstellungen speichern','settings.close':'Schließen',
       'storage.select_folder':'App-Ordner auswählen','storage.connected':'Portabler Speicher verbunden','storage.not_connected':'Wählen Sie den App-Ordner für portablen Datenspeicher und weitere Sprachen','storage.reconnect':'Erneut verbinden','storage.change_folder':'Ordner wechseln','storage.folder_title':'App-Ordner',
     }
   },
 };
 
-// ─── Predvolené nastavenia (Fitness Fibel 2.0) ─────────────────────────────
+// ─── Predvolené nastavenia ─────────────────────────────────────────────────
 const DEFAULT_SETTINGS = {
   language: 'en_EN',
   macroRanges: {
@@ -159,7 +169,7 @@ const DEFAULT_SETTINGS = {
   defaultDeficit: 300,
 };
 
-// ─── PAL aktivity (Fitness Fibel 2.0, str. 129) ────────────────────────────
+// ─── PAL aktivity ──────────────────────────────────────────────────────────
 const PAL_ACTIVITIES = [
   { id:'sleep',     palMin:0.95, palMax:0.95, hasRange:false, icon:'🌙' },
   { id:'lying',     palMin:1.2,  palMax:1.2,  hasRange:false, icon:'🛏️' },
@@ -170,6 +180,14 @@ const PAL_ACTIVITIES = [
   { id:'sport',     palMin:2.0,  palMax:2.0,  hasRange:false, icon:'🏋️' },
 ];
 const DEFAULT_HOURS = { sleep:8, lying:7, sedentary:8, light:0, standing:0, heavy:0, sport:1 };
+
+// ─── Telesný tuk ───────────────────────────────────────────────────────────
+// 1 kg telesného tuku ≈ 7700 kcal — používa sa na odhad trvania pri deficite.
+const KCAL_PER_KG_FAT   = 7700;
+const DEFAULT_BODY_FAT  = { male:20, female:28 };
+const DEFAULT_TARGET_FAT= { male:15, female:22 };
+const BODY_FAT_MIN      = 3;
+const BODY_FAT_MAX      = 60;
 
 const GOALS = [
   { id:'muscle',   icon:'💪', color:'#22c55e' },
@@ -640,6 +658,8 @@ function App() {
   const [recName,       setRecName]       = useState('');
   const [weight,        setWeight]        = useState(80);
   const [gender,        setGender]        = useState('male');
+  const [bodyFatPct,    setBodyFatPct]    = useState(DEFAULT_BODY_FAT.male);
+  const [targetFatPct,  setTargetFatPct]  = useState(DEFAULT_TARGET_FAT.male);
   const [activities,    setActivities]    = useState(mkActivities);
   const [goal,          setGoal]          = useState('muscle');
   const [calcMethod,    setCalcMethod]    = useState('calorie');
@@ -722,6 +742,18 @@ function App() {
   }, [locales]);
   const mr    = settings.macroRanges[goal];
 
+  // ── Titulok stránky + meta popis podľa zvoleného jazyka ───────────────
+  useEffect(function() {
+    document.title = t('app.title');
+    [['meta[name="description"]','content',t('app.subtitle')],
+     ['meta[property="og:title"]','content',t('app.title')],
+     ['meta[property="og:description"]','content',t('app.subtitle')]].forEach(function(m){
+      const el = document.querySelector(m[0]);
+      if (el) el.setAttribute(m[1], m[2]);
+    });
+    document.documentElement.lang = language.split('_')[0];
+  }, [t, language]);
+
   // ── Calculations ──────────────────────────────────────────────────────
   const w   = parseFloat(weight) || 0;
   const bmr = Math.round(w * (gender==='male' ? 1.0 : 0.9) * 24);
@@ -747,6 +779,20 @@ function App() {
   }, [goal, calcMethod, calorieDelta, weeklyDelta]);
 
   const targetKcal = goal==='muscle' ? totalKcal+goalDelta : goal==='fat_loss' ? Math.max(0,totalKcal-goalDelta) : totalKcal;
+
+  // ── Telesný tuk ───────────────────────────────────────────────────────
+  // Čistá hmota (lean mass) sa považuje za nemennú → cieľová hmotnosť
+  // vyplýva priamo z cieľového podielu tuku.
+  const bfPct        = Math.min(BODY_FAT_MAX, Math.max(0, parseFloat(bodyFatPct)   || 0));
+  const bfTargetPct  = Math.min(BODY_FAT_MAX, Math.max(0, parseFloat(targetFatPct) || 0));
+  const fatMassKg    = w * bfPct / 100;
+  const leanMassKg   = w - fatMassKg;
+  const targetWeight = leanMassKg / (1 - bfTargetPct/100);
+  const targetFatKg  = targetWeight - leanMassKg;
+  const fatDeltaKg   = fatMassKg - targetFatKg;          // > 0 = zhodiť, < 0 = pribrať
+  const fatToLoseKg  = Math.abs(fatDeltaKg);
+  const bfEtaDays    = (goal==='fat_loss' && goalDelta > 0 && fatDeltaKg > 0.05)
+    ? Math.ceil(fatDeltaKg * KCAL_PER_KG_FAT / goalDelta) : 0;
 
   const proteinGkg  = mr.proteinMin + (mr.proteinMax-mr.proteinMin)*proteinSlider;
   const proteinG    = Math.round(proteinGkg * w);
@@ -812,7 +858,11 @@ function App() {
   function buildRec(id, name) {
     return { id, name, date:new Date().toISOString(),
       weight, gender, activities, goal, calcMethod, calorieDelta, weeklyDelta, proteinSlider, fatSlider,
-      bmr, palValue, totalKcal, targetKcal, proteinG, fatG, carbsG };
+      bodyFatPct, targetFatPct,
+      bmr, palValue, totalKcal, targetKcal, proteinG, fatG, carbsG,
+      fatMassKg:  +fatMassKg.toFixed(1),
+      leanMassKg: +leanMassKg.toFixed(1),
+      fatDeltaKg: +fatDeltaKg.toFixed(1) };
   }
   function doSave() {
     const name = recName.trim() || autoName();
@@ -830,6 +880,8 @@ function App() {
   }
   function loadRec(rec) {
     setWeight(rec.weight); setGender(rec.gender); setActivities(rec.activities);
+    setBodyFatPct(rec.bodyFatPct     != null ? rec.bodyFatPct     : DEFAULT_BODY_FAT[rec.gender]   || DEFAULT_BODY_FAT.male);
+    setTargetFatPct(rec.targetFatPct != null ? rec.targetFatPct : DEFAULT_TARGET_FAT[rec.gender] || DEFAULT_TARGET_FAT.male);
     setGoal(rec.goal); setCalcMethod(rec.calcMethod);
     setCalorieDelta(rec.calorieDelta);
     setWeeklyDelta(rec.weeklyDelta || rec.weeklyWeightDelta || 0.5);
@@ -849,6 +901,7 @@ function App() {
   function clearEditor() {
     setEditingRecord(null); setRecName('');
     setWeight(80); setGender('male'); setActivities(mkActivities());
+    setBodyFatPct(DEFAULT_BODY_FAT.male); setTargetFatPct(DEFAULT_TARGET_FAT.male);
     setGoal('muscle'); setCalcMethod('calorie');
     setCalorieDelta(settings.defaultSurplus.male);
     setWeeklyDelta(0.5); setProteinSlider(0.5); setFatSlider(0.5);
@@ -978,7 +1031,81 @@ function App() {
             </div>
           </div>
 
-          {/* Step 2: PAL */}
+          {/* Step 2: Telesný tuk */}
+          <div className="card">
+            <div className="section-title" style={{color:'#a855f7'}}>{t('bodyfat.title')}</div>
+
+            <div style={{display:'flex',gap:20,flexWrap:'wrap',marginBottom:18}}>
+              {[
+                {key:'cur', label:t('bodyfat.current'), value:bodyFatPct,   set:setBodyFatPct,   color:'#ef4444'},
+                {key:'tgt', label:t('bodyfat.target'),  value:targetFatPct, set:setTargetFatPct, color:'#a855f7'},
+              ].map(function(f){ return (
+                <div key={f.key} style={{flex:'1 1 260px'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:6,color:'#94a3b8'}}>
+                    <span>{f.label}</span>
+                    <span style={{color:f.color,fontWeight:700}}>{f.value===''?'—':f.value} %</span>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center',gap:10}}>
+                    <input type="number" min={BODY_FAT_MIN} max={BODY_FAT_MAX} step="0.5" value={f.value}
+                      onChange={function(e){
+                        if(e.target.value===''){ f.set(''); return; }
+                        var n=parseFloat(e.target.value);
+                        if(!isNaN(n)) f.set(Math.min(BODY_FAT_MAX,Math.max(0,n)));
+                      }}
+                      onBlur={function(){
+                        var n=parseFloat(f.value);
+                        if(isNaN(n)||n<BODY_FAT_MIN) f.set(BODY_FAT_MIN);
+                      }}
+                      style={{width:76,flexShrink:0}}/>
+                    <input type="range" min={BODY_FAT_MIN} max={BODY_FAT_MAX} step={0.5}
+                      value={f.key==='cur'?bfPct:bfTargetPct}
+                      onChange={function(e){ f.set(parseFloat(e.target.value)); }}
+                      style={{flex:1,height:6,WebkitAppearance:'none',appearance:'none',borderRadius:3,outline:'none',cursor:'pointer',
+                        background:'linear-gradient(to right,'+f.color+' '+(((f.key==='cur'?bfPct:bfTargetPct)-BODY_FAT_MIN)/(BODY_FAT_MAX-BODY_FAT_MIN)*100)+'%,#334155 '+(((f.key==='cur'?bfPct:bfTargetPct)-BODY_FAT_MIN)/(BODY_FAT_MAX-BODY_FAT_MIN)*100)+'%)'}}/>
+                  </div>
+                </div>
+              ); })}
+            </div>
+
+            <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+              {[
+                {icon:'🔥', label:t('bodyfat.fatmass'),       val:fatMassKg.toFixed(1),    color:'#ef4444'},
+                {icon:'💪', label:t('bodyfat.leanmass'),      val:leanMassKg.toFixed(1),   color:'#22c55e'},
+                {icon:'⚖️', label:t('bodyfat.target_weight'), val:targetWeight.toFixed(1), color:'#3b82f6'},
+                {icon:fatDeltaKg>=0?'🔻':'🔺',
+                 label:fatDeltaKg>=0?t('bodyfat.tolose'):t('bodyfat.togain'),
+                 val:fatToLoseKg.toFixed(1), color:'#a855f7', highlight:true},
+              ].map(function(s){ return (
+                <div key={s.label} style={{flex:'1 1 130px',background:s.highlight?'rgba(168,85,247,.08)':'#0f172a',
+                  borderRadius:12,padding:'14px 12px',textAlign:'center',border:'1px solid '+s.color+(s.highlight?'55':'33')}}>
+                  <div style={{fontSize:20,marginBottom:4}}>{s.icon}</div>
+                  <div style={{fontSize:12,color:'#94a3b8',marginBottom:4}}>{s.label}</div>
+                  <div style={{fontSize:26,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:s.color}}>{s.val}</div>
+                  <div style={{fontSize:12,color:'#64748b'}}>{t('bodyfat.unit.kg')}</div>
+                </div>
+              ); })}
+            </div>
+
+            {fatDeltaKg > 0.05 ? (
+              <div style={{marginTop:14,background:'#0f172a',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#94a3b8',border:'1px solid #334155'}}>
+                {t('bodyfat.summary',{pct:bfTargetPct,lean:leanMassKg.toFixed(1),tw:targetWeight.toFixed(1)})}
+              </div>
+            ) : (
+              <div style={{marginTop:14,background:'rgba(168,85,247,.06)',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#c084fc',border:'1px solid rgba(168,85,247,.22)'}}>
+                {t('bodyfat.same')}
+              </div>
+            )}
+
+            {bfEtaDays > 0 && (
+              <div style={{marginTop:8,background:'rgba(239,68,68,.07)',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#f87171',border:'1px solid rgba(239,68,68,.2)'}}>
+                {t('bodyfat.eta',{kcal:goalDelta,weeks:(bfEtaDays/7).toFixed(1),days:bfEtaDays})}
+              </div>
+            )}
+
+            <div style={{fontSize:11,color:'#475569',marginTop:10}}>{t('bodyfat.note')}</div>
+          </div>
+
+          {/* Step 3: PAL */}
           <div className="card">
             <div className="section-title" style={{color:'#3b82f6'}}>{t('step2.title')}</div>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16}}>
@@ -1034,7 +1161,7 @@ function App() {
             </div>
           </div>
 
-          {/* Step 3: Total */}
+          {/* Step 4: Total */}
           {hoursOK && (
             <div className="card" style={{background:'linear-gradient(135deg,#1e293b,#1a2744)',borderColor:'#334155'}}>
               <div className="section-title" style={{color:'#22c55e'}}>{t('step3.title')}</div>
@@ -1058,7 +1185,7 @@ function App() {
             </div>
           )}
 
-          {/* Step 4: Goal */}
+          {/* Step 5: Goal */}
           {hoursOK && (
             <div className="card">
               <div className="section-title" style={{color:goalColor}}>{t('step4.title')}</div>
@@ -1123,7 +1250,7 @@ function App() {
             </div>
           )}
 
-          {/* Step 5: Macros */}
+          {/* Step 6: Macros */}
           {hoursOK && (
             <div className="card">
               <div className="section-title" style={{color:'#f59e0b'}}>{t('step5.title')}</div>
@@ -1287,6 +1414,22 @@ function App() {
                             </div>
                           ); })}
                         </div>
+                        {rec.bodyFatPct != null && (
+                          <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:10}}>
+                            {[
+                              {label:t('bodyfat.current'),  val:rec.bodyFatPct+' %',                      color:'#ef4444'},
+                              {label:t('bodyfat.fatmass'),  val:(rec.fatMassKg??0)+' '+t('bodyfat.unit.kg'),  color:'#ef4444'},
+                              {label:t('bodyfat.leanmass'), val:(rec.leanMassKg??0)+' '+t('bodyfat.unit.kg'), color:'#22c55e'},
+                              {label:(rec.fatDeltaKg??0)>=0?t('bodyfat.tolose'):t('bodyfat.togain'),
+                               val:Math.abs(rec.fatDeltaKg??0)+' '+t('bodyfat.unit.kg'),                     color:'#a855f7'},
+                            ].map(function(it){ return (
+                              <div key={it.label} style={{flex:'1 1 110px',background:'#0f172a',borderRadius:8,padding:'10px 12px',textAlign:'center'}}>
+                                <div style={{fontSize:11,color:'#64748b',marginBottom:2}}>{it.label}</div>
+                                <div style={{fontSize:16,fontWeight:700,color:it.color}}>{it.val}</div>
+                              </div>
+                            ); })}
+                          </div>
+                        )}
                         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
                           <button className="btn btn-blue" onClick={function(){loadRec(rec);}} style={{flex:1}}>{t('record.open')}</button>
                           <button className="btn btn-danger" onClick={function(){delRec(rec.id,rec.name);}}>{t('record.delete')}</button>
