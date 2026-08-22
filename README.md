@@ -2,7 +2,7 @@
 
 > A multilingual calorie, macronutrient and body-fat calculator.
 
-[![Version](https://img.shields.io/badge/version-2.1.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.0)
+[![Version](https://img.shields.io/badge/version-2.1.1-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.1)
 [![Platform](https://img.shields.io/badge/platform-Web-blue)](#)
 [![License](https://img.shields.io/badge/license-Private-red)](#)
 

@@ -2,7 +2,7 @@
 
 > Viacjazyčná kalkulačka dennej potreby kalórií, makronutrientov a telesného tuku.
 
-[![Verzia](https://img.shields.io/badge/verzia-2.1.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.0)
+[![Verzia](https://img.shields.io/badge/verzia-2.1.1-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.1)
 [![Platforma](https://img.shields.io/badge/platforma-Web-blue)](#)
 [![Licencia](https://img.shields.io/badge/licencia-Súkromná-red)](#)
 

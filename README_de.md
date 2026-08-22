@@ -2,7 +2,7 @@
 
 > Ein mehrsprachiger Rechner für täglichen Energiebedarf, Makronährstoffe und Körperfett.
 
-[![Version](https://img.shields.io/badge/version-2.1.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.0)
+[![Version](https://img.shields.io/badge/version-2.1.1-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.1)
 [![Plattform](https://img.shields.io/badge/plattform-Web-blue)](#)
 [![Lizenz](https://img.shields.io/badge/lizenz-Privat-red)](#)
 
@@ -74,6 +74,7 @@ calorie-calculator/
 Männer: BMR = 1,0 × Gewicht (kg) × 24
 Frauen: BMR = 0,9 × Gewicht (kg) × 24
 ```
+
 ### Körperfett
 ```
 Fettmasse    = Gewicht × Körperfettanteil % / 100

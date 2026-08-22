@@ -11,6 +11,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [2.1.1] - 2026-08-22
+
+### Fixed
+- **Mobile keyboard popped up when dragging the body fat sliders** — regression introduced in 2.1.0
+  - Cause: the body fat number inputs were placed in the same row as their sliders, only **10 px** from the slider track. The track was a **6 px** tall touch target (effective ~16 px) while the number field is 36 px tall, so a finger aiming at the slider thumb hit the number field instead and opened the keyboard. Every other slider in the app is 980–2750 px away from any text field, which is why only the new section was affected
+  - The slider itself never causes this — a range input does not take focus on touch; only `input[type=number]` opens the keyboard
+  - Fix 1: the number input moved out of the slider row — it now sits on the label line (right-aligned, with `%`), and the slider spans the full width on its own line. No keyboard-capable element remains next to any slider; a missed tap now lands on a plain container
+  - Fix 2: **all** sliders in the app got a **26 px** touch target (was 6 px, 4 px for PAL intensity) while keeping the exact same thin look — the track is now drawn by `::-webkit-slider-runnable-track` / `::-moz-range-track` with fill colour and position passed in via the `--rc` / `--rf` CSS variables
+  - Fix 3: `touch-action: pan-y` on sliders — vertical page scrolling still works, horizontal dragging belongs to the slider
+  - `inputMode="decimal"` on the body fat fields — numeric keypad instead of the full keyboard when you do want to type a value
+
+### Files changed
+- `web/index.html` — slider CSS rewritten, body fat field layout, all 6 slider render sites
+
+---
+
 ## [2.1.0] - 2026-08-22
 
 ### Added
@@ -197,7 +213,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.2...v2.0.0
 [1.1.2]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.1...v1.1.2

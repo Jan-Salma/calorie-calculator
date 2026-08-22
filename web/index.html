@@ -15,8 +15,21 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#0f172a; color:#e2e8f0; font-family:'DM Sans','Segoe UI',sans-serif; }
-input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 0 6px rgba(0,0,0,.4); }
-input[type=range]::-moz-range-thumb    { width:18px; height:18px; border-radius:50%; background:#fff; cursor:pointer; border:none; }
+/* Posuvníky — dotyková plocha 26 px na výšku, ale dráha ostáva vizuálne tenká.
+   Farba a naplnenie idú cez CSS premenné --rc / --rf nastavené inline v Reacte,
+   aby ich zdedili pseudo-elementy dráhy. touch-action:pan-y = zvislé scrollovanie
+   stránky funguje, vodorovné ťahanie patrí posuvníku. */
+input[type=range].rng { -webkit-appearance:none; appearance:none; width:100%; height:26px; padding:0; border:none; outline:none; background:transparent; cursor:pointer; touch-action:pan-y; }
+input[type=range].rng:disabled { cursor:not-allowed; opacity:.65; }
+input[type=range].rng::-webkit-slider-runnable-track { height:6px; border-radius:3px; background:linear-gradient(to right,var(--rc) var(--rf),#334155 var(--rf)); }
+input[type=range].rng::-moz-range-track            { height:6px; border-radius:3px; background:linear-gradient(to right,var(--rc) var(--rf),#334155 var(--rf)); }
+input[type=range].rng::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 0 6px rgba(0,0,0,.4); margin-top:-6px; }
+input[type=range].rng::-moz-range-thumb     { width:18px; height:18px; border-radius:50%; background:#fff; cursor:pointer; border:none; box-shadow:0 0 6px rgba(0,0,0,.4); }
+/* tenký variant (intenzita PAL aktivity) */
+input[type=range].rng.thin::-webkit-slider-runnable-track { height:4px; border-radius:2px; }
+input[type=range].rng.thin::-moz-range-track              { height:4px; border-radius:2px; }
+input[type=range].rng.thin::-webkit-slider-thumb { width:16px; height:16px; margin-top:-6px; }
+input[type=range].rng.thin::-moz-range-thumb     { width:16px; height:16px; }
 input[type=number],input[type=text] { background:#1e293b; border:1px solid #334155; color:#e2e8f0; padding:8px 12px; border-radius:8px; font-size:14px; font-family:inherit; outline:none; transition:border-color .2s; }
 input[type=number]:focus,input[type=text]:focus { border-color:#f59e0b; }
 input[type=number] { width:80px; text-align:center; }
@@ -432,11 +445,9 @@ function Slider({ min, max, step, value, onChange, label, unit, color, disabled 
         <span>{label}</span>
         <span style={{color:color,fontWeight:700}}>{Number.isInteger(step)?value:value.toFixed(1)} {unit}</span>
       </div>
-      <input type="range" min={min} max={max} step={step} value={value} disabled={!!disabled}
+      <input className="rng" type="range" min={min} max={max} step={step} value={value} disabled={!!disabled}
         onChange={function(e){ onChange(parseFloat(e.target.value)); }}
-        style={{width:'100%',height:6,WebkitAppearance:'none',appearance:'none',
-          background:'linear-gradient(to right,'+color+' '+pct+'%,#334155 '+pct+'%)',
-          borderRadius:3,outline:'none',cursor:disabled?'not-allowed':'pointer',opacity:disabled?.65:1}}/>
+        style={{'--rc':color,'--rf':pct+'%'}}/>
       <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'#475569',marginTop:2}}>
         <span>{min} {unit}</span><span>{max} {unit}</span>
       </div>
@@ -1041,27 +1052,30 @@ function App() {
                 {key:'tgt', label:t('bodyfat.target'),  value:targetFatPct, set:setTargetFatPct, color:'#a855f7'},
               ].map(function(f){ return (
                 <div key={f.key} style={{flex:'1 1 260px'}}>
-                  <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:6,color:'#94a3b8'}}>
+                  {/* Číselné pole je v riadku s popiskom — NIE vedľa posuvníka.
+                      Vedľa posuvníka otváralo na mobile klávesnicu pri každom minutí jazdca. */}
+                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,fontSize:13,color:'#94a3b8'}}>
                     <span>{f.label}</span>
-                    <span style={{color:f.color,fontWeight:700}}>{f.value===''?'—':f.value} %</span>
+                    <div style={{display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
+                      <input type="number" inputMode="decimal" min={BODY_FAT_MIN} max={BODY_FAT_MAX} step="0.5" value={f.value}
+                        onChange={function(e){
+                          if(e.target.value===''){ f.set(''); return; }
+                          var n=parseFloat(e.target.value);
+                          if(!isNaN(n)) f.set(Math.min(BODY_FAT_MAX,Math.max(0,n)));
+                        }}
+                        onBlur={function(){
+                          var n=parseFloat(f.value);
+                          if(isNaN(n)||n<BODY_FAT_MIN) f.set(BODY_FAT_MIN);
+                        }}
+                        style={{width:72,padding:'6px 8px'}}/>
+                      <span style={{color:f.color,fontWeight:700}}>%</span>
+                    </div>
                   </div>
-                  <div style={{display:'flex',alignItems:'center',gap:10}}>
-                    <input type="number" min={BODY_FAT_MIN} max={BODY_FAT_MAX} step="0.5" value={f.value}
-                      onChange={function(e){
-                        if(e.target.value===''){ f.set(''); return; }
-                        var n=parseFloat(e.target.value);
-                        if(!isNaN(n)) f.set(Math.min(BODY_FAT_MAX,Math.max(0,n)));
-                      }}
-                      onBlur={function(){
-                        var n=parseFloat(f.value);
-                        if(isNaN(n)||n<BODY_FAT_MIN) f.set(BODY_FAT_MIN);
-                      }}
-                      style={{width:76,flexShrink:0}}/>
-                    <input type="range" min={BODY_FAT_MIN} max={BODY_FAT_MAX} step={0.5}
+                  <div style={{marginTop:6}}>
+                    <input className="rng" type="range" min={BODY_FAT_MIN} max={BODY_FAT_MAX} step={0.5}
                       value={f.key==='cur'?bfPct:bfTargetPct}
                       onChange={function(e){ f.set(parseFloat(e.target.value)); }}
-                      style={{flex:1,height:6,WebkitAppearance:'none',appearance:'none',borderRadius:3,outline:'none',cursor:'pointer',
-                        background:'linear-gradient(to right,'+f.color+' '+(((f.key==='cur'?bfPct:bfTargetPct)-BODY_FAT_MIN)/(BODY_FAT_MAX-BODY_FAT_MIN)*100)+'%,#334155 '+(((f.key==='cur'?bfPct:bfTargetPct)-BODY_FAT_MIN)/(BODY_FAT_MAX-BODY_FAT_MIN)*100)+'%)'}}/>
+                      style={{'--rc':f.color,'--rf':(((f.key==='cur'?bfPct:bfTargetPct)-BODY_FAT_MIN)/(BODY_FAT_MAX-BODY_FAT_MIN)*100)+'%'}}/>
                   </div>
                 </div>
               ); })}
@@ -1147,10 +1161,9 @@ function App() {
                       <div style={{marginLeft:38,marginTop:4}}>
                         <div style={{display:'flex',alignItems:'center',gap:8}}>
                           <span style={{fontSize:11,color:'#64748b',whiteSpace:'nowrap'}}>{t('step2.intensity')}</span>
-                          <input type="range" min={0} max={1} step={.1} value={act.intensity}
+                          <input className="rng thin" type="range" min={0} max={1} step={.1} value={act.intensity}
                             onChange={function(e){updAct(def.id,'intensity',parseFloat(e.target.value));}}
-                            style={{flex:1,height:4,WebkitAppearance:'none',appearance:'none',borderRadius:2,outline:'none',cursor:'pointer',
-                              background:'linear-gradient(to right,#3b82f6 '+(act.intensity*100)+'%,#334155 '+(act.intensity*100)+'%)'}}/>
+                            style={{flex:1,minWidth:0,'--rc':'#3b82f6','--rf':(act.intensity*100)+'%'}}/>
                           <span style={{fontSize:11,color:'#60a5fa',width:60,textAlign:'right'}}>{def.palMin.toFixed(1)}–{def.palMax.toFixed(1)}</span>
                         </div>
                       </div>
