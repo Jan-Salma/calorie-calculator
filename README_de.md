@@ -1,8 +1,8 @@
 # ⚡ Kalorienrechner
 
-> Ein mehrsprachiger Rechner für täglichen Energiebedarf, Makronährstoffe und Körperfett.
+> Ein mehrsprachiger Rechner für täglichen Energiebedarf, Makronährstoffe und Körperzusammensetzung mit Verlaufsaufzeichnung.
 
-[![Version](https://img.shields.io/badge/version-2.1.1-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.1)
+[![Version](https://img.shields.io/badge/version-2.2.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.2.0)
 [![Plattform](https://img.shields.io/badge/plattform-Web-blue)](#)
 [![Lizenz](https://img.shields.io/badge/lizenz-Privat-red)](#)
 
@@ -19,14 +19,19 @@ Ein vollständiges Werkzeug zur Berechnung des täglichen Kalorienbedarfs und de
 - **Grundumsatz (BMR)** — geschlechtsspezifische Formeln
   - Männer: `1,0 × Gewicht (kg) × 24h`
   - Frauen: `0,9 × Gewicht (kg) × 24h`
-- **Körperfett-Bereich** — aktuellen Körperfettanteil eingeben und sofort Fettmasse und Magermasse sehen; Zielanteil setzen und ablesen, wie viel Fett abgebaut werden muss, welches Zielgewicht daraus folgt und wie lange es beim aktuellen Defizit dauert
+- **Körperzusammensetzung (Fett + Muskeln)** — die Felder richten sich nach dem gewählten Ziel:
+  - 🔥 Fettabbau — Fett aktuell → Ziel %, abzubauendes Fett, Zielgewicht, Dauer und Zieldatum; Muskeln % → kg
+  - 💪 Muskelaufbau — Muskeln aktuell → Ziel %, aufzubauende Muskeln, Zielgewicht, Dauer und Zieldatum; Fett % → kg
+  - 🔄 Rekomposition — Fett und Muskeln aktuell → Ziel %, mit einstellbarem Monatstempo
+- **Messverlauf** — jedes Speichern / Aktualisieren speichert Datum, Uhrzeit, Gewicht, Fett und Muskeln; Liniendiagramme (Fett links, Muskeln rechts, in kg oder %) und eine scrollbare Tabelle
+- **Bearbeitungssperre ✏️** — Regler und Felder sind gesperrt, bis du ✏️ tippst, damit sie beim Scrollen am Handy nicht versehentlich verschoben werden
 - **PAL-Aktivitätssystem** — 7 Aktivitätstypen mit einstellbarer Intensität, 24-Stunden-Validierung
 - **3 Zielmodi** — Muskelaufbau, Fettabbau, Body-Rekomposition
 - **Dynamisches Fettminimum** — Regler physisch blockiert unter biologischem Minimum (40 g Männer / 30 g Frauen)
 - **Ziel-Info-Panels** — aufklappbare Erklärungen zur Makro-Logik je Ziel
 - **Konfigurierbare Einstellungen** — Makrobereiche, Fettminima, Standard-Surplus/Defizit
 - **Aufzeichnungssystem** — Berechnungen speichern, laden, bearbeiten und löschen
-- **Portabler Speicher** — Daten im `data/`-Ordner neben der App gespeichert; funktioniert geräte- und browserübergreifend
+- **Portabler Speicher** — Daten im `data/`-Ordner neben der App gespeichert; funktioniert geräte- und browserübergreifend. Ohne verbundenen Ordner (z. B. am Handy) werden die Daten im Browser gespeichert
 - **Mehrsprachigkeit** — SK, EN, DE; neue Sprache mit einer einzigen `.po`-Datei hinzufügen
 - **Keine Installation** — eine HTML-Datei, funktioniert via `file://`
 
@@ -75,14 +80,26 @@ Männer: BMR = 1,0 × Gewicht (kg) × 24
 Frauen: BMR = 0,9 × Gewicht (kg) × 24
 ```
 
-### Körperfett
+### Körperzusammensetzung
 ```
-Fettmasse    = Gewicht × Körperfettanteil % / 100
-Magermasse   = Gewicht − Fettmasse
-Zielgewicht  = Magermasse / (1 − Ziel-Körperfettanteil % / 100)
-Fettabbau    = Fettmasse − (Zielgewicht − Magermasse)
+Fettmasse    = Gewicht × Fett % / 100
+Muskelmasse  = Gewicht × Muskeln % / 100
+Rest         = Gewicht − Fett − Muskeln              (Wasser, Knochen, Organe …)
+
+Fettabbau     Zielgewicht = (Gewicht − Fett) / (1 − Ziel-Fett %)
+              abzubauendes Fett = Gewicht − Zielgewicht
+              Tage = Fett × 7.700 / Defizit
+
+Muskelaufbau  Zielgewicht = (Gewicht − Muskeln) / (1 − Ziel-Muskeln %)
+              aufzubauende Muskeln = Zielgewicht − Gewicht
+              Tage = Muskeln × 7.700 / Überschuss
+
+Rekomposition Zielgewicht = Rest / (1 − Ziel-Fett % − Ziel-Muskeln %)
+              abzubauendes Fett    = Fett − Zielgewicht × Ziel-Fett %
+              aufzubauende Muskeln = Zielgewicht × Ziel-Muskeln % − Muskeln
+              Tage = max(Fett / Fetttempo, Muskeln / Muskeltempo) × 30,44
 ```
-Es wird angenommen, dass die Magermasse erhalten bleibt. Die Zeitschätzung rechnet mit `1 kg Fett ≈ 7.700 kcal`.
+In jedem Modus bleibt die nicht angezielte Masse unverändert. Die Rekomposition läuft beim Erhaltungsbedarf, daher nutzt die Dauer das einstellbare Monatstempo (Standard +0,5 kg Muskeln / −1,0 kg Fett).
 
 ### PAL (Physical Activity Level)
 ```

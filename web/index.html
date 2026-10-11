@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calorie Calculator</title>
-<meta name="description" content="Daily calorie and macronutrient needs — BMR, activity level (PAL), total daily expenditure, body fat overview and protein / fat / carb split.">
+<meta name="description" content="Daily calorie and macronutrient needs — BMR, activity level (PAL), total daily expenditure, body composition (fat &amp; muscle) with progress history and protein / fat / carb split.">
 <meta property="og:title" content="Calorie Calculator">
-<meta property="og:description" content="Daily calorie and macronutrient needs — BMR, activity level (PAL), total daily expenditure, body fat overview and protein / fat / carb split.">
+<meta property="og:description" content="Daily calorie and macronutrient needs — BMR, activity level (PAL), total daily expenditure, body composition (fat &amp; muscle) with progress history and protein / fat / carb split.">
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -30,6 +30,15 @@ input[type=range].rng.thin::-webkit-slider-runnable-track { height:4px; border-r
 input[type=range].rng.thin::-moz-range-track              { height:4px; border-radius:2px; }
 input[type=range].rng.thin::-webkit-slider-thumb { width:16px; height:16px; margin-top:-6px; }
 input[type=range].rng.thin::-moz-range-thumb     { width:16px; height:16px; }
+/* Zamknutý posuvník — dotyk prepadne na stránku (scroll), hodnota sa nedá zmeniť. */
+input[type=range].rng.locked { pointer-events:none; opacity:.45; cursor:default; }
+.edit-btn { width:30px; height:30px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:#94a3b8; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; padding:0; font-family:inherit; transition:all .15s; }
+.edit-btn:hover { border-color:#475569; }
+.hist-table { width:100%; border-collapse:collapse; font-size:12px; min-width:280px; }
+.hist-table th { position:sticky; top:0; background:#1e293b; color:#64748b; font-weight:600; text-align:right; padding:8px 4px; border-bottom:1px solid #334155; white-space:nowrap; z-index:1; }
+.hist-table th:first-child, .hist-table td:first-child { text-align:left; padding-left:8px; }
+.hist-table td { padding:7px 4px; border-bottom:1px solid #1e293b; text-align:right; white-space:nowrap; color:#e2e8f0; vertical-align:middle; }
+.hist-table tr:hover td { background:rgba(148,163,184,.04); }
 input[type=number],input[type=text] { background:#1e293b; border:1px solid #334155; color:#e2e8f0; padding:8px 12px; border-radius:8px; font-size:14px; font-family:inherit; outline:none; transition:border-color .2s; }
 input[type=number]:focus,input[type=text]:focus { border-color:#f59e0b; }
 input[type=number] { width:80px; text-align:center; }
@@ -79,8 +88,18 @@ const BUILT_IN_LOCALES = {
       'step1.title':'1️⃣ Basal Metabolic Rate (BMR)','step1.weight':'Weight (kg)','step1.gender':'Gender','step1.male':'👨 Male','step1.female':'👩 Female',
       'step1.formula.male':'Formula: 1.0 × {weight} kg × 24h','step1.formula.female':'Formula: 0.9 × {weight} kg × 24h',
       'step1.note.male':'Men: 1.0 kcal/kg/h','step1.note.female':'Women: 0.9 kcal/kg/h','step1.unit':'kcal / day',
-      'bodyfat.title':'2️⃣ Body Fat','bodyfat.current':'Current body fat','bodyfat.target':'Target body fat','bodyfat.fatmass':'Fat mass','bodyfat.leanmass':'Lean mass','bodyfat.tolose':'Fat to lose','bodyfat.togain':'Fat to gain','bodyfat.target_weight':'Target weight','bodyfat.unit.kg':'kg',
+      'bodyfat.current':'Current body fat','bodyfat.target':'Target body fat','bodyfat.fatmass':'Fat mass','bodyfat.leanmass':'Lean mass','bodyfat.tolose':'Fat to lose','bodyfat.togain':'Fat to gain','bodyfat.target_weight':'Target weight','bodyfat.unit.kg':'kg',
       'bodyfat.summary':'At {pct} % body fat with your lean mass of {lean} kg preserved, you would weigh about {tw} kg.','bodyfat.same':'Set a target below your current body fat to see how much fat you need to lose.','bodyfat.eta':'⏱️ At your current deficit of {kcal} kcal/day this takes about {weeks} weeks ({days} days).','bodyfat.note':'Assumes lean mass (muscle, water, bone) stays unchanged. 1 kg of fat ≈ 7,700 kcal.',
+      'bodycomp.title':'2️⃣ Body Composition','bodycomp.mode_hint':'Which fields you can set follows the goal selected in step 5️⃣.','bodycomp.fat':'🔥 Fat','bodycomp.muscle':'💪 Muscle',
+      'muscle.current':'Current muscle','muscle.target':'Target muscle','muscle.mass':'Muscle mass','muscle.togain':'Muscle to gain','muscle.toloss':'Muscle loss',
+      'muscle.summary':'At {pct} % muscle with the rest of your body ({rest} kg — fat, water, bone…) unchanged, you would weigh about {tw} kg.','muscle.same':'Set a target above your current muscle share to see how much muscle you need to gain.','muscle.eta':'⏱️ At your current surplus of {kcal} kcal/day this takes about {weeks} weeks ({days} days).','muscle.note':'Assumes the rest of your body (fat, water, bone) stays unchanged; the duration uses the gain pace from step 5️⃣ (1 kg ≈ 7,700 kcal).','muscle.hint':'Always use the same scale or device so the values stay comparable.',
+      'recomp.summary':'At {fat} % fat and {mus} % muscle with the rest of your body ({rest} kg) unchanged, you would weigh about {tw} kg.','recomp.same':'For recomposition set the fat target below and the muscle target above your current values.','recomp.pace':'⏱️ Recomposition pace','recomp.pace_muscle':'Muscle gain','recomp.pace_fat':'Fat loss','unit.kg_month':'kg/month','recomp.eta':'⏱️ Fat: ~{fw} weeks · Muscle: ~{mw} weeks — both targets in about {weeks} weeks ({days} days).','recomp.note':'Recomposition runs at maintenance intake, so the duration uses the pace set above. The rest of your body (water, bone, organs) is assumed unchanged.',
+      'eta.date':'🎯 Target reached around {date}','bodycomp.invalid':'⚠️ Fat and muscle together must be below 100 %.','bodycomp.invalid_target':'⚠️ Target fat and target muscle together must be below 100 %.',
+      'history.title':'📈 Fat & Muscle Progress','history.empty_unsaved':'Save this calculation — every save or update adds a row with your weight, fat and muscle of that day.','history.empty':'No measurements yet.','history.count':'Measurements: {n}','history.note':'Every save or update of the record writes the current values here.',
+      'history.col.date':'Date','history.col.weight':'Weight','history.chart.fat':'Fat','history.chart.muscle':'Muscle','history.chart.nodata':'No data yet','history.chart.one':'At least 2 measurements needed','history.delete':'Delete measurement','history.delete_confirm':'Delete the measurement from {date}?',
+      'modal.log_history':'📈 Record this measurement in history','modal.log_preview':'Weight {w} kg · fat {fat} % ({fkg} kg) · muscle {mus} % ({mkg} kg)',
+      'lock.edit':'Edit','lock.done':'Done',
+      'storage.browser':'Records are saved in this browser','storage.browser_note':'Records are saved in this browser on this device.','storage.no_picker':'Folder selection is not supported on this device — records are saved in the browser.',
       'step2.title':'3️⃣ Daily Activities (PAL)','step2.hours':'{n} / 24 hours','step2.hours.error':'Total hours must equal exactly 24','step2.intensity':'Intensity:','step2.unit.h':'h',
       'pal.sleep':'Sleep','pal.lying':'Exclusively sedentary / lying lifestyle (computer, TV)','pal.sedentary':'Sedentary work with little activity','pal.light':'Sedentary + occasional standing / walking (driver, assembly line worker)','pal.standing':'Predominantly standing / walking work (housework, salesperson)','pal.heavy':'Heavy physical work (construction workers, elite sport)','pal.sport':'Sport / training',
       'step3.title':'4️⃣ Total Daily Expenditure','step3.pal':'Average PAL','step3.bmr':'BMR','step3.total':'Total Expenditure','step3.unit':'kcal / day',
@@ -112,8 +131,18 @@ const BUILT_IN_LOCALES = {
       'step1.title':'1️⃣ Základný metabolizmus (BMR)','step1.weight':'Hmotnosť (kg)','step1.gender':'Pohlavie','step1.male':'👨 Muž','step1.female':'👩 Žena',
       'step1.formula.male':'Vzorec: 1,0 × {weight} kg × 24h','step1.formula.female':'Vzorec: 0,9 × {weight} kg × 24h',
       'step1.note.male':'Muži: 1,0 kcal/kg/h','step1.note.female':'Ženy: 0,9 kcal/kg/h','step1.unit':'kcal / deň',
-      'bodyfat.title':'2️⃣ Telesný tuk','bodyfat.current':'Aktuálny podiel tuku','bodyfat.target':'Cieľový podiel tuku','bodyfat.fatmass':'Hmotnosť tuku','bodyfat.leanmass':'Čistá hmota','bodyfat.tolose':'Tuk na zhodenie','bodyfat.togain':'Tuk navyše','bodyfat.target_weight':'Cieľová hmotnosť','bodyfat.unit.kg':'kg',
+      'bodyfat.current':'Aktuálny podiel tuku','bodyfat.target':'Cieľový podiel tuku','bodyfat.fatmass':'Hmotnosť tuku','bodyfat.leanmass':'Čistá hmota','bodyfat.tolose':'Tuk na zhodenie','bodyfat.togain':'Tuk navyše','bodyfat.target_weight':'Cieľová hmotnosť','bodyfat.unit.kg':'kg',
       'bodyfat.summary':'Pri {pct} % tuku a zachovanej čistej hmote {lean} kg by si vážil približne {tw} kg.','bodyfat.same':'Nastav cieľ nižšie ako aktuálny podiel tuku a uvidíš, koľko tuku musíš zhodiť.','bodyfat.eta':'⏱️ Pri aktuálnom deficite {kcal} kcal/deň to trvá približne {weeks} týždňov ({days} dní).','bodyfat.note':'Predpokladá sa, že čistá hmota (svaly, voda, kosti) ostáva zachovaná. 1 kg tuku ≈ 7 700 kcal.',
+      'bodycomp.title':'2️⃣ Telesné zloženie','bodycomp.mode_hint':'Ktoré polia nastavuješ, sa riadi cieľom zvoleným v kroku 5️⃣.','bodycomp.fat':'🔥 Tuk','bodycomp.muscle':'💪 Svaly',
+      'muscle.current':'Aktuálny podiel svalov','muscle.target':'Cieľový podiel svalov','muscle.mass':'Svalová hmota','muscle.togain':'Svaly na pribratie','muscle.toloss':'Úbytok svalov',
+      'muscle.summary':'Pri {pct} % svalov a nezmenenej ostatnej hmote {rest} kg (tuk, voda, kosti…) by si vážil približne {tw} kg.','muscle.same':'Nastav cieľ vyšší ako aktuálny podiel svalov a uvidíš, koľko svalov potrebuješ pribrať.','muscle.eta':'⏱️ Pri aktuálnom prebytku {kcal} kcal/deň to trvá približne {weeks} týždňov ({days} dní).','muscle.note':'Predpokladá sa, že ostatná hmota (tuk, voda, kosti) ostáva rovnaká; trvanie počíta s tempom prírastku z kroku 5️⃣ (1 kg ≈ 7 700 kcal).','muscle.hint':'Meraj vždy tou istou váhou alebo prístrojom, aby boli hodnoty porovnateľné.',
+      'recomp.summary':'Pri {fat} % tuku a {mus} % svalov a nezmenenej ostatnej hmote {rest} kg by si vážil približne {tw} kg.','recomp.same':'Pri rekompozícii nastav cieľ tuku nižšie a cieľ svalov vyššie ako aktuálne hodnoty.','recomp.pace':'⏱️ Tempo rekompozície','recomp.pace_muscle':'Prírastok svalov','recomp.pace_fat':'Úbytok tuku','unit.kg_month':'kg/mes.','recomp.eta':'⏱️ Tuk: ~{fw} týždňov · Svaly: ~{mw} týždňov — oba ciele približne za {weeks} týždňov ({days} dní).','recomp.note':'Rekompozícia prebieha na udržiavacom príjme, preto trvanie počíta s tempom nastaveným vyššie. Ostatná hmota (voda, kosti, orgány) sa považuje za nemennú.',
+      'eta.date':'🎯 Cieľ dosiahneš približne {date}','bodycomp.invalid':'⚠️ Súčet tuku a svalov musí byť pod 100 %.','bodycomp.invalid_target':'⚠️ Súčet cieľového tuku a cieľových svalov musí byť pod 100 %.',
+      'history.title':'📈 Vývoj tuku a svalov','history.empty_unsaved':'Ulož výpočet — každé uloženie alebo aktualizácia pridá riadok s tvojou váhou, tukom a svalmi z daného dňa.','history.empty':'Zatiaľ žiadne merania.','history.count':'Počet meraní: {n}','history.note':'Každé uloženie alebo aktualizácia záznamu sem zapíše aktuálne hodnoty.',
+      'history.col.date':'Dátum','history.col.weight':'Váha','history.chart.fat':'Tuk','history.chart.muscle':'Svaly','history.chart.nodata':'Zatiaľ bez dát','history.chart.one':'Potrebné sú aspoň 2 merania','history.delete':'Vymazať meranie','history.delete_confirm':'Vymazať meranie z {date}?',
+      'modal.log_history':'📈 Zapísať toto meranie do histórie','modal.log_preview':'Váha {w} kg · tuk {fat} % ({fkg} kg) · svaly {mus} % ({mkg} kg)',
+      'lock.edit':'Upraviť','lock.done':'Hotovo',
+      'storage.browser':'Záznamy sa ukladajú v tomto prehliadači','storage.browser_note':'Záznamy sa ukladajú v tomto prehliadači na tomto zariadení.','storage.no_picker':'Výber priečinka toto zariadenie nepodporuje — záznamy sa ukladajú v prehliadači.',
       'step2.title':'3️⃣ Denné aktivity (PAL)','step2.hours':'{n} / 24 hodín','step2.hours.error':'Súčet hodín musí byť presne 24','step2.intensity':'Intenzita:','step2.unit.h':'h',
       'pal.sleep':'Spánok','pal.lying':'Výlučne sedavý / ležiaci životný štýl (počítač, tv)','pal.sedentary':'Sedavá činnosť s malou aktivitou','pal.light':'Sedavá + krátke státie / chôdza (vodič, pracovník na montážnej linke)','pal.standing':'Prevažne stojaca / chodiaca práca (domáce práce, predajca)','pal.heavy':'Ťažká fyzická práca (stavební robotníci, vrcholový šport)','pal.sport':'Šport / tréning',
       'step3.title':'4️⃣ Celkový denný výdaj','step3.pal':'Priemerný PAL','step3.bmr':'BMR','step3.total':'Celkový výdaj','step3.unit':'kcal / deň',
@@ -145,8 +174,18 @@ const BUILT_IN_LOCALES = {
       'step1.title':'1️⃣ Grundumsatz (BMR)','step1.weight':'Körpergewicht (kg)','step1.gender':'Geschlecht','step1.male':'👨 Mann','step1.female':'👩 Frau',
       'step1.formula.male':'Formel: 1,0 × {weight} kg × 24h','step1.formula.female':'Formel: 0,9 × {weight} kg × 24h',
       'step1.note.male':'Männer: 1,0 kcal/kg/h','step1.note.female':'Frauen: 0,9 kcal/kg/h','step1.unit':'kcal / Tag',
-      'bodyfat.title':'2️⃣ Körperfett','bodyfat.current':'Aktueller Körperfettanteil','bodyfat.target':'Ziel-Körperfettanteil','bodyfat.fatmass':'Fettmasse','bodyfat.leanmass':'Magermasse','bodyfat.tolose':'Abzubauendes Fett','bodyfat.togain':'Zusätzliches Fett','bodyfat.target_weight':'Zielgewicht','bodyfat.unit.kg':'kg',
+      'bodyfat.current':'Aktueller Körperfettanteil','bodyfat.target':'Ziel-Körperfettanteil','bodyfat.fatmass':'Fettmasse','bodyfat.leanmass':'Magermasse','bodyfat.tolose':'Abzubauendes Fett','bodyfat.togain':'Zusätzliches Fett','bodyfat.target_weight':'Zielgewicht','bodyfat.unit.kg':'kg',
       'bodyfat.summary':'Bei {pct} % Körperfett und unveränderter Magermasse von {lean} kg würdest du etwa {tw} kg wiegen.','bodyfat.same':'Setze das Ziel unter deinen aktuellen Körperfettanteil, um zu sehen, wie viel Fett du abbauen musst.','bodyfat.eta':'⏱️ Bei deinem aktuellen Defizit von {kcal} kcal/Tag dauert das etwa {weeks} Wochen ({days} Tage).','bodyfat.note':'Angenommen, die Magermasse (Muskeln, Wasser, Knochen) bleibt erhalten. 1 kg Fett ≈ 7.700 kcal.',
+      'bodycomp.title':'2️⃣ Körperzusammensetzung','bodycomp.mode_hint':'Welche Felder einstellbar sind, richtet sich nach dem Ziel in Schritt 5️⃣.','bodycomp.fat':'🔥 Fett','bodycomp.muscle':'💪 Muskeln',
+      'muscle.current':'Aktueller Muskelanteil','muscle.target':'Ziel-Muskelanteil','muscle.mass':'Muskelmasse','muscle.togain':'Aufzubauende Muskeln','muscle.toloss':'Muskelverlust',
+      'muscle.summary':'Bei {pct} % Muskelanteil und unveränderter übriger Masse von {rest} kg (Fett, Wasser, Knochen …) würdest du etwa {tw} kg wiegen.','muscle.same':'Setze das Ziel über deinen aktuellen Muskelanteil, um zu sehen, wie viel Muskeln du aufbauen musst.','muscle.eta':'⏱️ Bei deinem aktuellen Überschuss von {kcal} kcal/Tag dauert das etwa {weeks} Wochen ({days} Tage).','muscle.note':'Angenommen, die übrige Masse (Fett, Wasser, Knochen) bleibt gleich; die Dauer nutzt das Zunahmetempo aus Schritt 5️⃣ (1 kg ≈ 7.700 kcal).','muscle.hint':'Miss immer mit derselben Waage bzw. demselben Gerät, damit die Werte vergleichbar bleiben.',
+      'recomp.summary':'Bei {fat} % Fett und {mus} % Muskeln und unveränderter übriger Masse von {rest} kg würdest du etwa {tw} kg wiegen.','recomp.same':'Bei der Rekomposition das Fettziel unter und das Muskelziel über die aktuellen Werte setzen.','recomp.pace':'⏱️ Rekompositionstempo','recomp.pace_muscle':'Muskelaufbau','recomp.pace_fat':'Fettabbau','unit.kg_month':'kg/Monat','recomp.eta':'⏱️ Fett: ~{fw} Wochen · Muskeln: ~{mw} Wochen — beide Ziele in etwa {weeks} Wochen ({days} Tage).','recomp.note':'Die Rekomposition läuft beim Erhaltungsbedarf, daher nutzt die Dauer das oben eingestellte Tempo. Die übrige Masse (Wasser, Knochen, Organe) gilt als unverändert.',
+      'eta.date':'🎯 Ziel erreicht etwa am {date}','bodycomp.invalid':'⚠️ Fett und Muskeln zusammen müssen unter 100 % liegen.','bodycomp.invalid_target':'⚠️ Zielfett und Zielmuskeln zusammen müssen unter 100 % liegen.',
+      'history.title':'📈 Verlauf von Fett und Muskeln','history.empty_unsaved':'Speichere die Berechnung — jedes Speichern oder Aktualisieren fügt eine Zeile mit Gewicht, Fett und Muskeln des Tages hinzu.','history.empty':'Noch keine Messungen.','history.count':'Messungen: {n}','history.note':'Jedes Speichern oder Aktualisieren der Aufzeichnung schreibt die aktuellen Werte hierher.',
+      'history.col.date':'Datum','history.col.weight':'Gewicht','history.chart.fat':'Fett','history.chart.muscle':'Muskeln','history.chart.nodata':'Noch keine Daten','history.chart.one':'Mindestens 2 Messungen nötig','history.delete':'Messung löschen','history.delete_confirm':'Messung vom {date} löschen?',
+      'modal.log_history':'📈 Diese Messung im Verlauf speichern','modal.log_preview':'Gewicht {w} kg · Fett {fat} % ({fkg} kg) · Muskeln {mus} % ({mkg} kg)',
+      'lock.edit':'Bearbeiten','lock.done':'Fertig',
+      'storage.browser':'Aufzeichnungen werden in diesem Browser gespeichert','storage.browser_note':'Aufzeichnungen werden in diesem Browser auf diesem Gerät gespeichert.','storage.no_picker':'Ordnerauswahl wird auf diesem Gerät nicht unterstützt — Aufzeichnungen werden im Browser gespeichert.',
       'step2.title':'3️⃣ Tagesaktivitäten (PAL)','step2.hours':'{n} / 24 Stunden','step2.hours.error':'Die Summe der Stunden muss genau 24 ergeben','step2.intensity':'Intensität:','step2.unit.h':'h',
       'pal.sleep':'Schlaf','pal.lying':'Ausschließlich sitzende / liegende Lebensweise (Computer, TV)','pal.sedentary':'Sitzende Tätigkeit mit wenig Aktivität','pal.light':'Sitzend + kurze Steh- / Gehtätigkeiten (Fahrer, Fließbandarbeiter)','pal.standing':'Überwiegend stehende / gehende Tätigkeit (Hausarbeit, Verkäufer)','pal.heavy':'Körperlich schwere Arbeit (Bauarbeiter, Leistungssport)','pal.sport':'Sport / Training',
       'step3.title':'4️⃣ Gesamtenergiebedarf','step3.pal':'Durchschnittlicher PAL','step3.bmr':'Grundumsatz','step3.total':'Gesamtbedarf','step3.unit':'kcal / Tag',
@@ -194,13 +233,40 @@ const PAL_ACTIVITIES = [
 ];
 const DEFAULT_HOURS = { sleep:8, lying:7, sedentary:8, light:0, standing:0, heavy:0, sport:1 };
 
-// ─── Telesný tuk ───────────────────────────────────────────────────────────
-// 1 kg telesného tuku ≈ 7700 kcal — používa sa na odhad trvania pri deficite.
+// ─── Telesné zloženie (tuk + svaly) ────────────────────────────────────────
+// 1 kg zmeny hmotnosti ≈ 7700 kcal — rovnaká konštanta ako v kroku Cieľ
+// (prepočet kg/týždeň ↔ kcal/deň), používa sa na odhad trvania.
 const KCAL_PER_KG_FAT   = 7700;
 const DEFAULT_BODY_FAT  = { male:20, female:28 };
 const DEFAULT_TARGET_FAT= { male:15, female:22 };
 const BODY_FAT_MIN      = 3;
 const BODY_FAT_MAX      = 60;
+// Podiel svalov — rozsah je široký, lebo rôzne váhy/prístroje ho definujú
+// rôzne (kostrové svaly ~30–50 %, „svalová hmota" vrátane vody ~65–80 %).
+const DEFAULT_MUSCLE        = { male:40, female:32 };
+const DEFAULT_TARGET_MUSCLE = { male:44, female:35 };
+const MUSCLE_MIN        = 10;
+const MUSCLE_MAX        = 90;
+// Rekompozícia prebieha na udržiavacom príjme — trvanie sa nedá odvodiť
+// z deficitu/prebytku, preto sa počíta z nastaviteľného mesačného tempa.
+const DEFAULT_RECOMP_PACE = { muscle:0.5, fat:1.0 };   // kg / mesiac
+const DAYS_PER_MONTH    = 30.44;
+const DAY_MS            = 86400000;
+
+// ─── Záloha v prehliadači (keď nie je pripojený priečinok) ────────────────
+// Mobilné prehliadače nepodporujú výber priečinka (File System Access API),
+// bez zálohy by sa na telefóne záznamy ani história neuložili.
+const LS_SETTINGS = 'cc_settings_v1';
+const LS_RECORDS  = 'cc_records_v1';
+function lsRead(key) {
+  try { var raw = window.localStorage.getItem(key); return raw ? JSON.parse(raw) : null; }
+  catch(e) { return null; }
+}
+function lsWrite(key, data) {
+  try { window.localStorage.setItem(key, JSON.stringify(data)); return true; }
+  catch(e) { console.warn('localStorage write failed:', key, e); return false; }
+}
+const CAN_PICK_FOLDER = typeof window.showDirectoryPicker === 'function';
 
 const GOALS = [
   { id:'muscle',   icon:'💪', color:'#22c55e' },
@@ -390,6 +456,41 @@ function mkActivities() {
   return PAL_ACTIVITIES.map(function(a){ return { id:a.id, hours:DEFAULT_HOURS[a.id]??0, intensity:0.5 }; });
 }
 
+// ─── História meraní ──────────────────────────────────────────────────────
+// Každé uloženie / aktualizácia záznamu pridá do rec.history riadok:
+// { ts, weight, goal, bodyFatPct, fatKg, musclePct, muscleKg }
+function r1(n) { return Math.round(n*10)/10; }
+function numOrNull(v) { if (v===''||v==null) return null; var n=parseFloat(v); return isNaN(n)?null:n; }
+function mkHistoryEntry(weight, bodyFatPct, musclePct, goal, ts) {
+  const w  = parseFloat(weight) || 0;
+  const bf = numOrNull(bodyFatPct), mu = numOrNull(musclePct);
+  return { ts: ts || new Date().toISOString(), weight:w, goal:goal||null,
+    bodyFatPct:bf, fatKg:    bf==null ? null : r1(w*bf/100),
+    musclePct:mu,  muscleKg: mu==null ? null : r1(w*mu/100) };
+}
+function sameDay(a, b) {
+  const x = new Date(a), y = new Date(b);
+  return x.getFullYear()===y.getFullYear() && x.getMonth()===y.getMonth() && x.getDate()===y.getDate();
+}
+// Rovnaké hodnoty v ten istý deň → nepridávať duplicitný riadok; ostáva
+// pôvodný riadok s časom, kedy bolo meranie naozaj zapísané.
+function appendHistory(hist, e) {
+  const h = (hist || []).slice();
+  const last = h[h.length-1];
+  if (last && sameDay(last.ts, e.ts) && last.weight===e.weight && last.bodyFatPct===e.bodyFatPct && last.musclePct===e.musclePct) return h;
+  h.push(e);
+  return h;
+}
+// Záznamy z v2.1.x a starších históriu nemajú — prvý bod sa vytvorí z ich
+// uloženého dátumu a hodnôt, aby vývoj začínal práve od nich.
+function normalizeRec(rec) {
+  if (!rec || Array.isArray(rec.history)) return rec;
+  const ts = rec.date || new Date(rec.id || Date.now()).toISOString();
+  return {...rec, history:[mkHistoryEntry(rec.weight, rec.bodyFatPct, rec.musclePct, rec.goal, ts)]};
+}
+function normalizeRecs(arr) { return Array.isArray(arr) ? arr.map(normalizeRec) : []; }
+function localeTag(lang) { return ({en_EN:'en-GB', sk_SK:'sk-SK', de_DE:'de-DE'})[lang] || String(lang||'en').replace('_','-'); }
+
 // ─── Prekladový systém ─────────────────────────────────────────────────────
 function makeT(lang, locales) {
   return function t(key, vars) {
@@ -436,21 +537,245 @@ function PieChart({ protein, fat, carbs, size }) {
   );
 }
 
-function Slider({ min, max, step, value, onChange, label, unit, color, disabled }) {
+// ─── Zámok úprav ───────────────────────────────────────────────────────────
+// Každé nastaviteľné pole je predvolene zamknuté; ✏️ ho odomkne, ✓ zamkne.
+// Naraz je otvorené len jedno pole (editKey v App).
+function EditBtn({ open, onClick, color, t }) {
+  color = color || '#f59e0b';
+  const label = open ? t('lock.done') : t('lock.edit');
+  return (
+    <button type="button" className="edit-btn" onClick={onClick} aria-label={label} title={label} aria-pressed={!!open}
+      style={open ? {borderColor:color,background:color+'22',color:color,fontWeight:800,fontSize:15} : null}>
+      {open ? '✓' : '✏️'}
+    </button>
+  );
+}
+
+function Slider({ min, max, step, value, onChange, label, unit, color, disabled, locked, onToggle, t }) {
   color = color || '#f59e0b';
   const pct = max===min ? 0 : ((value-min)/(max-min))*100;
+  const lockable = typeof onToggle === 'function';
   return (
     <div style={{marginBottom:12}}>
-      <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:4,color:'#94a3b8'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,fontSize:13,marginBottom:4,color:'#94a3b8',minHeight:30}}>
         <span>{label}</span>
-        <span style={{color:color,fontWeight:700}}>{Number.isInteger(step)?value:value.toFixed(1)} {unit}</span>
+        <span style={{display:'flex',alignItems:'center',gap:8}}>
+          <span style={{color:color,fontWeight:700}}>{Number.isInteger(step)?value:value.toFixed(1)} {unit}</span>
+          {lockable && <EditBtn open={!locked} onClick={onToggle} color={color} t={t}/>}
+        </span>
       </div>
-      <input className="rng" type="range" min={min} max={max} step={step} value={value} disabled={!!disabled}
+      <input className={'rng'+(locked?' locked':'')} type="range" min={min} max={max} step={step} value={value}
+        disabled={!!disabled || !!locked}
         onChange={function(e){ onChange(parseFloat(e.target.value)); }}
         style={{'--rc':color,'--rf':pct+'%'}}/>
       <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'#475569',marginTop:2}}>
         <span>{min} {unit}</span><span>{max} {unit}</span>
       </div>
+    </div>
+  );
+}
+
+// Pole telesného zloženia (% tuku / svalov): hodnota + ✏️ na riadku s popiskom,
+// posuvník pod ním. Číselné pole sa zobrazí iba odomknuté (inak by na mobile
+// otváralo klávesnicu).
+function CompField({ label, value, onChange, min, max, step, color, open, onToggle, t }) {
+  step = step || 0.5;
+  const num = Math.min(max, Math.max(min, parseFloat(value) || 0));
+  const pos = (num - min) / (max - min) * 100;
+  return (
+    <div style={{flex:'1 1 240px'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,fontSize:13,color:'#94a3b8',minHeight:34}}>
+        <span>{label}</span>
+        <div style={{display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
+          {open ? (
+            <input type="number" inputMode="decimal" min={min} max={max} step={step} value={value}
+              onChange={function(e){
+                if (e.target.value==='') { onChange(''); return; }
+                var n = parseFloat(e.target.value);
+                if (!isNaN(n)) onChange(Math.min(max, Math.max(0, n)));
+              }}
+              onBlur={function(){
+                var n = parseFloat(value);
+                if (isNaN(n) || n < min) onChange(min);
+              }}
+              onKeyDown={function(e){ if (e.key==='Enter') e.target.blur(); }}
+              style={{width:72,padding:'6px 8px'}}/>
+          ) : (
+            <span style={{color:color,fontWeight:800,fontSize:17,fontFamily:"'Outfit',sans-serif",minWidth:36,textAlign:'right'}}>
+              {value===''?'—':value}
+            </span>
+          )}
+          <span style={{color:color,fontWeight:700}}>%</span>
+          <EditBtn open={open} onClick={onToggle} color={color} t={t}/>
+        </div>
+      </div>
+      <div style={{marginTop:4}}>
+        <input className={'rng'+(open?'':' locked')} type="range" min={min} max={max} step={step} value={num} disabled={!open}
+          onChange={function(e){ onChange(parseFloat(e.target.value)); }}
+          style={{'--rc':color,'--rf':pos+'%'}}/>
+      </div>
+    </div>
+  );
+}
+
+// ─── Graf vývoja ───────────────────────────────────────────────────────────
+// Kreslí sa v pixeloch podľa skutočnej šírky kontajnera — text ostáva
+// čitateľný na telefóne aj na desktope (viewBox by ho zmenšoval/zväčšoval).
+function useElementWidth() {
+  const ref = React.useRef(null);
+  const [width, setWidth] = useState(0);
+  useEffect(function() {
+    const el = ref.current; if (!el) return;
+    const upd = function(){ setWidth(el.clientWidth); };
+    upd();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', upd);
+      return function(){ window.removeEventListener('resize', upd); };
+    }
+    const ro = new ResizeObserver(upd); ro.observe(el);
+    return function(){ ro.disconnect(); };
+  }, []);
+  return [ref, width];
+}
+
+function TrendChart({ title, icon, color, points, unit, locale, t }) {
+  const [ref, width] = useElementWidth();
+  const H = 132, padL = 38, padR = 12, padT = 12, padB = 22;
+  const n = points.length;
+  let svg = null, delta = null;
+  if (n > 0 && width > 0) {
+    const vs = points.map(function(p){ return p.v; });
+    let lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs);
+    if (hi - lo < 0.6) { const m = (hi+lo)/2; lo = m-0.3; hi = m+0.3; }
+    else { const p = (hi-lo)*0.15; lo -= p; hi += p; }
+    const ts = points.map(function(p){ return Date.parse(p.ts); });
+    const t0 = ts[0], t1 = ts[n-1];
+    const iw = width - padL - padR, ih = H - padT - padB;
+    const X = function(i){ return n===1 ? padL+iw/2 : (t1>t0 ? padL+(ts[i]-t0)/(t1-t0)*iw : padL+i/(n-1)*iw); };
+    const Y = function(v){ return padT + (hi-v)/(hi-lo)*ih; };
+    const d = points.map(function(p,i){ return (i?'L':'M')+X(i).toFixed(1)+','+Y(p.v).toFixed(1); }).join(' ');
+    const fmtD = function(s){ return new Date(s).toLocaleDateString(locale,{day:'numeric',month:'numeric'}); };
+    svg = (
+      <svg width={width} height={H} style={{display:'block'}}>
+        {[hi,(hi+lo)/2,lo].map(function(v,i){ return (
+          <g key={i}>
+            <line x1={padL} x2={width-padR} y1={Y(v)} y2={Y(v)} stroke="#1e293b" strokeWidth="1"/>
+            <text x={padL-6} y={Y(v)} textAnchor="end" dominantBaseline="central" fill="#64748b" fontSize="10">{v.toFixed(1)}</text>
+          </g>
+        ); })}
+        {n>1 && <path d={d} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>}
+        {points.map(function(p,i){ return (
+          <circle key={i} cx={X(i)} cy={Y(p.v)} r={n>14?2.5:3.5} fill={color} stroke="#0f172a" strokeWidth="1.5">
+            <title>{new Date(p.ts).toLocaleString(locale)+' — '+p.v.toFixed(1)+' '+unit}</title>
+          </circle>
+        ); })}
+        <text x={padL} y={H-5} fill="#64748b" fontSize="10">{fmtD(points[0].ts)}</text>
+        {n>1 && <text x={width-padR} y={H-5} textAnchor="end" fill="#64748b" fontSize="10">{fmtD(points[n-1].ts)}</text>}
+      </svg>
+    );
+    if (n > 1) delta = vs[n-1] - vs[0];
+  }
+  return (
+    <div style={{flex:'1 1 150px',minWidth:0,background:'#0f172a',borderRadius:12,padding:'10px 10px 6px',border:'1px solid '+color+'33'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:6,marginBottom:4,fontSize:12}}>
+        <span style={{color:color,fontWeight:700}}>{icon} {title} <span style={{color:'#64748b',fontWeight:500}}>({unit})</span></span>
+        {delta!=null && (
+          <span style={{color:color,fontWeight:800,whiteSpace:'nowrap'}}>
+            {Math.abs(delta)<0.05 ? '＝ 0.0' : (delta<0?'▼ ':'▲ ')+Math.abs(delta).toFixed(1)}
+          </span>
+        )}
+      </div>
+      <div ref={ref} style={{width:'100%'}}>
+        {n===0
+          ? <div style={{height:H,display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,color:'#475569'}}>{t('history.chart.nodata')}</div>
+          : svg}
+      </div>
+      {n===1 && <div style={{fontSize:11,color:'#475569',textAlign:'center',marginTop:-2}}>{t('history.chart.one')}</div>}
+    </div>
+  );
+}
+
+// ─── História meraní: grafy + rolovateľná tabuľka ─────────────────────────
+function HistoryCard({ history, hasRecord, unit, onUnit, onDelete, t, locale }) {
+  const hist = (history || []).slice().sort(function(a,b){ return Date.parse(a.ts)-Date.parse(b.ts); });
+  const pick = function(h, kind){ return kind==='fat' ? (unit==='kg'?h.fatKg:h.bodyFatPct) : (unit==='kg'?h.muscleKg:h.musclePct); };
+  const pts  = function(kind){
+    return hist.filter(function(h){ return pick(h,kind)!=null; }).map(function(h){ return {ts:h.ts, v:+pick(h,kind)}; });
+  };
+  const u   = unit==='kg' ? t('bodyfat.unit.kg') : '%';
+  const fmt = function(v){ return v==null ? '—' : (+v).toFixed(1); };
+  return (
+    <div className="card">
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,flexWrap:'wrap',marginBottom:12}}>
+        <div className="section-title" style={{color:'#14b8a6',marginBottom:0}}>{t('history.title')}</div>
+        <div style={{display:'flex',alignItems:'center',gap:8}}>
+          {hasRecord && hist.length>0 && <span style={{fontSize:12,color:'#64748b'}}>{t('history.count',{n:hist.length})}</span>}
+          {hasRecord && hist.length>0 && <div style={{display:'flex',border:'1px solid #334155',borderRadius:8,overflow:'hidden'}}>
+            {['kg','%'].map(function(k){ return (
+              <button key={k} type="button" onClick={function(){ onUnit(k==='%'?'pct':'kg'); }} style={{
+                padding:'5px 12px',border:'none',cursor:'pointer',fontFamily:'inherit',fontSize:12,fontWeight:700,
+                background:(unit==='kg')===(k==='kg')?'rgba(20,184,166,.18)':'transparent',
+                color:(unit==='kg')===(k==='kg')?'#14b8a6':'#64748b'}}>{k}</button>
+            ); })}
+          </div>}
+        </div>
+      </div>
+
+      {!hasRecord ? (
+        <div style={{fontSize:13,color:'#94a3b8',background:'#0f172a',borderRadius:10,padding:'12px 14px',border:'1px solid #334155'}}>
+          {t('history.empty_unsaved')}
+        </div>
+      ) : hist.length===0 ? (
+        <div style={{fontSize:13,color:'#64748b',textAlign:'center',padding:'16px 0'}}>{t('history.empty')}</div>
+      ) : (
+        <React.Fragment>
+          <div style={{display:'flex',gap:10,marginBottom:12}}>
+            <TrendChart title={t('history.chart.fat')}    icon="🔥" color="#ef4444" points={pts('fat')}    unit={u} locale={locale} t={t}/>
+            <TrendChart title={t('history.chart.muscle')} icon="💪" color="#22c55e" points={pts('muscle')} unit={u} locale={locale} t={t}/>
+          </div>
+          <div style={{maxHeight:260,overflow:'auto',borderRadius:10,border:'1px solid #334155',background:'#0f172a'}}>
+            <table className="hist-table">
+              <thead>
+                <tr>
+                  <th>{t('history.col.date')}</th>
+                  <th>{t('history.col.weight')}</th>
+                  <th style={{color:'#f87171'}}>🔥 {t('history.chart.fat')}</th>
+                  <th style={{color:'#4ade80'}}>💪 {t('history.chart.muscle')}</th>
+                  <th style={{width:26}}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {hist.slice().reverse().map(function(h, i){
+                  const g = GOALS.find(function(x){ return x.id===h.goal; });
+                  const d = new Date(h.ts);
+                  return (
+                    <tr key={h.ts+'#'+i}>
+                      <td>
+                        <div style={{fontWeight:700}}>{g ? g.icon+' ' : ''}{d.toLocaleDateString(locale)}</div>
+                        <div style={{fontSize:11,color:'#64748b'}}>{d.toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit'})}</div>
+                      </td>
+                      <td style={{fontWeight:700}}>{fmt(h.weight)} <span style={{color:'#64748b',fontWeight:500}}>kg</span></td>
+                      <td>
+                        <div style={{color:'#f87171',fontWeight:700}}>{fmt(h.fatKg)} kg</div>
+                        <div style={{fontSize:11,color:'#94a3b8'}}>{fmt(h.bodyFatPct)} %</div>
+                      </td>
+                      <td>
+                        <div style={{color:'#4ade80',fontWeight:700}}>{fmt(h.muscleKg)} kg</div>
+                        <div style={{fontSize:11,color:'#94a3b8'}}>{fmt(h.musclePct)} %</div>
+                      </td>
+                      <td>
+                        <button type="button" onClick={function(){ onDelete(h); }} aria-label={t('history.delete')} title={t('history.delete')}
+                          style={{border:'none',background:'transparent',color:'#475569',cursor:'pointer',fontSize:13,padding:'2px 4px'}}>✕</button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </React.Fragment>
+      )}
+      <div style={{fontSize:11,color:'#475569',marginTop:10}}>{t('history.note')}</div>
     </div>
   );
 }
@@ -605,9 +930,12 @@ function SettingsModal({ settings, onSave, onClose, t, langs, storageReady, stor
               {connectedPath && <span style={{fontSize:13,color:'#64748b'}}>— {connectedPath}</span>}
               <button className="btn btn-ghost" style={{fontSize:12}} onClick={onSelectFolder}>{t('storage.change_folder')}</button>
             </div>
+          ) : !CAN_PICK_FOLDER ? (
+            <span style={{fontSize:12,color:'#64748b'}}>💾 {t('storage.no_picker')}</span>
           ) : (
             <div style={{display:'flex',flexDirection:'column',gap:8}}>
               <span style={{fontSize:12,color:'#64748b'}}>{t('storage.not_connected')}</span>
+              <span style={{fontSize:12,color:'#64748b'}}>💾 {t('storage.browser_note')}</span>
               <button className="btn btn-primary" style={{alignSelf:'flex-start'}}
                 onClick={storageHasHandle ? onReconnect : onSelectFolder}>
                 📂 {storageHasHandle ? '🔄 ' + t('storage.reconnect') : t('storage.select_folder')}
@@ -625,7 +953,7 @@ function SettingsModal({ settings, onSave, onClose, t, langs, storageReady, stor
 }
 
 // ─── Save Modal ────────────────────────────────────────────────────────────
-function SaveModal({ saveAsNew, editingRecord, recName, onNameChange, onConfirm, onClose, t }) {
+function SaveModal({ saveAsNew, editingRecord, recName, onNameChange, onConfirm, onClose, logHistory, onLogHistory, preview, t }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" style={{maxWidth:420}} onClick={function(e){e.stopPropagation();}}>
@@ -635,10 +963,19 @@ function SaveModal({ saveAsNew, editingRecord, recName, onNameChange, onConfirm,
         <div style={{fontSize:13,color:'#64748b',marginBottom:20}}>
           {saveAsNew ? t('modal.save.note') : t('modal.update.note',{name:editingRecord?.name||''})}
         </div>
-        <div style={{marginBottom:20}}>
+        <div style={{marginBottom:16}}>
           <div style={{fontSize:12,color:'#94a3b8',marginBottom:6}}>{t('modal.name.label')}</div>
           <input type="text" value={recName} onChange={function(e){onNameChange(e.target.value);}} placeholder="…"/>
         </div>
+        <label style={{display:'flex',alignItems:'flex-start',gap:10,marginBottom:20,padding:'10px 12px',borderRadius:10,cursor:'pointer',
+          background:logHistory?'rgba(20,184,166,.08)':'#0f172a',border:'1px solid '+(logHistory?'rgba(20,184,166,.35)':'#334155')}}>
+          <input type="checkbox" checked={logHistory} onChange={function(e){ onLogHistory(e.target.checked); }}
+            style={{marginTop:2,width:16,height:16,accentColor:'#14b8a6',flexShrink:0}}/>
+          <span>
+            <span style={{display:'block',fontSize:13,fontWeight:700,color:logHistory?'#14b8a6':'#94a3b8'}}>{t('modal.log_history')}</span>
+            <span style={{display:'block',fontSize:12,color:'#64748b',marginTop:2}}>{preview}</span>
+          </span>
+        </label>
         <div style={{display:'flex',gap:8}}>
           <button className="btn btn-primary" onClick={onConfirm} style={{flex:1,padding:13}}>
             {saveAsNew ? t('modal.save.btn') : t('modal.update.btn')}
@@ -671,6 +1008,12 @@ function App() {
   const [gender,        setGender]        = useState('male');
   const [bodyFatPct,    setBodyFatPct]    = useState(DEFAULT_BODY_FAT.male);
   const [targetFatPct,  setTargetFatPct]  = useState(DEFAULT_TARGET_FAT.male);
+  const [musclePct,     setMusclePct]     = useState(DEFAULT_MUSCLE.male);
+  const [targetMusclePct, setTargetMusclePct] = useState(DEFAULT_TARGET_MUSCLE.male);
+  const [recompPace,    setRecompPace]    = useState(DEFAULT_RECOMP_PACE);
+  const [editKey,       setEditKey]       = useState(null);   // práve odomknuté pole (✏️), max. jedno
+  const [histUnit,      setHistUnit]      = useState('kg');   // 'kg' | 'pct' — jednotka grafov
+  const [logHistory,    setLogHistory]    = useState(true);   // zapísať meranie pri uložení
   const [activities,    setActivities]    = useState(mkActivities);
   const [goal,          setGoal]          = useState('muscle');
   const [calcMethod,    setCalcMethod]    = useState('calorie');
@@ -691,31 +1034,54 @@ function App() {
     try {
       dataDir = await rootHandle.getDirectoryHandle('data', { create: true });
     } catch(e) { console.warn('Could not get data/ dir:', e); return; }
-    // 3. Load settings
-    const s = await readJson(dataDir, SETTINGS_FILE);
+    // 3. Load settings (prázdny priečinok prevezme to, čo bolo v prehliadači)
+    let s = await readJson(dataDir, SETTINGS_FILE);
+    if (!s) { const ls = lsRead(LS_SETTINGS); if (ls) { s = ls; await writeJson(dataDir, SETTINGS_FILE, ls); } }
     if (s) { var m = mergeSettings(s); setSettings(m); setLanguage(m.language || 'en_EN'); }
-    // 4. Load records
-    const r = await readJson(dataDir, RECORDS_FILE);
-    if (r && Array.isArray(r)) setSavedRecords(r);
+    // 4. Load records (rovnako — záznamy z prehliadača sa jednorazovo presunú do priečinka)
+    let r = await readJson(dataDir, RECORDS_FILE);
+    if (!Array.isArray(r) || r.length===0) {
+      const lr = lsRead(LS_RECORDS);
+      if (Array.isArray(lr) && lr.length) { r = lr; await writeJson(dataDir, RECORDS_FILE, lr); }
+    }
+    if (Array.isArray(r)) setSavedRecords(normalizeRecs(r));
     setStorageDir(dataDir);
     setStorageReady(true);
     setStorageHasHandle(false);
     setConnectedPath(detectAppWebPath());
   }
 
+  // ── Záloha v prehliadači — používa sa, keď nie je pripojený priečinok ──
+  function loadFromBrowser() {
+    const s = lsRead(LS_SETTINGS);
+    if (s) { var m = mergeSettings(s); setSettings(m); setLanguage(m.language || 'en_EN'); }
+    const r = lsRead(LS_RECORDS);
+    if (Array.isArray(r)) setSavedRecords(normalizeRecs(r));
+  }
+  function persistRecords(recs) {
+    if (storageDir) writeJson(storageDir, RECORDS_FILE, recs); else lsWrite(LS_RECORDS, recs);
+  }
+  function persistSettings(s) {
+    if (storageDir) writeJson(storageDir, SETTINGS_FILE, s); else lsWrite(LS_SETTINGS, s);
+  }
+
   // ── On mount: silent restore ───────────────────────────────────────────
   useEffect(function() {
     (async function() {
+      let fromFolder = false;
       try {
         var handle = await getStoredHandle();
-        if (!handle) return;
-        if (await checkPermission(handle)) {
-          await loadFromRootHandle(handle);
-        } else {
-          // Handle exists but permission not yet granted in this session
-          setStorageHasHandle(true);
+        if (handle) {
+          if (await checkPermission(handle)) {
+            await loadFromRootHandle(handle);
+            fromFolder = true;
+          } else {
+            // Handle exists but permission not yet granted in this session
+            setStorageHasHandle(true);
+          }
         }
       } catch(e) { console.warn('Storage restore failed:', e); }
+      if (!fromFolder) loadFromBrowser();
     })();
   }, []);
 
@@ -791,19 +1157,57 @@ function App() {
 
   const targetKcal = goal==='muscle' ? totalKcal+goalDelta : goal==='fat_loss' ? Math.max(0,totalKcal-goalDelta) : totalKcal;
 
-  // ── Telesný tuk ───────────────────────────────────────────────────────
-  // Čistá hmota (lean mass) sa považuje za nemennú → cieľová hmotnosť
-  // vyplýva priamo z cieľového podielu tuku.
-  const bfPct        = Math.min(BODY_FAT_MAX, Math.max(0, parseFloat(bodyFatPct)   || 0));
-  const bfTargetPct  = Math.min(BODY_FAT_MAX, Math.max(0, parseFloat(targetFatPct) || 0));
+  // ── Telesné zloženie (tuk + svaly) ────────────────────────────────────
+  // V každom režime sa považuje za nemennú tá hmota, na ktorú sa necieli:
+  //   🔥 spaľovanie tuku  → čistá hmota (všetko okrem tuku)
+  //   💪 budovanie svalov → všetko okrem svalov (tuk, voda, kosti…)
+  //   🔄 rekompozícia     → ostatná hmota (všetko okrem tuku a svalov)
+  // Cieľová hmotnosť potom vyplýva priamo z cieľových podielov.
+  const bfPct        = Math.min(BODY_FAT_MAX, Math.max(0, parseFloat(bodyFatPct)      || 0));
+  const bfTargetPct  = Math.min(BODY_FAT_MAX, Math.max(0, parseFloat(targetFatPct)    || 0));
+  const muPct        = Math.min(MUSCLE_MAX,   Math.max(0, parseFloat(musclePct)       || 0));
+  const muTargetPct  = Math.min(MUSCLE_MAX,   Math.max(0, parseFloat(targetMusclePct) || 0));
   const fatMassKg    = w * bfPct / 100;
+  const muscleKg     = w * muPct / 100;
   const leanMassKg   = w - fatMassKg;
-  const targetWeight = leanMassKg / (1 - bfTargetPct/100);
-  const targetFatKg  = targetWeight - leanMassKg;
-  const fatDeltaKg   = fatMassKg - targetFatKg;          // > 0 = zhodiť, < 0 = pribrať
+  const restKg       = w - fatMassKg - muscleKg;            // voda, kosti, orgány…
+  const compInvalid  = bfPct + muPct >= 100;
+  const targetInvalid= goal==='recomp' && bfTargetPct + muTargetPct >= 100;
+
+  let targetWeight = w, fatDeltaKg = 0, muscleDeltaKg = 0;  // Δ > 0 = zhodiť tuk / pribrať svaly
+  if (!compInvalid && !targetInvalid) {
+    if (goal==='fat_loss') {
+      targetWeight  = leanMassKg / (1 - bfTargetPct/100);
+      fatDeltaKg    = w - targetWeight;
+    } else if (goal==='muscle') {
+      targetWeight  = (w - muscleKg) / (1 - muTargetPct/100);
+      muscleDeltaKg = targetWeight - w;
+    } else {
+      targetWeight  = restKg / (1 - (bfTargetPct + muTargetPct)/100);
+      fatDeltaKg    = fatMassKg - targetWeight*bfTargetPct/100;
+      muscleDeltaKg = targetWeight*muTargetPct/100 - muscleKg;
+    }
+  }
   const fatToLoseKg  = Math.abs(fatDeltaKg);
+
+  // Trvanie: 🔥/💪 z deficitu/prebytku v kroku 5 (1 kg ≈ 7700 kcal),
+  // 🔄 z nastaveného mesačného tempa.
+  const paceMuscle   = Math.max(0.05, parseFloat(recompPace.muscle) || DEFAULT_RECOMP_PACE.muscle);
+  const paceFat      = Math.max(0.05, parseFloat(recompPace.fat)    || DEFAULT_RECOMP_PACE.fat);
   const bfEtaDays    = (goal==='fat_loss' && goalDelta > 0 && fatDeltaKg > 0.05)
     ? Math.ceil(fatDeltaKg * KCAL_PER_KG_FAT / goalDelta) : 0;
+  const muEtaDays    = (goal==='muscle' && goalDelta > 0 && muscleDeltaKg > 0.05)
+    ? Math.ceil(muscleDeltaKg * KCAL_PER_KG_FAT / goalDelta) : 0;
+  const rcFatDays    = (goal==='recomp' && fatDeltaKg > 0.05)    ? Math.ceil(fatDeltaKg / paceFat * DAYS_PER_MONTH) : 0;
+  const rcMuDays     = (goal==='recomp' && muscleDeltaKg > 0.05) ? Math.ceil(muscleDeltaKg / paceMuscle * DAYS_PER_MONTH) : 0;
+  const etaDays      = goal==='fat_loss' ? bfEtaDays : goal==='muscle' ? muEtaDays : Math.max(rcFatDays, rcMuDays);
+  const locTag       = localeTag(language);
+  const etaDate      = etaDays > 0 ? new Date(Date.now() + etaDays*DAY_MS).toLocaleDateString(locTag,{day:'numeric',month:'long',year:'numeric'}) : '';
+  const recompOK     = goal!=='recomp' || (fatDeltaKg > 0.05 && muscleDeltaKg > 0.05);
+
+  // ── Zámok polí: naraz je odomknuté len jedno ──────────────────────────
+  function toggleEdit(k) { setEditKey(function(cur){ return cur===k ? null : k; }); }
+  function isOpen(k) { return editKey===k; }
 
   const proteinGkg  = mr.proteinMin + (mr.proteinMax-mr.proteinMin)*proteinSlider;
   const proteinG    = Math.round(proteinGkg * w);
@@ -850,7 +1254,7 @@ function App() {
     const merged = mergeSettings(newS);
     setSettings(merged);
     setLanguage(merged.language);
-    if (storageDir) writeJson(storageDir, SETTINGS_FILE, merged);
+    persistSettings(merged);
     setShowSettings(false);
     if (goal==='muscle') setCalorieDelta(merged.defaultSurplus[gender]);
   }
@@ -858,7 +1262,7 @@ function App() {
     setLanguage(id);
     const ns = {...settings, language:id};
     setSettings(ns);
-    if (storageDir) writeJson(storageDir, SETTINGS_FILE, ns);
+    persistSettings(ns);
   }
 
   // ── Záznamy ───────────────────────────────────────────────────────────
@@ -866,38 +1270,62 @@ function App() {
     const d = new Date().toLocaleDateString();
     return d+' — '+t('goal.'+goal)+' ('+weight+' kg, '+(gender==='male'?t('record.male'):t('record.female'))+')';
   }
-  function buildRec(id, name) {
+  function buildRec(id, name, history) {
     return { id, name, date:new Date().toISOString(),
       weight, gender, activities, goal, calcMethod, calorieDelta, weeklyDelta, proteinSlider, fatSlider,
-      bodyFatPct, targetFatPct,
+      bodyFatPct, targetFatPct, musclePct, targetMusclePct, recompPace,
       bmr, palValue, totalKcal, targetKcal, proteinG, fatG, carbsG,
-      fatMassKg:  +fatMassKg.toFixed(1),
-      leanMassKg: +leanMassKg.toFixed(1),
-      fatDeltaKg: +fatDeltaKg.toFixed(1) };
+      fatMassKg:     r1(fatMassKg),
+      leanMassKg:    r1(leanMassKg),
+      muscleKg:      r1(muscleKg),
+      targetWeight:  r1(targetWeight),
+      fatDeltaKg:    r1(fatDeltaKg),
+      muscleDeltaKg: r1(muscleDeltaKg),
+      history: history || [] };
   }
   function doSave() {
-    const name = recName.trim() || autoName();
+    const name  = recName.trim() || autoName();
+    const entry = mkHistoryEntry(weight, bodyFatPct, musclePct, goal);
     let rec, recs;
     if (!saveAsNew && editingRecord) {
-      rec  = buildRec(editingRecord.id, name);
+      const prev = normalizeRec(savedRecords.find(function(r){ return r.id===editingRecord.id; }) || editingRecord);
+      const hist = logHistory ? appendHistory(prev.history, entry) : (prev.history || []);
+      rec  = buildRec(editingRecord.id, name, hist);
       recs = savedRecords.map(function(r){ return r.id===editingRecord.id ? rec : r; });
     } else {
-      rec  = buildRec(Date.now(), name);
+      rec  = buildRec(Date.now(), name, logHistory ? [entry] : []);
       recs = [rec].concat(savedRecords);
     }
     setSavedRecords(recs);
-    if (storageDir) writeJson(storageDir, RECORDS_FILE, recs);
-    setEditingRecord(rec); setRecName(name); setShowSaveModal(false);
+    persistRecords(recs);
+    setEditingRecord(rec); setRecName(name); setShowSaveModal(false); setEditKey(null);
+  }
+  // Maže sa presne ten riadok (podľa objektu), nie všetko s rovnakým časom.
+  function delHistoryEntry(entry) {
+    if (!editingRecord) return;
+    const all = editingRecord.history || [];
+    const idx = all.indexOf(entry);
+    if (idx < 0) return;
+    const when = new Date(entry.ts).toLocaleString(locTag,{day:'numeric',month:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    if (!window.confirm(t('history.delete_confirm',{date:when}))) return;
+    const rec  = {...editingRecord, history:all.filter(function(x, i){ return i!==idx; })};
+    const recs = savedRecords.map(function(r){ return r.id===rec.id ? rec : r; });
+    setSavedRecords(recs); persistRecords(recs); setEditingRecord(rec);
   }
   function loadRec(rec) {
-    setWeight(rec.weight); setGender(rec.gender); setActivities(rec.activities);
-    setBodyFatPct(rec.bodyFatPct     != null ? rec.bodyFatPct     : DEFAULT_BODY_FAT[rec.gender]   || DEFAULT_BODY_FAT.male);
-    setTargetFatPct(rec.targetFatPct != null ? rec.targetFatPct : DEFAULT_TARGET_FAT[rec.gender] || DEFAULT_TARGET_FAT.male);
+    rec = normalizeRec(rec);
+    const g = rec.gender || 'male';
+    setWeight(rec.weight); setGender(g); setActivities(rec.activities);
+    setBodyFatPct(rec.bodyFatPct          != null ? rec.bodyFatPct      : DEFAULT_BODY_FAT[g]      || DEFAULT_BODY_FAT.male);
+    setTargetFatPct(rec.targetFatPct      != null ? rec.targetFatPct    : DEFAULT_TARGET_FAT[g]    || DEFAULT_TARGET_FAT.male);
+    setMusclePct(rec.musclePct            != null ? rec.musclePct       : DEFAULT_MUSCLE[g]        || DEFAULT_MUSCLE.male);
+    setTargetMusclePct(rec.targetMusclePct!= null ? rec.targetMusclePct : DEFAULT_TARGET_MUSCLE[g] || DEFAULT_TARGET_MUSCLE.male);
+    setRecompPace(rec.recompPace ? {...DEFAULT_RECOMP_PACE, ...rec.recompPace} : DEFAULT_RECOMP_PACE);
     setGoal(rec.goal); setCalcMethod(rec.calcMethod);
     setCalorieDelta(rec.calorieDelta);
     setWeeklyDelta(rec.weeklyDelta || rec.weeklyWeightDelta || 0.5);
     setProteinSlider(rec.proteinSlider); setFatSlider(rec.fatSlider);
-    setEditingRecord(rec); setRecName(rec.name);
+    setEditingRecord(rec); setRecName(rec.name); setEditKey(null);
     setActiveTab('calc'); setSelectedRecId(null);
     window.scrollTo(0,0);
   }
@@ -905,17 +1333,23 @@ function App() {
     if (!window.confirm(t('record.delete_confirm',{name:name}))) return;
     const recs = savedRecords.filter(function(r){return r.id!==id;});
     setSavedRecords(recs);
-    if (storageDir) writeJson(storageDir, RECORDS_FILE, recs);
+    persistRecords(recs);
     if (editingRecord && editingRecord.id===id) { setEditingRecord(null); setRecName(''); }
     if (selectedRecId===id) setSelectedRecId(null);
   }
   function clearEditor() {
-    setEditingRecord(null); setRecName('');
+    setEditingRecord(null); setRecName(''); setEditKey(null);
     setWeight(80); setGender('male'); setActivities(mkActivities());
     setBodyFatPct(DEFAULT_BODY_FAT.male); setTargetFatPct(DEFAULT_TARGET_FAT.male);
+    setMusclePct(DEFAULT_MUSCLE.male); setTargetMusclePct(DEFAULT_TARGET_MUSCLE.male);
+    setRecompPace(DEFAULT_RECOMP_PACE);
     setGoal('muscle'); setCalcMethod('calorie');
     setCalorieDelta(settings.defaultSurplus.male);
     setWeeklyDelta(0.5); setProteinSlider(0.5); setFatSlider(0.5);
+  }
+  function openSave(asNew) {
+    setSaveAsNew(asNew); if (asNew) setRecName('');
+    setLogHistory(true); setShowSaveModal(true);
   }
 
   // ── RENDER ─────────────────────────────────────────────────────────────
@@ -957,6 +1391,11 @@ function App() {
                 {connectedPath && <span style={{fontSize:11,color:'#334155'}}>—</span>}
                 {connectedPath && <span style={{fontSize:11,color:'#64748b'}}>{connectedPath}</span>}
               </div>
+            ) : !CAN_PICK_FOLDER ? (
+              <div style={{display:'flex',alignItems:'center',gap:6}}>
+                <span style={{width:6,height:6,borderRadius:3,background:'#14b8a6',display:'inline-block'}}/>
+                <span style={{fontSize:11,color:'#475569'}}>{t('storage.browser')}</span>
+              </div>
             ) : (
               <React.Fragment>
                 <button onClick={storageHasHandle ? reconnectFolder : selectFolder} style={{
@@ -965,7 +1404,7 @@ function App() {
                   fontFamily:'inherit',fontSize:12,fontWeight:600,display:'flex',alignItems:'center',gap:5}}>
                   📂 {storageHasHandle ? '🔄 ' + t('storage.reconnect') : t('storage.select_folder')}
                 </button>
-                <span style={{fontSize:11,color:'#475569'}}>{t('storage.not_connected')}</span>
+                <span style={{fontSize:11,color:'#475569'}}>{t('storage.browser')} · {t('storage.not_connected')}</span>
               </React.Fragment>
             )}
           </div>
@@ -1009,17 +1448,27 @@ function App() {
             <div style={{display:'flex',flexWrap:'wrap',gap:20,alignItems:'center'}}>
               <div>
                 <label style={{fontSize:13,color:'#94a3b8',display:'block',marginBottom:6}}>{t('step1.weight')}</label>
-                <input type="number" value={weight}
-                  onChange={function(e){
-                    if(e.target.value===''){setWeight('');return;}
-                    var n=parseFloat(e.target.value);
-                    if(!isNaN(n)) setWeight(n);
-                  }}
-                  onBlur={function(){
-                    var n=parseFloat(weight);
-                    if(isNaN(n)||n<1) setWeight(80);
-                  }}
-                  style={{width:90}}/>
+                <div style={{display:'flex',alignItems:'center',gap:8}}>
+                  {isOpen('weight') ? (
+                    <input type="number" inputMode="decimal" value={weight} autoFocus
+                      onChange={function(e){
+                        if(e.target.value===''){setWeight('');return;}
+                        var n=parseFloat(e.target.value);
+                        if(!isNaN(n)) setWeight(n);
+                      }}
+                      onBlur={function(){
+                        var n=parseFloat(weight);
+                        if(isNaN(n)||n<1) setWeight(80);
+                      }}
+                      onKeyDown={function(e){ if(e.key==='Enter') setEditKey(null); }}
+                      style={{width:90}}/>
+                  ) : (
+                    <span style={{minWidth:90,padding:'6px 0',fontSize:22,fontWeight:900,fontFamily:"'Outfit',sans-serif",color:'#e2e8f0'}}>
+                      {weight===''?'—':weight} <span style={{fontSize:13,color:'#64748b',fontWeight:600}}>kg</span>
+                    </span>
+                  )}
+                  <EditBtn open={isOpen('weight')} onClick={function(){ toggleEdit('weight'); }} color="#f59e0b" t={t}/>
+                </div>
               </div>
               <div>
                 <label style={{fontSize:13,color:'#94a3b8',display:'block',marginBottom:6}}>{t('step1.gender')}</label>
@@ -1042,82 +1491,136 @@ function App() {
             </div>
           </div>
 
-          {/* Step 2: Telesný tuk */}
+          {/* Step 2: Telesné zloženie — polia a výpočet sa riadia cieľom z kroku 5 */}
           <div className="card">
-            <div className="section-title" style={{color:'#a855f7'}}>{t('bodyfat.title')}</div>
-
-            <div style={{display:'flex',gap:20,flexWrap:'wrap',marginBottom:18}}>
-              {[
-                {key:'cur', label:t('bodyfat.current'), value:bodyFatPct,   set:setBodyFatPct,   color:'#ef4444'},
-                {key:'tgt', label:t('bodyfat.target'),  value:targetFatPct, set:setTargetFatPct, color:'#a855f7'},
-              ].map(function(f){ return (
-                <div key={f.key} style={{flex:'1 1 260px'}}>
-                  {/* Číselné pole je v riadku s popiskom — NIE vedľa posuvníka.
-                      Vedľa posuvníka otváralo na mobile klávesnicu pri každom minutí jazdca. */}
-                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,fontSize:13,color:'#94a3b8'}}>
-                    <span>{f.label}</span>
-                    <div style={{display:'flex',alignItems:'center',gap:6,flexShrink:0}}>
-                      <input type="number" inputMode="decimal" min={BODY_FAT_MIN} max={BODY_FAT_MAX} step="0.5" value={f.value}
-                        onChange={function(e){
-                          if(e.target.value===''){ f.set(''); return; }
-                          var n=parseFloat(e.target.value);
-                          if(!isNaN(n)) f.set(Math.min(BODY_FAT_MAX,Math.max(0,n)));
-                        }}
-                        onBlur={function(){
-                          var n=parseFloat(f.value);
-                          if(isNaN(n)||n<BODY_FAT_MIN) f.set(BODY_FAT_MIN);
-                        }}
-                        style={{width:72,padding:'6px 8px'}}/>
-                      <span style={{color:f.color,fontWeight:700}}>%</span>
-                    </div>
-                  </div>
-                  <div style={{marginTop:6}}>
-                    <input className="rng" type="range" min={BODY_FAT_MIN} max={BODY_FAT_MAX} step={0.5}
-                      value={f.key==='cur'?bfPct:bfTargetPct}
-                      onChange={function(e){ f.set(parseFloat(e.target.value)); }}
-                      style={{'--rc':f.color,'--rf':(((f.key==='cur'?bfPct:bfTargetPct)-BODY_FAT_MIN)/(BODY_FAT_MAX-BODY_FAT_MIN)*100)+'%'}}/>
-                  </div>
-                </div>
-              ); })}
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:10,flexWrap:'wrap',marginBottom:4}}>
+              <div className="section-title" style={{color:'#a855f7',marginBottom:0}}>{t('bodycomp.title')}</div>
+              <span className="badge" style={{background:goalColor+'1a',color:goalColor,border:'1px solid '+goalColor+'44'}}>{goalDef.icon} {t('goal.'+goal)}</span>
             </div>
+            <div style={{fontSize:12,color:'#64748b',marginBottom:16}}>{t('bodycomp.mode_hint')}</div>
 
-            <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
-              {[
-                {icon:'🔥', label:t('bodyfat.fatmass'),       val:fatMassKg.toFixed(1),    color:'#ef4444'},
-                {icon:'💪', label:t('bodyfat.leanmass'),      val:leanMassKg.toFixed(1),   color:'#22c55e'},
-                {icon:'⚖️', label:t('bodyfat.target_weight'), val:targetWeight.toFixed(1), color:'#3b82f6'},
-                {icon:fatDeltaKg>=0?'🔻':'🔺',
-                 label:fatDeltaKg>=0?t('bodyfat.tolose'):t('bodyfat.togain'),
-                 val:fatToLoseKg.toFixed(1), color:'#a855f7', highlight:true},
-              ].map(function(s){ return (
-                <div key={s.label} style={{flex:'1 1 130px',background:s.highlight?'rgba(168,85,247,.08)':'#0f172a',
-                  borderRadius:12,padding:'14px 12px',textAlign:'center',border:'1px solid '+s.color+(s.highlight?'55':'33')}}>
-                  <div style={{fontSize:20,marginBottom:4}}>{s.icon}</div>
-                  <div style={{fontSize:12,color:'#94a3b8',marginBottom:4}}>{s.label}</div>
-                  <div style={{fontSize:26,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:s.color}}>{s.val}</div>
-                  <div style={{fontSize:12,color:'#64748b'}}>{t('bodyfat.unit.kg')}</div>
-                </div>
-              ); })}
-            </div>
+            {(function(){
+              const sub = {fontSize:12,fontWeight:700,color:'#64748b',textTransform:'uppercase',letterSpacing:.6,marginBottom:6};
+              const row = {display:'flex',gap:20,flexWrap:'wrap',marginBottom:16};
+              return (
+                <React.Fragment>
+                  <div style={sub}>{t('bodycomp.fat')}</div>
+                  <div style={row}>
+                    <CompField label={t('bodyfat.current')} value={bodyFatPct} onChange={setBodyFatPct}
+                      min={BODY_FAT_MIN} max={BODY_FAT_MAX} color="#ef4444"
+                      open={isOpen('bf.cur')} onToggle={function(){ toggleEdit('bf.cur'); }} t={t}/>
+                    {goal!=='muscle' && (
+                      <CompField label={t('bodyfat.target')} value={targetFatPct} onChange={setTargetFatPct}
+                        min={BODY_FAT_MIN} max={BODY_FAT_MAX} color="#a855f7"
+                        open={isOpen('bf.tgt')} onToggle={function(){ toggleEdit('bf.tgt'); }} t={t}/>
+                    )}
+                  </div>
 
-            {fatDeltaKg > 0.05 ? (
-              <div style={{marginTop:14,background:'#0f172a',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#94a3b8',border:'1px solid #334155'}}>
-                {t('bodyfat.summary',{pct:bfTargetPct,lean:leanMassKg.toFixed(1),tw:targetWeight.toFixed(1)})}
+                  <div style={sub}>{t('bodycomp.muscle')}</div>
+                  <div style={row}>
+                    <CompField label={t('muscle.current')} value={musclePct} onChange={setMusclePct}
+                      min={MUSCLE_MIN} max={MUSCLE_MAX} color="#22c55e"
+                      open={isOpen('mu.cur')} onToggle={function(){ toggleEdit('mu.cur'); }} t={t}/>
+                    {goal!=='fat_loss' && (
+                      <CompField label={t('muscle.target')} value={targetMusclePct} onChange={setTargetMusclePct}
+                        min={MUSCLE_MIN} max={MUSCLE_MAX} color="#06b6d4"
+                        open={isOpen('mu.tgt')} onToggle={function(){ toggleEdit('mu.tgt'); }} t={t}/>
+                    )}
+                  </div>
+
+                  {goal==='recomp' && (
+                    <React.Fragment>
+                      <div style={sub}>{t('recomp.pace')}</div>
+                      <div style={{display:'flex',gap:20,flexWrap:'wrap',marginBottom:4}}>
+                        <div style={{flex:'1 1 240px'}}>
+                          <Slider min={0.1} max={2} step={0.1} value={r1(paceMuscle)}
+                            onChange={function(v){ setRecompPace(function(p){ return {...p, muscle:v}; }); }}
+                            label={t('recomp.pace_muscle')} unit={t('unit.kg_month')} color="#22c55e"
+                            locked={!isOpen('pace.mu')} onToggle={function(){ toggleEdit('pace.mu'); }} t={t}/>
+                        </div>
+                        <div style={{flex:'1 1 240px'}}>
+                          <Slider min={0.1} max={3} step={0.1} value={r1(paceFat)}
+                            onChange={function(v){ setRecompPace(function(p){ return {...p, fat:v}; }); }}
+                            label={t('recomp.pace_fat')} unit={t('unit.kg_month')} color="#ef4444"
+                            locked={!isOpen('pace.fat')} onToggle={function(){ toggleEdit('pace.fat'); }} t={t}/>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  )}
+                </React.Fragment>
+              );
+            })()}
+
+            {(compInvalid || targetInvalid) ? (
+              <div style={{background:'rgba(239,68,68,.1)',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#f87171',border:'1px solid #ef444444'}}>
+                {compInvalid ? t('bodycomp.invalid') : t('bodycomp.invalid_target')}
               </div>
             ) : (
-              <div style={{marginTop:14,background:'rgba(168,85,247,.06)',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#c084fc',border:'1px solid rgba(168,85,247,.22)'}}>
-                {t('bodyfat.same')}
-              </div>
+              <React.Fragment>
+                <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+                  {[
+                    {icon:'🔥', label:t('bodyfat.fatmass'), val:fatMassKg.toFixed(1), color:'#ef4444'},
+                    {icon:'💪', label:t('muscle.mass'),     val:muscleKg.toFixed(1),  color:'#22c55e'},
+                  ].concat(goal!=='muscle' ? [
+                    {icon:fatDeltaKg>=0?'🔻':'🔺', label:fatDeltaKg>=0?t('bodyfat.tolose'):t('bodyfat.togain'),
+                     val:fatToLoseKg.toFixed(1), color:'#a855f7', highlight:true},
+                  ] : []).concat(goal!=='fat_loss' ? [
+                    {icon:muscleDeltaKg>=0?'🔺':'🔻', label:muscleDeltaKg>=0?t('muscle.togain'):t('muscle.toloss'),
+                     val:Math.abs(muscleDeltaKg).toFixed(1), color:'#06b6d4', highlight:true},
+                  ] : []).concat([
+                    {icon:'⚖️', label:t('bodyfat.target_weight'), val:targetWeight.toFixed(1), color:'#3b82f6'},
+                  ]).map(function(s){ return (
+                    <div key={s.label} data-tile={s.label} style={{flex:'1 1 130px',background:s.highlight?s.color+'14':'#0f172a',
+                      borderRadius:12,padding:'14px 12px',textAlign:'center',border:'1px solid '+s.color+(s.highlight?'55':'33')}}>
+                      <div style={{fontSize:20,marginBottom:4}}>{s.icon}</div>
+                      <div style={{fontSize:12,color:'#94a3b8',marginBottom:4}}>{s.label}</div>
+                      <div style={{fontSize:26,fontFamily:"'Outfit',sans-serif",fontWeight:900,color:s.color}}>{s.val}</div>
+                      <div style={{fontSize:12,color:'#64748b'}}>{t('bodyfat.unit.kg')}</div>
+                    </div>
+                  ); })}
+                </div>
+
+                {(function(){
+                  const ok = goal==='fat_loss' ? fatDeltaKg > 0.05 : goal==='muscle' ? muscleDeltaKg > 0.05 : recompOK;
+                  if (!ok) return (
+                    <div style={{marginTop:14,background:'rgba(168,85,247,.06)',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#c084fc',border:'1px solid rgba(168,85,247,.22)'}}>
+                      {t(goal==='fat_loss'?'bodyfat.same':goal==='muscle'?'muscle.same':'recomp.same')}
+                    </div>
+                  );
+                  const summary = goal==='fat_loss'
+                    ? t('bodyfat.summary',{pct:bfTargetPct,lean:leanMassKg.toFixed(1),tw:targetWeight.toFixed(1)})
+                    : goal==='muscle'
+                    ? t('muscle.summary',{pct:muTargetPct,rest:(w-muscleKg).toFixed(1),tw:targetWeight.toFixed(1)})
+                    : t('recomp.summary',{fat:bfTargetPct,mus:muTargetPct,rest:restKg.toFixed(1),tw:targetWeight.toFixed(1)});
+                  const eta = etaDays<=0 ? null
+                    : goal==='fat_loss' ? t('bodyfat.eta',{kcal:goalDelta,weeks:(etaDays/7).toFixed(1),days:etaDays})
+                    : goal==='muscle'   ? t('muscle.eta', {kcal:goalDelta,weeks:(etaDays/7).toFixed(1),days:etaDays})
+                    : t('recomp.eta',{fw:(rcFatDays/7).toFixed(1),mw:(rcMuDays/7).toFixed(1),weeks:(etaDays/7).toFixed(1),days:etaDays});
+                  return (
+                    <React.Fragment>
+                      <div style={{marginTop:14,background:'#0f172a',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#94a3b8',border:'1px solid #334155'}}>
+                        {summary}
+                      </div>
+                      {eta && (
+                        <div data-eta={etaDays} style={{marginTop:8,background:goalColor+'12',borderRadius:10,padding:'10px 14px',fontSize:13,color:goalColor,border:'1px solid '+goalColor+'33'}}>
+                          <div>{eta}</div>
+                          <div style={{marginTop:4,fontWeight:800}}>{t('eta.date',{date:etaDate})}</div>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })()}
+              </React.Fragment>
             )}
 
-            {bfEtaDays > 0 && (
-              <div style={{marginTop:8,background:'rgba(239,68,68,.07)',borderRadius:10,padding:'10px 14px',fontSize:13,color:'#f87171',border:'1px solid rgba(239,68,68,.2)'}}>
-                {t('bodyfat.eta',{kcal:goalDelta,weeks:(bfEtaDays/7).toFixed(1),days:bfEtaDays})}
-              </div>
-            )}
-
-            <div style={{fontSize:11,color:'#475569',marginTop:10}}>{t('bodyfat.note')}</div>
+            <div style={{fontSize:11,color:'#475569',marginTop:10}}>
+              {t(goal==='fat_loss'?'bodyfat.note':goal==='muscle'?'muscle.note':'recomp.note')} {t('muscle.hint')}
+            </div>
           </div>
+
+          {/* História meraní — vývoj tuku a svalov pri každom uložení */}
+          <HistoryCard history={editingRecord ? editingRecord.history : []} hasRecord={!!editingRecord}
+            unit={histUnit} onUnit={setHistUnit} onDelete={delHistoryEntry} t={t} locale={locTag}/>
 
           {/* Step 3: PAL */}
           <div className="card">
@@ -1137,31 +1640,33 @@ function App() {
                 if (!act) return null;
                 const pal = def.hasRange ? def.palMin+(def.palMax-def.palMin)*act.intensity : def.palMin;
                 const kcal = Math.round(bmr/24*act.hours*pal);
+                const open = isOpen('act.'+def.id);
+                const stepBtn = {width:28,height:28,borderRadius:6,border:'1px solid #334155',background:'#1e293b',color:'#94a3b8',cursor:'pointer',fontSize:16,display:'flex',alignItems:'center',justifyContent:'center'};
                 return (
                   <div key={def.id} style={{background:'#0f172a',borderRadius:12,padding:'12px 16px',
-                    border:act.hours>0?'1px solid #334155':'1px solid transparent',
-                    opacity:act.hours>0?1:.5,transition:'all .2s'}}>
+                    border:open?'1px solid #3b82f6':act.hours>0?'1px solid #334155':'1px solid transparent',
+                    opacity:act.hours>0||open?1:.5,transition:'all .2s'}}>
                     <div style={{display:'flex',alignItems:'center',gap:10,flexWrap:'wrap',marginBottom:act.hours>0&&def.hasRange?8:0}}>
                       <span style={{fontSize:20,width:28}}>{def.icon}</span>
                       <span style={{fontSize:14,fontWeight:600,flex:1,minWidth:140}}>{t('pal.'+def.id)}</span>
                       <div style={{display:'flex',alignItems:'center',gap:8}}>
-                        <button onClick={function(){updAct(def.id,'hours',Math.max(0,act.hours-.5));}}
-                          style={{width:28,height:28,borderRadius:6,border:'1px solid #334155',background:'#1e293b',color:'#94a3b8',cursor:'pointer',fontSize:16,display:'flex',alignItems:'center',justifyContent:'center'}}>−</button>
+                        {open && <button onClick={function(){updAct(def.id,'hours',Math.max(0,act.hours-.5));}} style={stepBtn}>−</button>}
                         <span style={{width:36,textAlign:'center',fontWeight:700,fontSize:16,fontFamily:"'Outfit',sans-serif"}}>{act.hours}</span>
-                        <button onClick={function(){updAct(def.id,'hours',Math.min(24,act.hours+.5));}}
-                          style={{width:28,height:28,borderRadius:6,border:'1px solid #334155',background:'#1e293b',color:'#94a3b8',cursor:'pointer',fontSize:16,display:'flex',alignItems:'center',justifyContent:'center'}}>+</button>
+                        {open && <button onClick={function(){updAct(def.id,'hours',Math.min(24,act.hours+.5));}} style={stepBtn}>+</button>}
                         <span style={{fontSize:12,color:'#64748b',width:14}}>{t('step2.unit.h')}</span>
                       </div>
                       <div style={{display:'flex',alignItems:'center',gap:6,minWidth:100,justifyContent:'flex-end'}}>
                         <span className="badge" style={{background:'rgba(59,130,246,.12)',color:'#60a5fa',fontSize:11}}>PAL {pal.toFixed(2)}</span>
                         {act.hours>0 && <span style={{fontSize:13,fontWeight:700,color:'#f59e0b',minWidth:55,textAlign:'right'}}>{kcal} kcal</span>}
+                        <EditBtn open={open} onClick={function(){ toggleEdit('act.'+def.id); }} color="#3b82f6" t={t}/>
                       </div>
                     </div>
                     {act.hours>0 && def.hasRange && (
                       <div style={{marginLeft:38,marginTop:4}}>
                         <div style={{display:'flex',alignItems:'center',gap:8}}>
                           <span style={{fontSize:11,color:'#64748b',whiteSpace:'nowrap'}}>{t('step2.intensity')}</span>
-                          <input className="rng thin" type="range" min={0} max={1} step={.1} value={act.intensity}
+                          <input className={'rng thin'+(open?'':' locked')} type="range" min={0} max={1} step={.1} value={act.intensity}
+                            disabled={!open}
                             onChange={function(e){updAct(def.id,'intensity',parseFloat(e.target.value));}}
                             style={{flex:1,minWidth:0,'--rc':'#3b82f6','--rf':(act.intensity*100)+'%'}}/>
                           <span style={{fontSize:11,color:'#60a5fa',width:60,textAlign:'right'}}>{def.palMin.toFixed(1)}–{def.palMax.toFixed(1)}</span>
@@ -1232,12 +1737,14 @@ function App() {
                     <Slider min={100} max={goal==='muscle'?700:1000} step={50}
                       value={calorieDelta} onChange={setCalorieDelta}
                       label={goal==='muscle'?t('surplus.label'):t('deficit.label')}
-                      unit={t('unit.kcal_day')} color={goalColor}/>
+                      unit={t('unit.kcal_day')} color={goalColor}
+                      locked={!isOpen('goal.delta')} onToggle={function(){ toggleEdit('goal.delta'); }} t={t}/>
                   ) : (
                     <Slider min={.1} max={goal==='muscle'?1.5:1.0} step={.1}
                       value={weeklyDelta} onChange={setWeeklyDelta}
                       label={goal==='muscle'?t('weekly.gain'):t('weekly.loss')}
-                      unit={t('unit.kg_week')} color={goalColor}/>
+                      unit={t('unit.kg_week')} color={goalColor}
+                      locked={!isOpen('goal.delta')} onToggle={function(){ toggleEdit('goal.delta'); }} t={t}/>
                   )}
                   {calcMethod==='weight' && (
                     <div style={{fontSize:12,color:'#64748b',marginTop:-4}}>
@@ -1273,13 +1780,15 @@ function App() {
                     min={mr.proteinMin} max={mr.proteinMax} step={.1}
                     value={parseFloat((mr.proteinMin+(mr.proteinMax-mr.proteinMin)*proteinSlider).toFixed(1))}
                     onChange={function(v){setProteinSlider((v-mr.proteinMin)/(mr.proteinMax-mr.proteinMin));}}
-                    label={t('macro.protein_per_kg')} unit="g/kg" color="#f59e0b"/>
+                    label={t('macro.protein_per_kg')} unit="g/kg" color="#f59e0b"
+                    locked={!isOpen('macro.protein')} onToggle={function(){ toggleEdit('macro.protein'); }} t={t}/>
                   <Slider
                     min={effFatMin} max={effFatMax} step={1}
                     value={Math.round(fatPct)}
                     onChange={changeFatSlider}
                     label={t('macro.fat_pct')} unit="%" color="#ef4444"
-                    disabled={effFatMin>=effFatMax}/>
+                    disabled={effFatMin>=effFatMax}
+                    locked={!isOpen('macro.fat')} onToggle={function(){ toggleEdit('macro.fat'); }} t={t}/>
                   {fatConstrained && (
                     <div style={{marginTop:-4,marginBottom:8,padding:'8px 12px',borderRadius:8,
                       background:'rgba(245,158,11,.08)',border:'1px solid rgba(245,158,11,.2)',fontSize:12,color:'#fbbf24'}}>
@@ -1349,23 +1858,23 @@ function App() {
             <div className="card" style={{background:'#0f172a',border:'1px solid #1e293b'}}>
               <div className="section-title" style={{color:'#94a3b8',fontSize:16}}>{t('save.title')}</div>
               {!storageReady && (
-                <div style={{fontSize:12,color:'#475569',marginBottom:12,padding:'8px 12px',background:'rgba(245,158,11,.05)',borderRadius:8,border:'1px solid rgba(245,158,11,.15)'}}>
-                  💡 {t('storage.not_connected')}
+                <div style={{fontSize:12,color:'#475569',marginBottom:12,padding:'8px 12px',background:'rgba(20,184,166,.05)',borderRadius:8,border:'1px solid rgba(20,184,166,.18)'}}>
+                  💾 {t('storage.browser_note')}{CAN_PICK_FOLDER ? ' '+t('storage.not_connected') : ''}
                 </div>
               )}
               {editingRecord ? (
                 <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-                  <button className="btn btn-primary" onClick={function(){setSaveAsNew(false);setShowSaveModal(true);}} style={{flex:1,padding:13}}>
+                  <button className="btn btn-primary" onClick={function(){ openSave(false); }} style={{flex:1,padding:13}}>
                     {t('save.update')} „{editingRecord.name.substring(0,28)+(editingRecord.name.length>28?'…':'')}"
                   </button>
-                  <button className="btn btn-ghost" onClick={function(){setSaveAsNew(true);setRecName('');setShowSaveModal(true);}} style={{flex:1}}>{t('save.new')}</button>
+                  <button className="btn btn-ghost" onClick={function(){ openSave(true); }} style={{flex:1}}>{t('save.new')}</button>
                 </div>
               ) : (
-                <button className="btn btn-green" onClick={function(){setSaveAsNew(true);setRecName('');setShowSaveModal(true);}} style={{width:'100%',padding:14,fontSize:15}}>
+                <button className="btn btn-green" onClick={function(){ openSave(true); }} style={{width:'100%',padding:14,fontSize:15}}>
                   {t('save.button')}
                 </button>
               )}
-              <div style={{fontSize:12,color:'#334155',marginTop:8,textAlign:'center'}}>{t('save.note')}</div>
+              <div style={{fontSize:12,color:'#475569',marginTop:8,textAlign:'center'}}>{storageReady ? t('save.note') : t('history.note')}</div>
             </div>
           )}
 
@@ -1433,9 +1942,20 @@ function App() {
                               {label:t('bodyfat.current'),  val:rec.bodyFatPct+' %',                      color:'#ef4444'},
                               {label:t('bodyfat.fatmass'),  val:(rec.fatMassKg??0)+' '+t('bodyfat.unit.kg'),  color:'#ef4444'},
                               {label:t('bodyfat.leanmass'), val:(rec.leanMassKg??0)+' '+t('bodyfat.unit.kg'), color:'#22c55e'},
-                              {label:(rec.fatDeltaKg??0)>=0?t('bodyfat.tolose'):t('bodyfat.togain'),
-                               val:Math.abs(rec.fatDeltaKg??0)+' '+t('bodyfat.unit.kg'),                     color:'#a855f7'},
-                            ].map(function(it){ return (
+                            ].concat(rec.musclePct != null ? [
+                              {label:t('muscle.current'),   val:rec.musclePct+' %',                        color:'#22c55e'},
+                              {label:t('muscle.mass'),      val:(rec.muscleKg??0)+' '+t('bodyfat.unit.kg'), color:'#22c55e'},
+                            ] : []).concat(rec.goal!=='muscle' && rec.fatDeltaKg != null ? [
+                              {label:rec.fatDeltaKg>=0?t('bodyfat.tolose'):t('bodyfat.togain'),
+                               val:Math.abs(rec.fatDeltaKg)+' '+t('bodyfat.unit.kg'),                        color:'#a855f7'},
+                            ] : []).concat(rec.goal!=='fat_loss' && rec.muscleDeltaKg != null ? [
+                              {label:rec.muscleDeltaKg>=0?t('muscle.togain'):t('muscle.toloss'),
+                               val:Math.abs(rec.muscleDeltaKg)+' '+t('bodyfat.unit.kg'),                     color:'#06b6d4'},
+                            ] : []).concat(rec.targetWeight != null ? [
+                              {label:t('bodyfat.target_weight'), val:rec.targetWeight+' '+t('bodyfat.unit.kg'), color:'#3b82f6'},
+                            ] : []).concat(Array.isArray(rec.history) && rec.history.length ? [
+                              {label:t('history.title'),    val:t('history.count',{n:rec.history.length}),  color:'#14b8a6'},
+                            ] : []).map(function(it){ return (
                               <div key={it.label} style={{flex:'1 1 110px',background:'#0f172a',borderRadius:8,padding:'10px 12px',textAlign:'center'}}>
                                 <div style={{fontSize:11,color:'#64748b',marginBottom:2}}>{it.label}</div>
                                 <div style={{fontSize:16,fontWeight:700,color:it.color}}>{it.val}</div>
@@ -1470,7 +1990,10 @@ function App() {
       )}
       {showSaveModal && (
         <SaveModal saveAsNew={saveAsNew} editingRecord={editingRecord} recName={recName}
-          onNameChange={setRecName} onConfirm={doSave} onClose={function(){setShowSaveModal(false);}} t={t}/>
+          onNameChange={setRecName} onConfirm={doSave} onClose={function(){setShowSaveModal(false);}}
+          logHistory={logHistory} onLogHistory={setLogHistory}
+          preview={t('modal.log_preview',{w:weight,fat:bfPct,fkg:fatMassKg.toFixed(1),mus:muPct,mkg:muscleKg.toFixed(1)})}
+          t={t}/>
       )}
     </div>
   );

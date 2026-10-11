@@ -1,8 +1,8 @@
 # ⚡ Kalorická Kalkulačka
 
-> Viacjazyčná kalkulačka dennej potreby kalórií, makronutrientov a telesného tuku.
+> Viacjazyčná kalkulačka dennej potreby kalórií, makronutrientov a telesného zloženia so sledovaním vývoja.
 
-[![Verzia](https://img.shields.io/badge/verzia-2.1.1-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.1)
+[![Verzia](https://img.shields.io/badge/verzia-2.2.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.2.0)
 [![Platforma](https://img.shields.io/badge/platforma-Web-blue)](#)
 [![Licencia](https://img.shields.io/badge/licencia-Súkromná-red)](#)
 
@@ -19,14 +19,19 @@ Kompletný nástroj na výpočet dennej potreby kalórií a makronutrientov. Web
 - **Výpočet BMR** — Bazálny metabolizmus s pohlavie-špecifickými vzorcami
   - Muži: `1,0 × hmotnosť (kg) × 24h`
   - Ženy: `0,9 × hmotnosť (kg) × 24h`
-- **Sekcia telesného tuku** — zadáš aktuálny podiel tuku a hneď vidíš hmotnosť tuku aj čistú hmotu; zadáš cieľový podiel a kalkulačka vypíše, koľko kg tuku musíš zhodiť, akú budeš mať hmotnosť a ako dlho to pri aktuálnom deficite potrvá
+- **Telesné zloženie (tuk + svaly)** — polia sa riadia zvoleným cieľom:
+  - 🔥 Spaľovanie tuku — tuk aktuálny → cieľový %, tuk na zhodenie, cieľová hmotnosť, trvanie a dátum dosiahnutia; svaly % → kg
+  - 💪 Budovanie svalov — svaly aktuálne → cieľové %, svaly na pribratie, cieľová hmotnosť, trvanie a dátum dosiahnutia; tuk % → kg
+  - 🔄 Rekompozícia — tuk aj svaly aktuálne → cieľové %, s nastaviteľným mesačným tempom
+- **História meraní** — každé uloženie / aktualizácia zapíše dátum, čas, váhu, tuk a svaly; čiarové grafy (tuk vľavo, svaly vpravo, v kg alebo %) a rolovateľná tabuľka
+- **Zámok úprav ✏️** — posuvníky a polia sú zamknuté, kým neťukneš na ✏️, takže sa pri scrollovaní na telefóne nedajú omylom posunúť
 - **Systém PAL aktivít** — 7 typov aktivít s nastaviteľnou intenzitou, 24-hodinová validácia
 - **3 cieľové režimy** — Budovanie svalov, Spaľovanie tuku, Body Rekomposícia
 - **Dynamické minimum tuku** — posuvník fyzicky blokovaný pod biologickým minimom (40 g muži / 30 g ženy)
 - **Nápovedy k cieľom** — vysvetlenie logiky makier pre každý cieľ
 - **Nastaviteľné rozsahy** — makrá, minimá tuku, predvolené prebytky/deficity
 - **Záznamy** — uložiť, načítať, upraviť a vymazať výpočty
-- **Prenosné úložisko** — dáta uložené v priečinku `data/` vedľa aplikácie; funguje naprieč prehliadačmi a zariadeniami
+- **Prenosné úložisko** — dáta uložené v priečinku `data/` vedľa aplikácie; funguje naprieč prehliadačmi a zariadeniami. Bez pripojeného priečinka (napr. na telefóne) sa dáta ukladajú v prehliadači
 - **Viacjazyčnosť** — SK, EN, DE; nový jazyk pridáš jedným `.po` súborom
 - **Bez inštalácie** — jeden HTML súbor, funguje cez `file://`
 
@@ -75,14 +80,26 @@ Muži:  BMR = 1,0 × hmotnosť (kg) × 24
 Ženy:  BMR = 0,9 × hmotnosť (kg) × 24
 ```
 
-### Telesný tuk
+### Telesné zloženie
 ```
-hmotnosť tuku     = hmotnosť × podiel tuku % / 100
-čistá hmota       = hmotnosť − hmotnosť tuku
-cieľová hmotnosť  = čistá hmota / (1 − cieľový podiel tuku % / 100)
-tuk na zhodenie   = hmotnosť tuku − (cieľová hmotnosť − čistá hmota)
+hmotnosť tuku  = hmotnosť × tuk % / 100
+svalová hmota  = hmotnosť × svaly % / 100
+ostatná hmota  = hmotnosť − tuk − svaly            (voda, kosti, orgány…)
+
+Spaľovanie tuku   cieľová hmotnosť = (hmotnosť − tuk) / (1 − cieľový tuk %)
+                  tuk na zhodenie  = hmotnosť − cieľová hmotnosť
+                  dni              = tuk na zhodenie × 7 700 / deficit
+
+Budovanie svalov  cieľová hmotnosť = (hmotnosť − svaly) / (1 − cieľové svaly %)
+                  svaly na pribratie = cieľová hmotnosť − hmotnosť
+                  dni                = svaly na pribratie × 7 700 / prebytok
+
+Rekompozícia      cieľová hmotnosť = ostatná hmota / (1 − cieľový tuk % − cieľové svaly %)
+                  tuk na zhodenie    = tuk − cieľová hmotnosť × cieľový tuk %
+                  svaly na pribratie = cieľová hmotnosť × cieľové svaly % − svaly
+                  dni = max(tuk / tempo tuku, svaly / tempo svalov) × 30,44
 ```
-Predpokladá sa, že čistá hmota ostáva zachovaná. Odhad trvania počíta s `1 kg tuku ≈ 7 700 kcal`.
+V každom režime sa považuje za nemennú tá hmota, na ktorú sa necieli. Rekompozícia prebieha na udržiavacom príjme, preto trvanie počíta s nastaviteľným mesačným tempom (predvolene +0,5 kg svalov / −1,0 kg tuku).
 
 ### PAL
 ```

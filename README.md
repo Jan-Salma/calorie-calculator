@@ -1,8 +1,8 @@
 # ⚡ Calorie Calculator
 
-> A multilingual calorie, macronutrient and body-fat calculator.
+> A multilingual calorie, macronutrient and body-composition calculator with progress tracking.
 
-[![Version](https://img.shields.io/badge/version-2.1.1-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.1.1)
+[![Version](https://img.shields.io/badge/version-2.2.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.2.0)
 [![Platform](https://img.shields.io/badge/platform-Web-blue)](#)
 [![License](https://img.shields.io/badge/license-Private-red)](#)
 
@@ -19,14 +19,19 @@ A complete tool for calculating daily calorie requirements and macronutrients. Z
 - **BMR calculation** — Basal Metabolic Rate with gender-specific formulas
   - Men: `1.0 × weight (kg) × 24h`
   - Women: `0.9 × weight (kg) × 24h`
-- **Body fat section** — enter your current body fat %, get fat mass and lean mass instantly; set a target % and see exactly how many kg of fat you need to lose, your target weight, and how long it takes at your current deficit
+- **Body composition (fat + muscle)** — fields follow the selected goal:
+  - 🔥 Fat Loss — fat current → target %, fat to lose, target weight, duration and target date; muscle % → kg
+  - 💪 Muscle Building — muscle current → target %, muscle to gain, target weight, duration and target date; fat % → kg
+  - 🔄 Recomposition — both fat and muscle current → target %, with an adjustable monthly pace
+- **Progress history** — every save / update records date, time, weight, fat and muscle; line charts (fat left, muscle right, kg or %) and a scrollable table
+- **Edit lock ✏️** — sliders and fields are locked until you tap ✏️, so scrolling on a phone never moves them by accident
 - **PAL activity system** — 7 activity types with adjustable intensity, strict 24-hour validation
 - **3 goal modes** — Muscle Gain, Fat Loss, Body Recomposition
 - **Dynamic fat minimum** — slider physically blocked below biological minimum (40 g men / 30 g women)
 - **Goal info panels** — collapsible explanations of each goal's macro logic
 - **Configurable settings** — adjust macro ranges, fat minimums, and default surplus/deficit per goal
 - **Records system** — save, load, edit, and delete calculations
-- **Portable storage** — data saved in `data/` folder next to the app; works across browsers and devices
+- **Portable storage** — data saved in `data/` folder next to the app; works across browsers and devices. Without a connected folder (e.g. on a phone) data is saved in the browser
 - **Multilanguage** — Slovak (SK), English (EN), German (DE); add any language by dropping a `.po` file
 - **Zero-install** — single HTML file, works via `file://` protocol
 
@@ -75,14 +80,26 @@ Men:   BMR = 1.0 × weight (kg) × 24
 Women: BMR = 0.9 × weight (kg) × 24
 ```
 
-### Body Fat
+### Body Composition
 ```
-fat mass    = weight × body fat % / 100
-lean mass   = weight − fat mass
-target weight = lean mass / (1 − target body fat % / 100)
-fat to lose = fat mass − (target weight − lean mass)
+fat mass    = weight × fat % / 100
+muscle mass = weight × muscle % / 100
+rest        = weight − fat mass − muscle mass        (water, bone, organs…)
+
+Fat Loss        target weight = (weight − fat mass) / (1 − target fat %)
+                fat to lose   = weight − target weight
+                days          = fat to lose × 7,700 / deficit
+
+Muscle Building target weight = (weight − muscle mass) / (1 − target muscle %)
+                muscle to gain = target weight − weight
+                days           = muscle to gain × 7,700 / surplus
+
+Recomposition   target weight = rest / (1 − target fat % − target muscle %)
+                fat to lose    = fat mass − target weight × target fat %
+                muscle to gain = target weight × target muscle % − muscle mass
+                days           = max(fat to lose / fat pace, muscle to gain / muscle pace) × 30.44
 ```
-Lean mass is assumed to stay unchanged. Time estimate uses `1 kg fat ≈ 7,700 kcal`.
+In each mode the mass that is not targeted is assumed to stay unchanged. Recomposition runs at maintenance intake, so its duration uses the adjustable monthly pace (default +0.5 kg muscle / −1.0 kg fat).
 
 ### PAL (Physical Activity Level)
 ```

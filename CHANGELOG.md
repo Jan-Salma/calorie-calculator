@@ -11,6 +11,39 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [2.2.0] - 2026-09-26
+
+### Added
+- **Muscle share** — step `2️⃣` renamed to **Body Composition**; alongside body fat you now enter your muscle share (%) and see the muscle mass in kg
+- **Goal-driven body composition** — which fields are settable follows the goal chosen in step `5️⃣` (a badge in the section header shows the active mode):
+  - 🔥 **Fat Loss** — fat: current + target % → fat to lose, target weight, duration and target date. Muscle: current % → kg only
+  - 💪 **Muscle Building** — muscle: current + target % → muscle to gain, target weight, duration and target date. Fat: current % → kg only
+  - 🔄 **Body Recomposition** — both fat and muscle have current + target % → fat to lose, muscle to gain, target weight, separate durations for fat and muscle and one combined target date
+- **Target date** — every duration now also shows the calendar date the target is reached (`🎯 Target reached around 30 January 2027`)
+- **Calculation model** — in each mode the mass that is *not* targeted stays constant:
+  - Fat loss: `target weight = lean mass / (1 − target fat %)`, duration `fat to lose × 7,700 / deficit`
+  - Muscle building: `target weight = (weight − muscle) / (1 − target muscle %)`, duration `muscle to gain × 7,700 / surplus` — same kcal-per-kg model the Goal step already uses for kg/week
+  - Recomposition: `target weight = rest / (1 − target fat % − target muscle %)` where rest = weight − fat − muscle. Recomposition runs at maintenance, so the duration uses an adjustable **monthly pace** (defaults: muscle +0.5 kg/month, fat −1.0 kg/month)
+  - Validation when fat + muscle ≥ 100 % (current or target) and hints when a target points the wrong way
+- **Measurement history** — every *Save* or *Update* writes a row with date, time, weight, fat % / kg and muscle % / kg into the record (`record.history`)
+  - New card **📈 Fat & Muscle Progress** under step 2: two line charts side by side (fat left, muscle right) with the change since the first measurement, kg / % toggle, and a scrollable table (newest first, goal icon per row, delete per row)
+  - Checkbox in the save dialog (on by default) with a preview of the values that will be recorded
+  - Saving again on the same day with identical values does not create a duplicate row — the original row and its time are kept
+  - Records from 2.1.x and older get their saved date and values as the first history point
+  - Record detail in the Records tab shows muscle, target weight, deltas and the number of measurements
+- **Edit lock (✏️)** — every slider and adjustable field (weight, body fat, muscle, targets, recomposition pace, each activity, deficit/surplus, protein, fat %) is locked by default; ✏️ unlocks it, ✓ locks it again. Only one field can be open at a time. Locked sliders ignore touch completely, so scrolling on a phone can no longer move them by accident; activity −/+ buttons appear only when the row is unlocked; the weight field opens the keyboard only after ✏️
+- **Browser storage fallback** — when no app folder is connected, settings and records are saved in the browser (`localStorage`). Mobile browsers do not support folder selection at all, so until now records and history could not be saved on a phone. On devices without folder support the "Select app folder" button is hidden and the header shows where data is stored. When a folder is connected later and it has no data yet, the browser data is copied into it once
+
+### Fixed
+- Translation files (`.po` / `.mo`) regenerated directly from the inline translations — four storage strings in `sk_SK` / `de_DE` had outdated source texts since 2.0.0; all three languages now match the app 1:1 (213 entries each)
+
+### Files changed
+- `web/index.html` — body composition, history, charts, edit lock, browser storage
+- `web/languages/en_EN.po` + `.mo`, `sk_SK.po` + `.mo`, `de_DE.po` + `.mo` — 213 entries (was 169)
+- `README.md`, `README_sk.md`, `README_de.md`, `CHANGELOG.md`
+
+---
+
 ## [2.1.1] - 2026-08-22
 
 ### Fixed
@@ -213,7 +246,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v1.1.2...v2.0.0
