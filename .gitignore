@@ -12,7 +12,7 @@ desktop.ini
 # Node
 node_modules/
 npm-debug.log*
-package-lock.json
+# package-lock.json is committed on purpose (pinned, integrity-checked dependencies)
 yarn.lock
 
 # Build output

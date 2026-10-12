@@ -2,7 +2,7 @@
 
 > Ein mehrsprachiger Rechner für täglichen Energiebedarf, Makronährstoffe und Körperzusammensetzung mit Verlaufsaufzeichnung.
 
-[![Version](https://img.shields.io/badge/version-2.2.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.2.0)
+[![Version](https://img.shields.io/badge/version-2.3.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.3.0)
 [![Plattform](https://img.shields.io/badge/plattform-Web-blue)](#)
 [![Lizenz](https://img.shields.io/badge/lizenz-Privat-red)](#)
 
@@ -33,7 +33,8 @@ Ein vollständiges Werkzeug zur Berechnung des täglichen Kalorienbedarfs und de
 - **Aufzeichnungssystem** — Berechnungen speichern, laden, bearbeiten und löschen
 - **Portabler Speicher** — Daten im `data/`-Ordner neben der App gespeichert; funktioniert geräte- und browserübergreifend. Ohne verbundenen Ordner (z. B. am Handy) werden die Daten im Browser gespeichert
 - **Mehrsprachigkeit** — SK, EN, DE; neue Sprache mit einer einzigen `.po`-Datei hinzufügen
-- **Keine Installation** — eine HTML-Datei, funktioniert via `file://`
+- **Keine Installation** — vorab gebaute statische Dateien, funktionieren offline und via `file://`; kein CDN, keine Fremdskripte
+- **Abgesichert** — strikte Content-Security-Policy (keine Inline-Skripte, kein `eval`, keine externen Anfragen), Schriften und Bibliotheken liegen bei der App
 
 ---
 
@@ -42,7 +43,9 @@ Ein vollständiges Werkzeug zur Berechnung des täglichen Kalorienbedarfs und de
 ```
 calorie-calculator/
 ├── web/
-│   ├── index.html           ← Haupt-App (React 18, Babel, CSS)
+│   ├── index.html           ← Seitengerüst (lädt assets/app.css + assets/app.js)
+│   ├── assets/              ← BUILD-AUSGABE (im Git): app.js, app.css, fonts/
+│   ├── src/                 ← Quellcode: app.jsx (React 18), app.css — nicht auf dem Server nötig
 │   ├── data/                ← Automatisch von der App erstellt; persönliche Daten, gitignored
 │   │   ├── settings.json
 │   │   └── records.json
@@ -52,6 +55,8 @@ calorie-calculator/
 │   │   └── de_DE.po / .mo   ← Deutsch
 │   └── tools/
 │       └── po2locale.py     ← Dev-Tool: kompiliert .po → .mo (benötigt polib)
+├── scripts/                 ← build.mjs (npm run build), serve.mjs (npm run serve), security-headers.mjs
+├── package.json / package-lock.json ← Fixierte Abhängigkeiten (React 18.2.0, esbuild, Schriften)
 ├── README.md                ← EN (Standard)
 ├── README_sk.md             ← Slowakisch
 ├── README_de.md             ← Diese Datei
@@ -65,9 +70,9 @@ calorie-calculator/
 1. Repository herunterladen oder klonen
 2. `web/index.html` in Chrome oder Edge öffnen
 3. **„Ordner verbinden"** klicken und den `web/`-Ordner auswählen — aktiviert portablen Speicher und Sprachdateien
-4. Kein Build-Schritt, kein Server, keine Installation erforderlich
+4. Zum Benutzen ist weder Server noch Installation nötig — `web/assets/` ist vorab gebaut und im Git
 
-> Eine Internetverbindung wird beim ersten Öffnen benötigt (Schriften + React über CDN).  
+> Die App lädt nichts aus dem Internet: React, Schriften und Styles liegen in `web/assets/`.  
 > Die Ordnerverbindung wird pro Browser gespeichert; bei erneutem Besuch genügt ein Klick zum Wiederverbinden.
 
 ---

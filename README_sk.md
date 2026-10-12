@@ -2,7 +2,7 @@
 
 > Viacjazyčná kalkulačka dennej potreby kalórií, makronutrientov a telesného zloženia so sledovaním vývoja.
 
-[![Verzia](https://img.shields.io/badge/verzia-2.2.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.2.0)
+[![Verzia](https://img.shields.io/badge/verzia-2.3.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.3.0)
 [![Platforma](https://img.shields.io/badge/platforma-Web-blue)](#)
 [![Licencia](https://img.shields.io/badge/licencia-Súkromná-red)](#)
 
@@ -33,7 +33,8 @@ Kompletný nástroj na výpočet dennej potreby kalórií a makronutrientov. Web
 - **Záznamy** — uložiť, načítať, upraviť a vymazať výpočty
 - **Prenosné úložisko** — dáta uložené v priečinku `data/` vedľa aplikácie; funguje naprieč prehliadačmi a zariadeniami. Bez pripojeného priečinka (napr. na telefóne) sa dáta ukladajú v prehliadači
 - **Viacjazyčnosť** — SK, EN, DE; nový jazyk pridáš jedným `.po` súborom
-- **Bez inštalácie** — jeden HTML súbor, funguje cez `file://`
+- **Bez inštalácie** — vopred preložené statické súbory, fungujú offline aj cez `file://`; žiadne CDN ani cudzie skripty
+- **Zabezpečenie** — prísna Content-Security-Policy (žiadne inline skripty, žiadny `eval`, žiadne požiadavky mimo vlastnej domény), písma aj knižnice uložené s aplikáciou
 
 ---
 
@@ -42,7 +43,9 @@ Kompletný nástroj na výpočet dennej potreby kalórií a makronutrientov. Web
 ```
 calorie-calculator/
 ├── web/
-│   ├── index.html           ← Hlavná app (React 18, Babel, CSS)
+│   ├── index.html           ← Kostra stránky (načíta assets/app.css + assets/app.js)
+│   ├── assets/              ← VÝSTUP PREKLADU (v gite): app.js, app.css, fonts/
+│   ├── src/                 ← Zdroj: app.jsx (React 18), app.css — na server netreba
 │   ├── data/                ← Automaticky vytvorí app; osobné dáta, gitignored
 │   │   ├── settings.json
 │   │   └── records.json
@@ -52,6 +55,8 @@ calorie-calculator/
 │   │   └── de_DE.po / .mo   ← Nemčina
 │   └── tools/
 │       └── po2locale.py     ← Dev nástroj: kompiluje .po → .mo (vyžaduje polib)
+├── scripts/                 ← build.mjs (npm run build), serve.mjs (npm run serve), security-headers.mjs
+├── package.json / package-lock.json ← Pevné verzie závislostí (React 18.2.0, esbuild, písma)
 ├── README.md                ← EN (default)
 ├── README_sk.md             ← Tento súbor
 ├── README_de.md             ← Nemčina
@@ -65,9 +70,9 @@ calorie-calculator/
 1. Stiahni alebo naklonuj repozitár
 2. Otvor `web/index.html` v Chrome alebo Edge
 3. Klikni **„Pripojiť priečinok"** a vyber priečinok `web/` — aktivuje prenosné úložisko a jazykové súbory
-4. Žiadny build, žiadny server, žiadna inštalácia
+4. Na používanie netreba server ani inštaláciu — `web/assets/` je vopred preložené a uložené v gite
 
-> Pri prvom otvorení je potrebné internetové pripojenie (fonty + React z CDN).  
+> Aplikácia nič nesťahuje z internetu: React, písma aj štýly sú v `web/assets/`.  
 > Pripojenie priečinka si prehliadač pamätá; pri ďalšej návšteve stačí jedno kliknutie na opätovné pripojenie.
 
 ---

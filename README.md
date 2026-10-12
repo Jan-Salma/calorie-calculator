@@ -2,7 +2,7 @@
 
 > A multilingual calorie, macronutrient and body-composition calculator with progress tracking.
 
-[![Version](https://img.shields.io/badge/version-2.2.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.2.0)
+[![Version](https://img.shields.io/badge/version-2.3.0-f59e0b)](https://github.com/Jan-Salma/calorie-calculator/releases/tag/v2.3.0)
 [![Platform](https://img.shields.io/badge/platform-Web-blue)](#)
 [![License](https://img.shields.io/badge/license-Private-red)](#)
 
@@ -33,7 +33,8 @@ A complete tool for calculating daily calorie requirements and macronutrients. Z
 - **Records system** — save, load, edit, and delete calculations
 - **Portable storage** — data saved in `data/` folder next to the app; works across browsers and devices. Without a connected folder (e.g. on a phone) data is saved in the browser
 - **Multilanguage** — Slovak (SK), English (EN), German (DE); add any language by dropping a `.po` file
-- **Zero-install** — single HTML file, works via `file://` protocol
+- **Zero-install** — prebuilt static files, works offline and via `file://` protocol; no CDN, no third-party scripts
+- **Security hardened** — strict Content-Security-Policy (no inline scripts, no `eval`, no external requests), self-hosted fonts and libraries
 
 ---
 
@@ -41,8 +42,10 @@ A complete tool for calculating daily calorie requirements and macronutrients. Z
 
 ```
 calorie-calculator/
-├── web/
-│   ├── index.html           ← Main app (React 18, Babel, vanilla CSS)
+├── web/                     ← Everything deployed to the server
+│   ├── index.html           ← Page shell (loads assets/app.css + assets/app.js)
+│   ├── assets/              ← BUILD OUTPUT (committed): app.js, app.css, fonts/
+│   ├── src/                 ← Source: app.jsx (React 18), app.css — not needed on the server
 │   ├── data/                ← Auto-created by app; personal data, gitignored
 │   │   ├── settings.json
 │   │   └── records.json
@@ -52,6 +55,11 @@ calorie-calculator/
 │   │   └── de_DE.po / .mo   ← German
 │   └── tools/
 │       └── po2locale.py     ← Dev tool: compiles .po → .mo (requires polib)
+├── scripts/
+│   ├── build.mjs            ← npm run build: web/src → web/assets (esbuild)
+│   ├── serve.mjs            ← npm run serve: local test server with production security headers
+│   └── security-headers.mjs ← Single source of truth for HTTP security headers (CSP…)
+├── package.json / package-lock.json ← Pinned dependencies (React 18.2.0, esbuild, fonts)
 ├── README.md                ← This file (EN)
 ├── README_sk.md             ← Slovak
 ├── README_de.md             ← German
@@ -65,10 +73,24 @@ calorie-calculator/
 1. Download or clone the repository
 2. Open `web/index.html` in Chrome or Edge
 3. Click **"Connect folder"** and select the `web/` directory — enables portable storage and language files
-4. No build step, no server, no installation required
+4. No server or installation required to use the app — `web/assets/` is prebuilt and committed
 
-> **Note:** An internet connection is required on first open to load fonts and React from CDN.  
+> The app loads nothing from the internet: React, fonts and styles are bundled in `web/assets/`.  
 > The folder connection is remembered per browser; a one-click reconnect appears on return visits if permission expired.
+
+### Development
+Requires [Node.js](https://nodejs.org/) LTS.
+```
+npm ci            # install pinned dependencies from package-lock.json
+npm run build     # web/src → web/assets (fails if the output contains eval)
+npm run serve     # http://127.0.0.1:8080 with the production security headers
+```
+Edit `web/src/app.jsx` / `web/src/app.css`, never `web/assets/` directly. Commit the rebuilt `web/assets/`.
+
+### Deployment
+Upload `web/index.html`, `web/assets/` and `web/languages/` to the server. The HTTP security headers from
+`scripts/security-headers.mjs` are set in Cloudflare (Transform Rule for `calorie.jan-salma.com`) — always upload
+the new files **before** tightening the headers, otherwise the old CDN-based page would be blocked.
 
 ---
 

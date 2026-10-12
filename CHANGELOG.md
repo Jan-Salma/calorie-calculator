@@ -11,6 +11,32 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [2.3.0] - 2026-10-11
+
+Security baseline for public use (phase 0 of cloud storage). No functional change for users.
+
+### Changed
+- **No in-browser compilation** — the app is compiled ahead of time with esbuild (`npm run build`) instead of Babel running in every visitor's browser. The page no longer needs `eval`, so a strict Content-Security-Policy is possible
+- **No third-party requests** — React 18.2.0 (same version as before), React DOM and the DM Sans / Outfit fonts are bundled in `web/assets/` instead of loading from cdnjs and Google Fonts. Fonts are the variable versions, Latin + Latin Extended only (OFL 1.1)
+- **Smaller download** — ~240 kB of JS plus ~100 kB of fonts instead of ~3 MB (React + React DOM + Babel standalone) compiled on every page load
+- `web/index.html` is now a small page shell; source moved to `web/src/app.jsx` and `web/src/app.css` unchanged except for the React import
+
+### Added
+- `scripts/build.mjs` — build `web/src` → `web/assets`; fails if the output contains `eval()` or `new Function()`
+- `scripts/serve.mjs` — local test server sending the production security headers
+- `scripts/security-headers.mjs` — single source of truth for the HTTP security headers set in Cloudflare: strict CSP (`default-src 'none'`, `script-src 'self'`, no inline scripts, no external connections, `frame-ancestors 'none'`), `X-Frame-Options`, `Referrer-Policy: no-referrer`, `Permissions-Policy`, `Cross-Origin-Opener-Policy: same-origin-allow-popups`, `Cross-Origin-Resource-Policy`
+- `package.json` + `package-lock.json` with exact, integrity-checked dependency versions (lockfile no longer gitignored)
+
+### Verified
+- Under the strict CSP the app renders with zero console errors and zero requests outside its own origin
+- Injected inline script, external script, image beacon, `fetch` exfiltration and foreign iframe are all blocked by the CSP
+- Regression: the three v2.2.0 scenarios (fat loss, muscle building, recomposition; 3 dated measurements each) match the independent calculation 9/9, history and charts persist
+
+### Deployment note
+Upload the new `web/index.html` and `web/assets/` **before** adding the security headers in Cloudflare — the old CDN-based page would be blocked by the new CSP.
+
+---
+
 ## [2.2.0] - 2026-09-26
 
 ### Added
@@ -246,7 +272,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
-[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/Jan-Salma/calorie-calculator/compare/v2.0.0...v2.1.0
